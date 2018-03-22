@@ -2,7 +2,7 @@ import Sequelize, { QueryInterface } from 'sequelize';
 
 module.exports = {
 	up: (queryInterface: QueryInterface) => {
-		return queryInterface.createTable('eventAttendees', {
+		return queryInterface.createTable('EventAttendees', {
 			eventId: {
 				allowNull: false,
 				type: Sequelize.UUID,
@@ -12,12 +12,20 @@ module.exports = {
 				type: Sequelize.UUID,
 			},
 			attending: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: false,
+				type: Sequelize.BOOLEAN,
+				defaultValue: false,
+			},
+			createdAt: {
+				allowNull: false,
+				type: Sequelize.DATE,
+			},
+			updatedAt: {
+				allowNull: false,
+				type: Sequelize.DATE,
 			},
 		});
 	},
 	down: (queryInterface) => {
-		return queryInterface.dropTable('eventAttendees');
+		return queryInterface.dropTable('EventAttendees');
 	},
 };

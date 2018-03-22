@@ -3,7 +3,7 @@ import Sequelize, { QueryInterface } from 'sequelize';
 module.exports = {
   up: async (queryInterface: QueryInterface) => {
     queryInterface.sequelize.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp";');
-    const userTable = queryInterface.createTable('users', {
+    const userTable = queryInterface.createTable('Users', {
       id: {
         allowNull: false,
         primaryKey: true,
@@ -22,11 +22,19 @@ module.exports = {
         allowNull: false,
         defaultValue: 'user',
       },
+      createdAt: {
+        allowNull: false,
+        type: Sequelize.DATE,
+      },
+      updatedAt: {
+        allowNull: false,
+        type: Sequelize.DATE,
+      },
     });
     return userTable;
   },
 
   down: (queryInterface: QueryInterface) => {
-    return queryInterface.dropTable('users');
+    return queryInterface.dropTable('Users');
   },
 };

@@ -2,7 +2,7 @@ import Sequelize, { QueryInterface } from 'sequelize';
 
 module.exports = {
 	up: (queryInterface: QueryInterface) => {
-		return queryInterface.createTable('sendingGroups', {
+		return queryInterface.createTable('SendingGroups', {
 			id: {
 				allowNull: false,
 				primaryKey: true,
@@ -13,10 +13,18 @@ module.exports = {
 				type: Sequelize.STRING,
 				allowNull: false,
 			},
+			createdAt: {
+				allowNull: false,
+				type: Sequelize.DATE,
+			},
+			updatedAt: {
+				allowNull: false,
+				type: Sequelize.DATE,
+			},
 		});
 	},
 
 	down: (queryInterface: QueryInterface) => {
-		return queryInterface.dropTable('sendingGroups');
+		return queryInterface.dropTable('SendingGroups');
 	},
 };
