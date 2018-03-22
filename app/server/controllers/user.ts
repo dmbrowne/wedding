@@ -40,7 +40,7 @@ export function login(req: Request, res: Response, next) {
 
 	if (!email || !password) {
 		req.session.loginError = 'Email and password is required to log in';
-		return res.redirect('/login');
+		return res.redirect('/admin/login');
 	}
 
 	models.User.findOne({
@@ -49,15 +49,15 @@ export function login(req: Request, res: Response, next) {
 	.then((user) => {
 		if (!user) {
 			req.session.loginError = 'An account with the given email address does not exist.';
-			return res.redirect('/login');
+			return res.redirect('/admin/login');
 		}
 		user.checkPassword(password).then(correctPassword => {
 			if (!correctPassword) {
 				req.session.loginError = `The given password mismatches the one stored for ${email}.`;
-				return res.redirect('/login');
+				return res.redirect('/admin/login');
 			}
 			req.session.user = user;
-			res.redirect('/console');
+			res.redirect('/admin');
 		});
 	})
 	.catch(err => {
