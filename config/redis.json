@@ -1,0 +1,17 @@
+{
+  "docker": {
+    "host": "postgres",
+    "port": 6379,
+    "logErrors": true
+  },
+  "development": {
+    "host": "localhost",
+    "port": 6300,
+    "logErrors": true
+  },
+  "production": {
+		"host": "localhost",
+		"port": 6379,
+    "logErrors": true
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "docker": {
+    "username": "wedding",
+    "password": "wedding",
+    "database": "wedding",
+    "host": "postgres",
+    "port": 5432,
+    "dialect": "postgres"
+  },
+  "development": {
+    "username": "wedding",
+    "password": "wedding",
+    "database": "wedding",
+    "host": "localhost",
+    "port": 5400,
+    "dialect": "postgres"
+  },
+  "test": {
+    "username": "wedding_test",
+    "password": "wedding_test",
+    "database": "wedding_test",
+    "host": "postgres",
+    "dialect": "postgres"
+  },
+  "production": {
+    "username": "wedding_prod",
+    "password": "wedding_prod",
+    "database": "wedding_prod",
+    "host": "postgres",
+    "dialect": "postgres"
+  }
+}

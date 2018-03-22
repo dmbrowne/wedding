@@ -1,0 +1,17 @@
+{
+	"extends": ["tslint:latest", "tslint-react"],
+	"rules": {
+		"member-access":false,
+		"only-arrow-functions": false,
+		"arrow-parens": false,
+		"quotemark": false,
+		"object-literal-sort-keys": false,
+		"ordered-imports": false,
+		"indent": false,
+		"interface-name": false,
+		"max-classes-per-file": [
+			true,
+			2
+		]
+	}
+}
