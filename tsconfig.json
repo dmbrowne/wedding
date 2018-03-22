@@ -19,7 +19,7 @@
     ],
   },
   "filesGlob": [
-    "typings/index.d.ts",
+    "typings/*.d.ts",
     "**/*.ts",
     "**/*.tsx"
   ],
@@ -31,7 +31,6 @@
   "exclude": [
     "build",
     "node_modules",
-    "**/*.spec.ts",
   ],
   "compileOnSave": false
 }
