@@ -2,5 +2,6 @@
 node_modules
 redis_data
 .next
-app/server/**/*.js
+**/*.js
+!app/client/**/*.js
 migrations/*.js
