@@ -15,7 +15,6 @@ class LoginScreen extends React.Component {
 	}
 
 	render() {
-		console.log(this.props)
 		return (
 			<div className={css.loginContainer}>
 				<h1>Admin area login</h1>
@@ -60,4 +59,4 @@ class LoginScreen extends React.Component {
 	}
 }
 
-export default withAdminLayout(LoginScreen);
+export default LoginScreen;
