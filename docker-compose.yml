@@ -1,0 +1,18 @@
+version: '3.1'
+
+services:
+  postgres:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: wedding
+      POSTGRES_USER: wedding
+      POSTGRES_PASSWORD: wedding
+    ports:
+      - "5400:5432"
+  redis:
+    image: redis
+    volumes:
+      - "./redis_data:/data"
+    ports:
+      - "6300:6379"
