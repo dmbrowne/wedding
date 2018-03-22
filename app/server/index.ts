@@ -51,7 +51,7 @@ function startServer(portNumber) {
 }
 
 function configureRoutes(server) {
-	server.use('/', userRoutes);
+	server.use('/admin', userRoutes);
 	server.get('*', (req, res) => handler(req, res));
 }
 
