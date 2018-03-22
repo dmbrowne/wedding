@@ -1,5 +1,5 @@
 Arguments: 
-  /Users/dbrowne/.nvm/versions/node/v9.4.0/bin/node /usr/local/Cellar/yarn/1.5.1/libexec/bin/yarn.js add -D @types/lodash @type/cli-color @types/js-beautify
+  /Users/dbrowne/.nvm/versions/node/v9.4.0/bin/node /usr/local/Cellar/yarn/1.5.1/libexec/bin/yarn.js add -D @types/fs @types/path
 
 PATH: 
   /Users/dbrowne/.rbenv/shims:/Users/dbrowne/.nvm/versions/node/v9.4.0/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Users/dbrowne/Library/Android/sdk/tools:/Users/dbrowne/Library/Android/sdk/platform-tools/:/Users/dbrowne/Library/Android/sdk/platform-tools/com.google.android.gmail_6.5.apk
@@ -33,6 +33,9 @@ npm manifest:
       "pg-hstore": "^2.3.2",
       "react": "^16.2.0",
       "react-dom": "^16.2.0",
+      "cli-color": "^1.2.0",
+      "js-beautify": "^1.7.5",
+      "lodash": "^4.17.5",
       "sequelize": "^4.33.4"
     },
     "scripts": {
@@ -42,23 +45,23 @@ npm manifest:
       "tsc": "tsc",
       "lint": "tslint **/*.ts",
       "build": "npm run clean && npm run tsc --",
-      "create:migration": "sequelize migration:create --name ",
+      "create:migration": "node scripts/modelGenerate",
       "migrate": "tsc -p migrations || true && sequelize db:migrate",
       "migrate:undo": "tsc -p migrations || true && sequelize db:migrate:undo",
       "migrate:undo:all": "tsc -p migrations || true && sequelize db:migrate:undo:all"
     },
     "devDependencies": {
       "@types/bcrypt": "^1.0.0",
+      "@types/cli-color": "^0.3.29",
       "@types/connect-redis": "^0.0.7",
       "@types/express": "^4.11.1",
       "@types/jest": "^22.1.3",
+      "@types/js-beautify": "^0.0.31",
+      "@types/lodash": "^4.14.105",
       "@types/node": "^9.4.6",
       "@types/react": "^16.0.38",
       "@types/sequelize": "types/sequelize",
-      "cli-color": "^1.2.0",
       "concurrently": "^3.5.1",
-      "js-beautify": "^1.7.5",
-      "lodash": "^4.17.5",
       "rimraf": "^2.6.2",
       "sequelize-cli": "^4.0.0",
       "svg-to-react-cli": "^1.5.0",
@@ -106,6 +109,10 @@ Lockfile:
       "@types/express" "*"
       "@types/node" "*"
   
+  "@types/cli-color@^0.3.29":
+    version "0.3.29"
+    resolved "https://registry.yarnpkg.com/@types/cli-color/-/cli-color-0.3.29.tgz#c83a71fe02c8c7e1ccec048dd6a2458d1f6c96ea"
+  
   "@types/connect-redis@^0.0.7":
     version "0.0.7"
     resolved "https://registry.yarnpkg.com/@types/connect-redis/-/connect-redis-0.0.7.tgz#97948bc727d29e5413d1ebc6be7aa26df86bca7e"
@@ -148,6 +155,14 @@ Lockfile:
   "@types/jest@^22.1.3":
     version "22.2.0"
     resolved "https://registry.yarnpkg.com/@types/jest/-/jest-22.2.0.tgz#55ce83139f7ad1b48b414c3927746614c6963c0f"
+  
+  "@types/js-beautify@^0.0.31":
+    version "0.0.31"
+    resolved "https://registry.yarnpkg.com/@types/js-beautify/-/js-beautify-0.0.31.tgz#bd3512cc8d24340b6403518cccbb2a7d550b9a55"
+  
+  "@types/lodash@^4.14.105":
+    version "4.14.105"
+    resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.105.tgz#9fcc4627a1f98f8f8fce79ddb2bff4afd97e959b"
   
   "@types/mime@*":
     version "2.0.0"
@@ -7525,14 +7540,11 @@ Lockfile:
       yargs-parser "^2.4.0"
 
 Trace: 
-  Error: https://registry.yarnpkg.com/@type%2fcli-color: Not found
-      at Request.params.callback [as _callback] (/usr/local/Cellar/yarn/1.5.1/libexec/lib/cli.js:65019:18)
-      at Request.self.callback (/usr/local/Cellar/yarn/1.5.1/libexec/lib/cli.js:132430:22)
-      at Request.emit (events.js:160:13)
-      at Request.<anonymous> (/usr/local/Cellar/yarn/1.5.1/libexec/lib/cli.js:133413:10)
-      at Request.emit (events.js:160:13)
-      at IncomingMessage.<anonymous> (/usr/local/Cellar/yarn/1.5.1/libexec/lib/cli.js:133333:12)
-      at Object.onceWrapper (events.js:255:19)
-      at IncomingMessage.emit (events.js:165:20)
-      at endReadableNT (_stream_readable.js:1101:12)
-      at process._tickCallback (internal/process/next_tick.js:152:19)
+  Error: Couldn't find package "@types/fs" on the "npm" registry.
+      at new MessageError (/usr/local/Cellar/yarn/1.5.1/libexec/lib/cli.js:186:110)
+      at NpmResolver.<anonymous> (/usr/local/Cellar/yarn/1.5.1/libexec/lib/cli.js:51625:15)
+      at Generator.next (<anonymous>)
+      at step (/usr/local/Cellar/yarn/1.5.1/libexec/lib/cli.js:98:30)
+      at /usr/local/Cellar/yarn/1.5.1/libexec/lib/cli.js:109:13
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:160:7)
