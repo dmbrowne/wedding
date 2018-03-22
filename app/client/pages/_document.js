@@ -6,6 +6,7 @@ export default class MyDocument extends Document {
       <html>
         <Head>
           <title>Mr and Mrs Browne 2018</title>
+          <link rel="stylesheet" href="/static/style.css" />
         </Head>
         <body>
           <Main />
