@@ -1,0 +1,22 @@
+@import "bootstrap/scss/functions.scss";
+@import "bootstrap/scss/variables.scss";
+
+.titlebar {
+	padding: 15px;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	background-color: $dark;
+	color: #fff;
+
+}
+
+.menu {
+	margin-right: 15px;
+	font-size: 28px;
+}
+
+.title {
+	color: #fff;
+	margin: 0;
+}
