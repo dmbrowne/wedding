@@ -2,12 +2,12 @@ import Sequelize, { QueryInterface } from 'sequelize';
 
 module.exports = {
 	up: async (queryInterface: QueryInterface) => {
-		await queryInterface.addColumn('Attendees', 'sendingGroupId', {
+		await queryInterface.addColumn('Attendees', 'sendGroupId', {
 			type: Sequelize.UUID,
 		});
-		await queryInterface.addConstraint('Attendees', ['sendingGroupId'], {
+		await queryInterface.addConstraint('Attendees', ['sendGroupId'], {
 			type: 'foreign key',
-			name: 'attendee_sendingGroup_fk',
+			name: 'attendee_sendGroup_fk',
 			references: {
 				table: 'SendingGroups',
 				field: 'id',
@@ -16,7 +16,7 @@ module.exports = {
 	},
 
 	down: async (queryInterface: QueryInterface) => {
-		await queryInterface.removeConstraint('Attendees', 'attendee_sendingGroup_fk');
-		await queryInterface.removeColumn('Attendees', 'sendingGroupId');
+		await queryInterface.removeConstraint('Attendees', 'attendee_sendGroup_fk');
+		await queryInterface.removeColumn('Attendees', 'sendGroupId');
 	},
 };
