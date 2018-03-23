@@ -16,6 +16,7 @@ export default class Attendee extends Model {
 			firstName: Sequelize.STRING,
 			lastName: Sequelize.STRING,
 			tableId: Sequelize.UUID,
+			sendGroupId: Sequelize.UUID,
 		},
 		{
 			sequelize: sequelizeConnection,
@@ -26,5 +27,6 @@ export default class Attendee extends Model {
 	static associate(models) {
 		this.belongsToMany(models.Event, { through: models.EventAttendee, foreignKey: 'eventId' });
 		this.belongsTo(models.SeatingTable, { foreignKey: 'tableId' });
+		this.belongsTo(models.SendGroup, { foreignKey: 'sendGroupId' });
 	}
 }
