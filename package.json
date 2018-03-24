@@ -4,7 +4,6 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
-    "@zeit/next-sass": "^0.1.1",
     "bcrypt": "^1.0.3",
     "body-parser": "^1.18.2",
     "bootstrap": "^4.0.0",
@@ -43,6 +42,8 @@
     "seed:undo:all": "tsc -p migrations || true && sequelize db:seed:undo:all"
   },
   "devDependencies": {
+    "@types/next": "^2.4.8",
+    "@zeit/next-sass": "^0.1.1",
     "@types/bcrypt": "^1.0.0",
     "@types/cli-color": "^0.3.29",
     "@types/connect-redis": "^0.0.7",

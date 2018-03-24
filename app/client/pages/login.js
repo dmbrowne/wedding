@@ -1,7 +1,6 @@
 import * as React from 'react'
 import css from './login.scss'
 import bootstrapCss from '../styles/admin.scss';
-import withAdminLayout from '../components/adminLayout';
 import cx from 'classnames';
 
 class LoginScreen extends React.Component {
