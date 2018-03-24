@@ -1,6 +1,7 @@
 {
 	"extends": ["tslint:latest", "tslint-react"],
 	"rules": {
+		"no-submodule-imports": false,
 		"member-access":false,
 		"only-arrow-functions": false,
 		"arrow-parens": false,

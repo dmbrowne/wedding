@@ -1,0 +1,22 @@
+{
+	"extends": "../../tsconfig",
+	"compilerOptions": {
+		"module": "esnext",
+		"target": "esnext",
+		"jsx": "react-native",
+	},
+	"filesGlob": [
+    "typings/*.d.ts",
+    "**/*.ts",
+    "**/*.tsx"
+  ],
+  "types": [
+    "react",
+    "jest",
+    "node"
+  ],
+	"exclude": [
+    "build",
+    "node_modules",
+  ],
+}

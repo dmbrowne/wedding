@@ -1,11 +1,5 @@
 import Sequelize, { Model } from 'sequelize';
 
-export interface IAttendee {
-	email: string;
-	firstName: string;
-	lastName: string;
-}
-
 export default class Attendee extends Model {
 	static init(sequelizeConnection) {
 		super.init({

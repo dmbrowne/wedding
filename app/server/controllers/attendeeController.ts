@@ -65,23 +65,28 @@ export async function editAttendee(req: NextAppRequest, res: Response) {
 	return res.redirect('/admin/attendees');
 }
 
-async function deleteMultipleAttendees(req: Request, res: Response) {
+function deleteMultipleAttendees(req: Request, res: Response) {
 	const { attendeeIds } = req.body;
 
-	if (attendeeIds || !Array.isArray(attendeeIds) || attendeeIds.length === 0) {
+	if (!attendeeIds || !Array.isArray(attendeeIds) || attendeeIds.length === 0) {
 		res.sendStatus(400).json({ message: 'an array of attendeeIds is required to delete attendee(s)'});
 	}
 
-	await models.Attendee.destroy({
+	models.Attendee.destroy({
 		where: {
 			id: { [Op.or]: attendeeIds },
 		},
+	})
+	.then(() => res.send({}))
+	.catch(err => {
+		console.log(err)
+		res.sendStatus(400).send(err);
 	});
 }
 
 export function deleteAttendee(req: NextAppRequest, res: Response, next: NextFunction) {
 	if (req.xhr) {
-		deleteMultipleAttendees(req, res);
+		return deleteMultipleAttendees(req, res);
 	}
 
 	const { attendeeId } = req.params;
