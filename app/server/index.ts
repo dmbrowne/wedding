@@ -8,6 +8,7 @@ import * as bodyParser from 'body-parser';
 import redisConfig = require('../../config/redis.json');
 import userRoutes from './routes/user';
 import attendeeRoutes from './routes/attendee';
+import sendGroupRoutes from './routes/sendGroupRoutes';
 
 const RedisStore = connectRedis(session);
 const port = 4000;
@@ -55,6 +56,7 @@ function startServer(portNumber) {
 function configureRoutes(server) {
 	server.use('/admin', userRoutes);
 	server.use('/admin/attendees', attendeeRoutes);
+	server.use('/admin/sendgroups', sendGroupRoutes);
 	server.get('*', (req, res) => handler(req, res));
 }
 
