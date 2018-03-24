@@ -13,12 +13,6 @@ import sendGroupRoutes from './routes/sendGroupRoutes';
 const RedisStore = connectRedis(session);
 const port = 4000;
 const dev = process.env.NODE_ENV !== 'production';
-// const sessionHandler = session({
-// 	store: new RedisStore(redisConfig[process.env.NODE_ENV || 'development']),
-// 	secret: 'theNewBrownesWeeding',
-// 	resave: false,
-// 	saveUninitialized: false,
-// });
 const app = next({
 	dir: './app/client',
 	dev,
