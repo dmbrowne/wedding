@@ -14,3 +14,10 @@ export const getDesiredValuesFromRequestBody = (
 
 	return Object.keys(foundValues).length ? foundValues : null;
 };
+
+export function asyncAwaitTryCatch(promise) {
+	return promise.then(data => {
+		return [null, data];
+	})
+	.catch(err => [err]);
+}
