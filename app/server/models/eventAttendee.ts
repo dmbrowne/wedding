@@ -11,7 +11,14 @@ export default class EventAttendee extends Model {
 				type: Sequelize.UUID,
 				allowNull: false,
 			},
-			attending: Sequelize.BOOLEAN,
+			attending: {
+				type: Sequelize.BOOLEAN,
+				defaultValue: false,
+			},
+			confirmed: {
+				type: Sequelize.BOOLEAN,
+				defaultValue: false,
+			},
 		},
 		{
 			sequelize: sequelizeConnection,
