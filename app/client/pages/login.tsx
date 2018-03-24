@@ -1,5 +1,5 @@
-import * as React from 'react'
-import css from './login.scss'
+import * as React from 'react';
+import css from './login.scss';
 import bootstrapCss from '../styles/admin.scss';
 import cx from 'classnames';
 
@@ -13,19 +13,24 @@ class LoginScreen extends React.Component {
 		}
 	}
 
+	errorAlert = () => {
+		const errorClasses = cx({
+			[bootstrapCss['alert']]: true,
+			[bootstrapCss['alert-danger']]: true,
+		});
+		return (
+			<div className={errorClasses}>
+				{this.props.loginError}
+			</div>
+		);
+	}
+
 	render() {
 		return (
 			<div className={css.loginContainer}>
 				<h1>Admin area login</h1>
 				<img className={css.logo} src="/assets/y&d-logo.png" />
-				{!!this.props.loginError && (
-					<div className={cx({
-						[bootstrapCss['alert']]: true,
-						[bootstrapCss['alert-danger']]: true,
-					})}>
-						{this.props.loginError}
-					</div>
-				)}
+				{!!this.props.loginError && this.errorAlert()}
 				<form method="POST" action="/admin/login">
 					<div className={bootstrapCss['form-group']}>
 						<input
@@ -54,7 +59,7 @@ class LoginScreen extends React.Component {
 					</button>
 				</form>
 			</div>
-		)
+		);
 	}
 }
 

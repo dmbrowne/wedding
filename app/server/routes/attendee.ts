@@ -15,7 +15,8 @@ const router = Router();
 
 router.route('/')
 	.get(getAllAttendees)
-	.post(createNewAttendees);
+	.post(createNewAttendees)
+	.delete(deleteAttendee);
 
 router.get('/new', (req: NextAppRequest, res) => req.nextAppRenderer.render(req, res, '/attendeeCreate'));
 

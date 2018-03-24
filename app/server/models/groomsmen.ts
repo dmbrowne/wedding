@@ -1,13 +1,5 @@
 import Sequelize, { Model } from 'sequelize';
 
-export interface IGroomsmen {
-	bio: string;
-	lastName: string;
-	firstName: string;
-	photoUrl: string;
-	bestman: boolean;
-}
-
 export default class Groomsmen extends Model {
 	static init(sequelizeConnection) {
 		super.init({

@@ -3,7 +3,6 @@
     "target": "es2015",
     "module": "commonjs",
     "moduleResolution": "node",
-    "jsx": "react",
     "allowSyntheticDefaultImports": true,
     "noImplicitAny": false,
     "preserveConstEnums": true,
@@ -13,7 +12,6 @@
     "noUnusedParameters": true,
     "noUnusedLocals": true,
     "types": [
-      "react",
       "jest",
       "node"
     ],
@@ -21,16 +19,15 @@
   "filesGlob": [
     "typings/*.d.ts",
     "**/*.ts",
-    "**/*.tsx"
   ],
   "types": [
-    "react",
     "jest",
     "node"
   ],
   "exclude": [
     "build",
     "node_modules",
+    "app/client/**"
   ],
   "compileOnSave": false
 }

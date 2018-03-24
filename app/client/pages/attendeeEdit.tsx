@@ -1,18 +1,19 @@
 import * as React from 'react';
-import cx from 'classnames';
+// import * as UIkit from 'uikit'
 import Link from 'next/link';
-import AdminLayout from '../components/AdminLayout';
-import { editAttendee } from '../api/attendee';
+import { withAdmin } from '../components/adminLayout';
+import { editAttendee, deleteAttendees } from '../api/attendee';
 import adminCss from '../styles/admin.scss';
 import Router from 'next/router';
+import withModal from '../components/withModal';
 
 class AttendeeEdit extends React.Component {
 	constructor(props) {
-		super(props)
+		super(props);
 		if (props.attendee) {
 			const { firstName, lastName, email } = props.attendee;
 			this.state = {
-				firstName, lastName, email
+				firstName, lastName, email,
 			}
 		}
 	}
@@ -27,10 +28,18 @@ class AttendeeEdit extends React.Component {
 			.catch(err => console.error(err));
 	}
 
+	confirmDelete = () => {
+		this.props.showConfirmModal({
+			title: 'Are you sure',
+			body: 'This operation is irreversable and cannot be undone. Are you sure you would like to delete this attendee?',
+		})
+		.then(() => deleteAttendees([this.props.attendee.id]))
+		.then(() => Router.push('/admin/attendees'))
+		.catch(() => undefined);
+	}
+
 	render() {
 		return (
-			<div>
-				<AdminLayout title="Attendees">
 					<form>
 						<div className={adminCss['form-group']}>
 							<label>First name</label>
@@ -67,11 +76,9 @@ class AttendeeEdit extends React.Component {
 						</Link>
 						<div onClick={this.submit} className="uk-margin-left uk-button uk-button-primary">Save</div>
 						<div className="uk-clearfix">
-							<div className="uk-float-right uk-button uk-button-text">Delete</div>
+							<div onClick={this.confirmDelete} className="uk-float-right uk-button uk-button-text">Delete</div>
 						</div>
 					</form>
-				</AdminLayout>
-			</div>
 		)
 	}
 }
@@ -83,4 +90,6 @@ AttendeeEdit.getInitialProps = async ({ req, res }) => ({
 	)
 });
 
-export default AttendeeEdit;
+export default withModal(
+	withAdmin({ title: 'Attendees' }, AttendeeEdit),
+);

@@ -12,4 +12,4 @@ export default ({children, onMenuPress}) => (
 		</i>
 		<h3 className={css.title}>{children}</h3>
 	</div>
-)
+);
