@@ -1,5 +1,5 @@
 import { Router, Response, NextFunction } from 'express';
-import { login, signIn } from '../controllers/user';
+import { login, signIn } from '../controllers/userController';
 import { NextAppRequest } from '../types';
 import { verifyUser } from '../utils/express';
 

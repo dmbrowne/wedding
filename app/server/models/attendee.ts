@@ -19,7 +19,7 @@ export default class Attendee extends Model {
 	}
 
 	static associate(models) {
-		this.belongsToMany(models.Event, { through: models.EventAttendee, foreignKey: 'eventId' });
+		this.belongsToMany(models.Event, { as: 'Events', through: models.EventAttendee, foreignKey: 'attendeeId' });
 		this.belongsTo(models.SeatingTable, { foreignKey: 'tableId' });
 		this.belongsTo(models.SendGroup, { foreignKey: 'sendGroupId' });
 	}

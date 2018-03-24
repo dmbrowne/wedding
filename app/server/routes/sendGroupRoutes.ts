@@ -6,7 +6,7 @@ import {
 	editSendGroup,
 	deleteSendGroup,
 	deleteMultipleSendGroups,
-} from '../controllers/sendGroupControllers';
+} from '../controllers/sendGroupController';
 import { NextAppRequest } from '../types';
 import { verifyUser, xhrOnly } from '../utils/express';
 
