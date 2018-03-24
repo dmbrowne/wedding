@@ -7,21 +7,22 @@ import * as bodyParser from 'body-parser';
 
 import redisConfig = require('../../config/redis.json');
 import userRoutes from './routes/user';
+import attendeeRoutes from './routes/attendee';
 
 const RedisStore = connectRedis(session);
 const port = 4000;
 const dev = process.env.NODE_ENV !== 'production';
+// const sessionHandler = session({
+// 	store: new RedisStore(redisConfig[process.env.NODE_ENV || 'development']),
+// 	secret: 'theNewBrownesWeeding',
+// 	resave: false,
+// 	saveUninitialized: false,
+// });
 const app = next({
 	dir: './app/client',
 	dev,
 });
 const handler = app.getRequestHandler();
-const sessionHandler = session({
-	store: new RedisStore(redisConfig[process.env.NODE_ENV || 'development']),
-	secret: 'theNewBrownesWeeding',
-	resave: true,
-	saveUninitialized: true,
-});
 
 export function startApp() {
 	app
@@ -39,6 +40,7 @@ function startServer(portNumber) {
 	const server = express();
 	configureRouteMiddleware(server);
 	configureRoutes(server);
+	configureErrorMiddle(server);
 
 	server.listen(portNumber, (err) => {
 		if (err) {
@@ -52,13 +54,19 @@ function startServer(portNumber) {
 
 function configureRoutes(server) {
 	server.use('/admin', userRoutes);
+	server.use('/admin/attendees', attendeeRoutes);
 	server.get('*', (req, res) => handler(req, res));
 }
 
 function configureRouteMiddleware(server) {
-	server.use(bodyParser.urlencoded());
+	server.use(bodyParser.urlencoded({ extended: true }));
 	server.use(bodyParser.json());
-	server.use(sessionHandler);
+	server.use(session({
+		store: new RedisStore(redisConfig[process.env.NODE_ENV || 'development']),
+		secret: 'theNewBrownesWeeding',
+		resave: false,
+		saveUninitialized: false,
+	}));
 
 	server.use('/static', express.static(path.join(__dirname, '../client', '.next/static')));
 	server.use('/assets', express.static(path.join(__dirname, '../client', 'assets')));
@@ -67,4 +75,28 @@ function configureRouteMiddleware(server) {
 		req.nextAppRenderer = app;
 		expressNext();
 	});
+}
+
+function configureErrorMiddle(server) {
+	server.use(logErrors);
+	server.use(clientErrorHandler);
+	server.use(errorHandler);
+}
+
+function logErrors (err, req, res, next) {
+  console.error(err.stack)
+  next(err)
+}
+
+function clientErrorHandler (err, req, res, next) {
+  if (req.xhr) {
+    res.status(500).send({ error: 'Something failed!' })
+  } else {
+    next(err)
+  }
+}
+
+function errorHandler (err, req, res, next) {
+  // res.status(500)
+  req.nextAppRenderer.renderError(err, req, res, '/')
 }

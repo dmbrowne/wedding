@@ -1,24 +1,24 @@
-import { Router, Request, Response, NextFunction } from 'express';
-import { Server } from 'next';
-import { register, login } from '../controllers/user';
-
-interface NextAppRequest extends Request {
-	nextAppRenderer: Server;
-}
+import { Router, Response, NextFunction } from 'express';
+import { login, signIn } from '../controllers/user';
+import { NextAppRequest } from '../types';
+import { verifyUser } from '../utils/express';
 
 const router = Router();
 
-const dashboardRedirect = (req: Request, res: Response, next: NextFunction) => {
+const dashboardRedirect = (req: NextAppRequest, res: Response, next: NextFunction) => {
 	// if (req.session && req.session.user) {
-	// 	return res.redirect('/console');
+	// 	return res.redirect('/dashboard');
 	// }
 	next();
 };
 
-router.get('/register', (req: Request & NextAppRequest, res) => req.nextAppRenderer.render(req, res, '/signup'));
-router.get('/login', dashboardRedirect, (req: NextAppRequest, res) =>  req.nextAppRenderer.render(req, res, '/login'));
+router
+	.route('/login')
+	.get(dashboardRedirect, signIn)
+	.post(login);
 
-router.post('/users', register);
-router.post('/login', login);
+router
+	.route('/')
+	.get(verifyUser, (req: NextAppRequest, res) => req.nextAppRenderer.render(req, res, '/dashboard'));
 
 export default router;

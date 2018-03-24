@@ -1,5 +1,27 @@
 import { Request, Response, NextFunction } from 'express';
+import { NextAppRequest } from '../types';
 import models from '../models';
+
+const loginErrorCatalogue = (code) => {
+	switch (code) {
+		case 404:
+			return 'An account with the given email address does not exist.';
+		case 401:
+			return 'The given password mismatches the one stored for the email entered';
+		default:
+			return 'Sorry, there was an error with your log in';
+	}
+};
+
+export function signIn(req: NextAppRequest, res) {
+	const { error } = req.query;
+
+	if (error) {
+		res.locals.errorMessage = loginErrorCatalogue(error);
+	}
+
+	req.nextAppRenderer.render(req, res, '/login');
+}
 
 export function register(req: Request, res: Response, next: NextFunction) {
 	if (req.session && req.session.signUpError) {
@@ -48,13 +70,12 @@ export function login(req: Request, res: Response, next) {
 	})
 	.then((user) => {
 		if (!user) {
-			req.session.loginError = 'An account with the given email address does not exist.';
-			return res.redirect('/admin/login');
+			return res.redirect('/admin/login?error=404');
 		}
 		user.checkPassword(password).then(correctPassword => {
 			if (!correctPassword) {
 				req.session.loginError = `The given password mismatches the one stored for ${email}.`;
-				return res.redirect('/admin/login');
+				return res.redirect('/admin/login?error=401');
 			}
 			req.session.user = user;
 			res.redirect('/admin');
