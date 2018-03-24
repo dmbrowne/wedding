@@ -13,6 +13,6 @@ export default class SendGroup extends Model {
 	}
 
 	static associate(models) {
-		this.hasMany(models.Attendee, { foreignKey: 'sendGroupId' });
+		this.hasMany(models.Attendee, { foreignKey: 'sendGroupId', as: 'Attendees' });
 	}
 }
