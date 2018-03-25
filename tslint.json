@@ -10,9 +10,11 @@
 		"ordered-imports": false,
 		"indent": false,
 		"interface-name": false,
+		"jsx-no-lambda": false,
 		"max-classes-per-file": [
 			true,
 			2
-		]
+		],
+		"jsx-no-multiline-js": false
 	}
 }
