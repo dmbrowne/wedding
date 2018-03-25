@@ -3,7 +3,7 @@ import { Op } from 'sequelize';
 import { NextAppRequest } from '../types';
 import models from '../models';
 import { getDesiredValuesFromRequestBody, asyncAwaitTryCatch } from '../utils';
-import { IAttendee, ISendGroup } from '../types/models';
+import { IAttendee } from '../types/models';
 
 export async function getAllSendGroups(req: NextAppRequest, res: Response) {
 	const sendGroups = await models.SendGroup.findAll();

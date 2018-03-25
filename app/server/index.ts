@@ -6,7 +6,7 @@ import * as next from 'next';
 import * as bodyParser from 'body-parser';
 
 import redisConfig = require('../../config/redis.json');
-import userRoutes from './routes/user';
+import userRoutes from './routes/userRoutes';
 import attendeeRoutes from './routes/attendeeRoutes';
 import sendGroupRoutes from './routes/sendGroupRoutes';
 import eventsRoutes from './routes/eventRoutes';
