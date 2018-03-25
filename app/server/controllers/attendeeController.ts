@@ -20,6 +20,9 @@ export async function getAllAttendees(req: NextAppRequest, res: Response) {
 
 		attendees = await models.Attendee.findAll({
 			where: { [Op.or]: whereOrQuery },
+			include: [{
+				model: models.SendGroup,
+			}],
 		});
 	} else {
 		attendees = await models.Attendee.findAll();

@@ -32,3 +32,11 @@ export function editAttendee(attendeeId: string, values: CreateAttendeeInput) {
 		}),
 	});
 }
+
+export function searchForAttendee(terms: string) {
+	const searchTerms = terms.split(' ').join(',');
+	const encodedSearchTerms = encodeURIComponent(searchTerms);
+	return restfulRequest({
+		route: 'admin/attendees?search=' + encodedSearchTerms,
+	});
+}
