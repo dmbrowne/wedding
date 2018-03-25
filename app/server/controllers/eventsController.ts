@@ -92,29 +92,24 @@ const addOrRemoveGuestsSanityCheck = (req: Request) => new Promise((resolve, rej
 	attendeeIds = Array.isArray(attendeeIds) && attendeeIds.length ? attendeeIds : null;
 
 	if (!attendeeIds) {
-		console.log('no attendee Id');
-		
 		return reject({ code: 400, message: 'attendeeIds are required' });
 	}
 
 	return models.Event.findById(eventId).then(event => {
 		if (!event) {
-			console.log('no Event');
 			return reject({ code: 400, message: 'event does not exist' });
 		}
 		return resolve({event, attendeeIds});
-	})
-	.catch((err) => console.log(err));
+	});
 });
 
-export function addAttendeesToEvent(req: Request, res: Response) {	
+export function addAttendeesToEvent(req: Request, res: Response) {
 	addOrRemoveGuestsSanityCheck(req)
 	.then(({event, attendeeIds}) => {
 			if (event) {
 				event.addGuests(attendeeIds)
 					.then(() => res.send({}))
 					.catch(err => {
-						console.log('fucking erorrrr!!!!!', err);
 						res.status(400).json({ error: err });
 					});
 			}
