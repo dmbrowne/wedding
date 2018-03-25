@@ -10,6 +10,7 @@ import userRoutes from './routes/userRoutes';
 import attendeeRoutes from './routes/attendeeRoutes';
 import sendGroupRoutes from './routes/sendGroupRoutes';
 import eventsRoutes from './routes/eventRoutes';
+import { NextAppRequest } from './types';
 
 const RedisStore = connectRedis(session);
 const port = 4000;
@@ -36,7 +37,7 @@ function startServer(portNumber) {
 	const server = express();
 	configureRouteMiddleware(server);
 	configureRoutes(server);
-	configureErrorMiddle(server);
+	configureErrorMiddleware(server);
 
 	server.listen(portNumber, (err) => {
 		if (err) {
@@ -75,26 +76,27 @@ function configureRouteMiddleware(server) {
 	});
 }
 
-function configureErrorMiddle(server) {
+function configureErrorMiddleware(server) {
 	server.use(logErrors);
 	server.use(clientErrorHandler);
 	server.use(errorHandler);
 }
 
-function logErrors (err, req, res, next) {
-  console.error(err.stack)
-  next(err)
+function logErrors(err: Error, _, _2, nextFunction: express.NextFunction) {
+	const { name, message, stack } = err;
+	console.error({ name, message, stack });
+	nextFunction(err);
 }
 
-function clientErrorHandler (err, req, res, next) {
-  if (req.xhr) {
-    res.status(500).send({ error: 'Something failed!' })
-  } else {
-    next(err)
-  }
+function clientErrorHandler(err, req, res, nextFunction) {
+	const { name, message, stack } = err;
+	if (req.xhr) {
+		res.status(500).json({ name, message, stack });
+	} else {
+		nextFunction(err);
+	}
 }
 
-function errorHandler (err, req, res, next) {
-  // res.status(500)
-  req.nextAppRenderer.renderError(err, req, res, '/')
+function errorHandler(err: Error, req: NextAppRequest, res: express.Response, _) {
+	req.nextAppRenderer.renderError(err, req, res, req.path);
 }
