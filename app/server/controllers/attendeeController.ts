@@ -5,7 +5,26 @@ import models from '../models';
 import { getDesiredValuesFromRequestBody } from '../utils';
 
 export async function getAllAttendees(req: NextAppRequest, res: Response) {
-	const attendees = await models.Attendee.findAll();
+	const { search } = req.query;
+
+	let attendees;
+
+	if (search) {
+		const searchTerms = decodeURIComponent(search).split(',').filter(term => term).map(term => `%${term}%`);
+		const columnsToSearch = ['firstName', 'lastName', 'email'];
+		const whereOrQuery = columnsToSearch.map(columnName => ({
+			[columnName]: {
+				[Op.iLike]: { [Op.any]: searchTerms },
+			},
+		}));
+
+		attendees = await models.Attendee.findAll({
+			where: { [Op.or]: whereOrQuery },
+		});
+	} else {
+		attendees = await models.Attendee.findAll();
+	}
+
 	res.locals.attendees = attendees;
 	if (req.xhr) {
 		res.send(attendees);
