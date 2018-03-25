@@ -6,13 +6,13 @@ interface GetInitialPropsDefinition {
 		session?: { [key: string]: any },
 	};
 	res?: { [key: string]: any };
-	pathname: string;
-	query: string;
-	asPath: string;
+	pathname?: string;
+	query?: string;
+	asPath?: string;
 	jsonPageRes?: Response;
 	err?: { [key: string]: any };
 }
 
 export interface NextComponent<T = {}> extends React.ComponentClass<T> {
-	getInitialProps?: (props: GetInitialPropsDefinition) => Promise<{ [key: string]: any } | {}>;
+	getInitialProps?: (props: GetInitialPropsDefinition) => Promise<{ [key: string]: any }>;
 }
