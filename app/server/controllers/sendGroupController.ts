@@ -33,13 +33,13 @@ export async function getAllSendGroups(req: NextAppRequest, res: Response, next:
 export async function getSendGroup(req: NextAppRequest, res: Response) {
 	const { sendGroupId } = req.params;
 	const sendGroup = await models.SendGroup.findById(sendGroupId);
-	const groupAttendees = await sendGroup.getAttendees();
+	const attendees = await sendGroup.getAttendees();
 	res.locals.sendGroup = sendGroup;
-	res.locals.groupAttendees = groupAttendees;
+	res.locals.attendees = attendees;
 	if (req.xhr) {
-		res.send({sendGroup, groupAttendees});
+		res.send({sendGroup, attendees});
 	} else {
-		req.nextAppRenderer.render(req, res, '/sendGroupEdit');
+		req.nextAppRenderer.render(req, res, '/sendGroupEditCreate');
 	}
 }
 
@@ -59,7 +59,7 @@ const checkAttendeeExistence = (attendeeIds: Array<IAttendee['id']>) => new Prom
 });
 
 export async function createSendGroup(req: Request, res: Response) {
-	const createAttributes = getDesiredValuesFromRequestBody(['name', 'attendeeIds'], req.body);
+	const createAttributes = getDesiredValuesFromRequestBody(['name', 'email', 'attendeeIds'], req.body);
 	const attendeeIds: string[] | undefined = createAttributes.attendeeIds;
 	delete createAttributes.attendeeIds;
 
@@ -92,8 +92,8 @@ export async function createSendGroup(req: Request, res: Response) {
 
 export async function editSendGroup(req: Request, res: Response) {
 	const { sendGroupId } = req.params;
-	const { name, attendeeIds } = req.body;
-	const groupDetails = name ? { name } : null;
+	const { attendeeIds } = req.body;
+	const groupDetails = getDesiredValuesFromRequestBody(['name', 'email'], req.body);
 
 	const [err, sendGroup] = await asyncAwaitTryCatch(models.SendGroup.findById(sendGroupId));
 

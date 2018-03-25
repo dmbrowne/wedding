@@ -40,7 +40,7 @@ export default class AutoCompleteSearch extends React.Component<Props, any> {
 					onBlur={this.onBlur}
 				/>
 				{this.state.inputIsFocused && (
-					<ul className={cx(adminCss['list-group'])}>
+					<ul style={{marginTop: 0}} className={cx(adminCss['list-group'])}>
 						{this.props.data.map(this.props.renderRow)}
 					</ul>
 				)}

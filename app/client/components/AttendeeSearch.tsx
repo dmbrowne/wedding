@@ -24,7 +24,7 @@ export default class AttendeeSearch extends React.Component<Props> {
 						<div className="uk-float-left">
 							<h4 className="uk-comment-title uk-margin-remove">
 								{attendee.firstName} {attendee.lastName}&nbsp;
-								{SendGroup.id && <span className="uk-badge">{SendGroup.name}</span>}
+								{SendGroup && SendGroup.id && <span className="uk-badge">{SendGroup.name}</span>}
 							</h4>
 							<ul className="uk-comment-meta uk-subnav uk-subnav-divider uk-margin-remove-top">
 								<li>{attendee.email}</li>

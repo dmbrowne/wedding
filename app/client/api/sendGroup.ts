@@ -23,7 +23,7 @@ function sendGroup(
 }
 
 export function createSendGroup(
-	groupDetails: Pick<ISendGroup, 'name'> | null,
+	groupDetails: Pick<ISendGroup, 'name' | 'email'> | null,
 	attendeeIds?: Array<IAttendee['id']>,
 ) {
 	return sendGroup(groupDetails, attendeeIds);
@@ -31,7 +31,7 @@ export function createSendGroup(
 
 export function editSendGroup(
 	groupId: string,
-	groupDetails: Pick<ISendGroup, 'name'> | null,
+	groupDetails: Pick<ISendGroup, 'name' | 'email'> | null,
 	attendeeIds?: Array<IAttendee['id']>,
 ) {
 	return sendGroup(groupDetails, attendeeIds, groupId);
