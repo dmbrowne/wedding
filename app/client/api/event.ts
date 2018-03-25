@@ -6,7 +6,7 @@ type CreateEventInput = IEvent['name'] & Pick<IEvent, 'startTime' | 'endTime' | 
 export function createAttendees(event: CreateEventInput[]) {
 	return restfulRequest({
 		route: 'admin/events',
-		resourceType: 'POST',
+		method: 'POST',
 		body: JSON.stringify(event),
 	});
 }
@@ -14,14 +14,14 @@ export function createAttendees(event: CreateEventInput[]) {
 export function deleteAttendees(eventId: string) {
 	return restfulRequest({
 		route: `admin/attendees/${eventId}`,
-		resourceType: 'DELETE',
+		method: 'DELETE',
 	});
 }
 
 export function editAttendee(eventId: string, values: CreateEventInput) {
 	return restfulRequest({
 		route: `admin/attendees/${eventId}`,
-		resourceType: 'PUT',
+		method: 'PUT',
 		body: JSON.stringify(values),
 	});
 }

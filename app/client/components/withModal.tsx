@@ -21,7 +21,7 @@ export interface ChildProps {
 }
 
 export default function modalHOC(Component) {
-	return class ModalRootComponent extends React.Component<{}, State> {
+	return class ModalRootComponent<P> extends React.Component<P, State> {
 		static async getInitialProps(props) {
 			return Component.getInitialProps ? Component.getInitialProps(props) : {};
 		}

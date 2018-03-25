@@ -21,8 +21,8 @@ class Attendees extends React.Component<{ attendees: IAttendee[] }> {
 				<th>First name</th>
 				<th>Last name</th>
 				<th className="uk-expand">Email</th>
-				<th className="uk-shrink" />
-				<th className="uk-shrink" />
+				<th style={{width: 50, boxSizing: 'border-box' }} />
+				<th style={{width: 50, boxSizing: 'border-box' }} />
 			</tr>
 		);
 	}
@@ -30,15 +30,15 @@ class Attendees extends React.Component<{ attendees: IAttendee[] }> {
 	renderRow(attendee, onCheckboxTick, itemIsChecked) {
 		return (
 			<tr key={`attendee-row-${attendee.id}`}>
-				<td className="uk-width-1-4">{attendee.firstName}</td>
-				<td className="uk-width-1-4">{attendee.lastName}</td>
-				<td className="uk-width-2-4">{attendee.email}</td>
-				<td className="uk-shrink">
+				<td>{attendee.firstName}</td>
+				<td>{attendee.lastName}</td>
+				<td>{attendee.email}</td>
+				<td>
 					<Link href={`/admin/attendees/${attendee.id}`}>
 						<i className="material-icons">mode_edit</i>
 					</Link>
 				</td>
-				<td className="uk-shrink">
+				<td>
 					<input
 						type="checkbox"
 						className="uk-checkbox"
@@ -52,17 +52,22 @@ class Attendees extends React.Component<{ attendees: IAttendee[] }> {
 
 	render() {
 		return (
-			<CheckboxTable
-				data={this.props.attendees}
-				renderHeaderRow={this.renderHeader}
-				renderRow={this.renderRow}
-				onDelete={(ids) => deleteAttendees(ids)}
-				buttons={(
-					<Link prefetch={true} href="/attendeeCreate" as="/admin/attendees/new">
-						<button className="uk-button-small uk-float-left uk-button uk-button-primary">Add</button>
-					</Link>
-				)}
-			/>
+			<div>
+				<h2>Everyone that you would like to come.</h2>
+				<p className="uk-margin-large-bottom">No matter which events you would like them to attend, this list represents
+					the total people you would like to attend throughout the day</p>
+				<CheckboxTable
+					data={this.props.attendees}
+					renderHeaderRow={this.renderHeader}
+					renderRow={this.renderRow}
+					onDelete={(ids) => deleteAttendees(ids)}
+					buttons={(
+						<Link prefetch={true} href="/attendeeCreate" as="/admin/attendees/new">
+							<button className="uk-button-small uk-float-left uk-button uk-button-primary">Add</button>
+						</Link>
+					)}
+				/>
+			</div>
 		);
 	}
 }
