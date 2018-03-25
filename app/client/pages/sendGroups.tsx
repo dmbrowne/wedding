@@ -77,4 +77,4 @@ class SendGroups extends React.Component<{ sendGroups: ISendGroup[] }> {
 	}
 }
 
-export default withAdmin({ title: 'Attendees'}, SendGroups);
+export default withAdmin({ title: 'Send groups'}, SendGroups);

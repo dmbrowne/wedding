@@ -3,7 +3,7 @@ import { IAttendee, ISendGroup } from '../../server/types/models';
 
 export function getSendGroups(id?: string) {
 	return restfulRequest({
-		route: id ? `/admin/sendgroup/${id}` : '/admin/sendgroup',
+		route: id ? `admin/sendgroups/${id}` : 'admin/sendgroups',
 	});
 }
 
@@ -13,7 +13,7 @@ function sendGroup(
 	groupId?: string,
 ) {
 	return restfulRequest({
-		route: groupId ? `/admin/sendgroup/${groupId}` : '/admin/sendgroup',
+		route: groupId ? `admin/sendgroups/${groupId}` : 'admin/sendgroups',
 		method: groupId ? 'PUT' : 'POST',
 		body: JSON.stringify({
 			...groupDetails,
