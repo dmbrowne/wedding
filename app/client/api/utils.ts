@@ -19,10 +19,10 @@ const errorHandler = (res: Response) => {
 };
 
 export const restfulRequest = (opts) => {
-	const { route, resourceType = 'GET', body } = opts;
+	const { route, method = 'GET', body } = opts;
 	const options: RequestInit = {
 		...defaultOptions,
-		method: resourceType,
+		method,
 		headers: { ...defaultHeaders },
 	};
 
@@ -34,5 +34,9 @@ export const restfulRequest = (opts) => {
 		`${host}/${route}`,
 		options,
 	)
-	.then(errorHandler);
+	.then(errorHandler)
+	.catch(err => {
+		console.error(err);
+		throw err;
+	});
 }

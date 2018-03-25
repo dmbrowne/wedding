@@ -6,7 +6,7 @@ type CreateAttendeeInput = Pick<IAttendee, 'firstName' | 'lastName' | 'email'>;
 export function createAttendees(attendees: CreateAttendeeInput[]) {
 	return restfulRequest({
 		route: 'admin/attendees',
-		resourceType: 'POST',
+		method: 'POST',
 		body: JSON.stringify({
 			newAttendees: attendees,
 		}),
@@ -16,7 +16,7 @@ export function createAttendees(attendees: CreateAttendeeInput[]) {
 export function deleteAttendees(attendeeIds: string[]) {
 	return restfulRequest({
 		route: 'admin/attendees',
-		resourceType: 'DELETE',
+		method: 'DELETE',
 		body: JSON.stringify({
 			attendeeIds,
 		}),
@@ -26,7 +26,7 @@ export function deleteAttendees(attendeeIds: string[]) {
 export function editAttendee(attendeeId: string, values: CreateAttendeeInput) {
 	return restfulRequest({
 		route: `admin/attendees/${attendeeId}`,
-		resourceType: 'PUT',
+		method: 'PUT',
 		body: JSON.stringify({
 			...values,
 		}),

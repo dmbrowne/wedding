@@ -37,11 +37,11 @@ export function editSendGroup(
 	return sendGroup(groupDetails, attendeeIds, groupId);
 }
 
-export function deleteSendGroup(groupIds: string | string[]) {
+export function deleteGroup(groupIds: string | string[]) {
 	const multipleDeletion = Array.isArray(groupIds);
 	const route = (multipleDeletion ?
-		'/admin/sendgroup' :
-		`/admin/sendgroup/${groupIds}`
+		'admin/sendgroups' :
+		`admin/sendgroups/${groupIds}`
 	);
 
 	const body = (multipleDeletion ?
@@ -54,4 +54,12 @@ export function deleteSendGroup(groupIds: string | string[]) {
 		method: 'DELETE',
 		body,
 	});
+}
+
+export function deleteSendGroup(groupId: string) {
+	return deleteGroup(groupId);
+}
+
+export function deleteSendGroups(groupIds: string[]) {
+	return deleteGroup(groupIds);
 }

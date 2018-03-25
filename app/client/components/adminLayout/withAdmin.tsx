@@ -16,6 +16,7 @@ export default (adminLayoutOptions: AdminLayoutProps, Component: NextComponent) 
 			return (
 				<AdminLayout {...adminLayoutOptions}>
 					<Head>
+						<title key="document-title">Mr and Mrs Browne 2018</title>
 						<link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons" key="material-icons" />
 						<link
 							rel="stylesheet"
