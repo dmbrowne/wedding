@@ -4,6 +4,7 @@ export default class SendGroup extends Model {
 	static init(sequelizeConnection) {
 		super.init({
 			name: Sequelize.STRING,
+			email: Sequelize.STRING,
 		},
 		{
 			tableName: 'SendingGroups',

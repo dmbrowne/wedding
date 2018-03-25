@@ -67,7 +67,7 @@ class SendGroups extends React.Component<{ sendGroups: ISendGroup[] }> {
 					renderRow={this.renderRow}
 					onDelete={(ids) => deleteSendGroups(ids)}
 					buttons={(
-						<Link prefetch={true} href="/attendeeCreate" as="/admin/sendgroups/new">
+						<Link prefetch={true} href="/sendGroupsCreate" as="/admin/sendgroups/new">
 							<button className="uk-button-small uk-float-left uk-button uk-button-primary">Add</button>
 						</Link>
 					)}

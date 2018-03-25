@@ -52,7 +52,7 @@ export default class AdminLayout extends React.Component<Props> {
 		return (
 			<div className="uk-offcanvas-content">
 				<Titlebar onMenuPress={this.toggleMenu}>{this.props.title}</Titlebar>
-				<main style={{padding: 15}}>
+				<main className="uk-container" style={{padding: 15}}>
 					{this.props.children}
 				</main>
 				<aside ref={ref => this.offMenuEl = ref}>

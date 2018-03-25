@@ -5,14 +5,51 @@ import { withAdmin } from '../components/adminLayout';
 import AttendeeSearch from '../components/AttendeeSearch';
 import adminCss from '../styles/admin.scss';
 import { searchForAttendee } from '../api/attendee';
-import { createSendGroup } from '../api/sendGroup';
+import { createSendGroup, editSendGroup } from '../api/sendGroup';
 
 class CreateSendGroupScreen extends React.Component {
+	static getInitialProps = async ({ res }) => {
+		if (!res) {
+			return {};
+		}
+
+		const { sendGroup, attendees } = res.locals;
+
+		return {
+			sendGroup,
+			attendees,
+			edit: !!sendGroup,
+		};
+	}
+
 	state = {
-		name: '',
+		sendGroup: {
+			name: '',
+			email: '',
+		},
 		attendees: [],
 		selectedAttendees: {},
 	};
+
+	componentWillMount() {
+		let state: {[key:string]: any} = {};
+		const { sendGroup, attendees } = this.props;
+
+		if (sendGroup) {
+			state.sendGroup = sendGroup;
+		}
+
+		if (attendees) {
+			const selectedAttendees = attendees.reduce((accum, attendee) => ({
+				...accum,
+				[attendee.id]: attendee,
+			}), {});
+
+			state.selectedAttendees = selectedAttendees;
+		}
+
+		this.setState(state);
+	}
 
 	attendeeSearch = (e) => {
 		const searchValue = e.target.value;
@@ -25,7 +62,6 @@ class CreateSendGroupScreen extends React.Component {
 	}
 
 	selectAttendee = (attendee) => {
-
 		this.setState({
 			selectedAttendees: {
 				...this.state.selectedAttendees,
@@ -36,10 +72,14 @@ class CreateSendGroupScreen extends React.Component {
 
 	creategroup = () => {
 		const attendeeIds = Object.keys(this.state.selectedAttendees);
-		const { name } = this.state;
-		return createSendGroup({name}, attendeeIds).then(() => {
-			Router.push('/admin/sendgroups');
-		});
+		const { name, email, id } = this.state.sendGroup;
+
+		const sendGroupMutation = (id ?
+			editSendGroup(id, {name, email}, attendeeIds) :
+			createSendGroup({name, email }, attendeeIds)
+		);
+
+		return sendGroupMutation.then(() => Router.push('/admin/sendgroups'));
 	}
 
 	renderSelectedAttendees() {
@@ -48,7 +88,7 @@ class CreateSendGroupScreen extends React.Component {
 			return (
 				<div
 					key={`selected-attendee-${attendeeId}`}
-					className="uk-card uk-card-default uk-card-small"
+					className="uk-card uk-card-default uk-card-small uk-margin"
 				>
 					<div className="uk-card-badge uk-label">Primary</div>
 					<div className="uk-card-header uk-flex uk-flex-middle">
@@ -83,11 +123,24 @@ class CreateSendGroupScreen extends React.Component {
 	removeFromGroup(attendeeId) {
 		const newSelectedAttendees = { ...this.state.selectedAttendees };
 		delete newSelectedAttendees[attendeeId];
-		this.setState({ selectedAttendees: newSelectedAttendees })
+		this.setState({ selectedAttendees: newSelectedAttendees });
+	}
+
+	updateName = (e) => {
+		const sendGroup = {...this.state.sendGroup}
+		sendGroup.name = e.target.value;
+		this.setState({ sendGroup });
+	}
+
+	updateEmail = (e) => {
+		const sendGroup = {...this.state.sendGroup}
+		sendGroup.email = e.target.value;
+		this.setState({ sendGroup });
 	}
 
 	render() {
-		const { name } = this.state;
+		console.log(this.state, this.props);
+		const { name, email } = this.state.sendGroup;
 		const selectedAttendeeIds = Object.keys(this.state.selectedAttendees);
 		return (
 			<div>
@@ -101,7 +154,7 @@ class CreateSendGroupScreen extends React.Component {
 								className={adminCss['form-control']}
 								type="text"
 								value={name}
-								onChange={e => this.setState({ name: e.target.value })}
+								onChange={this.updateName}
 							/>
 						</div>
 						<div className={cx(adminCss['form-group'])}>
@@ -118,13 +171,24 @@ class CreateSendGroupScreen extends React.Component {
 					<h3 className="uk-margin">Selected Attendees</h3>
 					{selectedAttendeeIds.length > 0 && this.renderSelectedAttendees()}
 				</div>
+				<section className="uk-section uk-padding uk-section-default">
+					<div className={adminCss['form-group']}>
+						<label>Email for group</label>
+						<input
+							className={adminCss['form-control']}
+							type="email"
+							value={email}
+							onChange={this.updateEmail}
+						/>
+					</div>
+				</section>
 				<div className="uk-clearfix uk-margin uk-margin-large-top">
-				<button
-					onClick={this.creategroup}
-					className="uk-float-right uk-button uk-button-primary"
-				>
-					Save
-				</button>
+					<button
+						onClick={this.creategroup}
+						className="uk-float-right uk-button uk-button-primary"
+					>
+						Save
+					</button>
 				</div>
 			</div>
 		);
