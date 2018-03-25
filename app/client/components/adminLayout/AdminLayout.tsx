@@ -1,31 +1,32 @@
 import * as React from 'react';
-import Titlebar from '../Titlebar';
+import Titlebar from '../titlebar';
 
 export interface Props {
 	title: string;
 }
 
 export default class AdminLayout extends React.Component<Props> {
-	offMenuEl = null
-	offMenu = null
+	offMenuEl = null;
+	offMenu = null;
+	UIkit = undefined;
 
 	state = {
 		showMenu: false,
-	}
+	};
 
 	toggleMenu = () => {
 		this.setState({ showMenu: !this.state.showMenu });
 	}
 
 	createOffCanvasComponent() {
-		this.offMenu = window.UIkit.offcanvas(this.offMenuEl, {
+		this.offMenu = this.UIkit.offcanvas(this.offMenuEl, {
 			mode: 'push',
 			overlay: false,
-		})
-		window.UIkit.util.on(this.offMenuEl, 'hide', () => {
+		});
+		this.UIkit.util.on(this.offMenuEl, 'hide', () => {
 			this.setState({ showMenu: false });
 		});
-		window.UIkit.util.on(this.offMenuEl, 'show', () => {
+		this.UIkit.util.on(this.offMenuEl, 'show', () => {
 			this.setState({ showMenu: true });
 		});
 	}
@@ -43,6 +44,9 @@ export default class AdminLayout extends React.Component<Props> {
 		}
 	}
 
+	componentDidMount() {
+		this.UIkit = require('uikit');
+	}
 
 	render() {
 		return (
@@ -61,10 +65,10 @@ export default class AdminLayout extends React.Component<Props> {
 							<li className="uk-parent"><a href="#">Bridemaids</a></li>
 							<li className="uk-parent"><a href="#">Groomsmen</a></li>
 							<li className="uk-parent"><a href="#">Table</a></li>
-            </ul>
+						</ul>
 					</div>
 				</aside>
 			</div>
-		)
+		);
 	}
 }
