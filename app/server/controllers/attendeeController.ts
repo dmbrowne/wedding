@@ -27,7 +27,7 @@ export async function getAttendee(req: NextAppRequest, res: Response) {
 
 export function createNewAttendees(req: NextAppRequest, res: Response) {
 	if (!req.xhr) {
-		res.sendStatus(400).send('This resource is only available via XHR');
+		res.status(400).send('This resource is only available via XHR');
 	}
 
 	const { newAttendees } = req.body;
@@ -36,7 +36,7 @@ export function createNewAttendees(req: NextAppRequest, res: Response) {
 	return models.Attendee.bulkCreate(attendees)
 		.then(() => res.json({success: true}))
 		.catch((err) => {
-			res.sendStatus(400).send(err);
+			res.status(400).send(err);
 		});
 }
 
@@ -52,7 +52,7 @@ export async function editAttendee(req: NextAppRequest, res: Response) {
 
 	if (!attendee) {
 		if (req.xhr) {
-			return res.sendStatus(404).json({ message: 'An attendee with the given id cannot be found' });
+			return res.status(404).json({ message: 'An attendee with the given id cannot be found' });
 		}
 		res.redirect('/admin/attendees?error=404&type=attendee');
 	}
@@ -69,7 +69,7 @@ function deleteMultipleAttendees(req: Request, res: Response) {
 	const { attendeeIds } = req.body;
 
 	if (!attendeeIds || !Array.isArray(attendeeIds) || attendeeIds.length === 0) {
-		res.sendStatus(400).json({ message: 'an array of attendeeIds is required to delete attendee(s)'});
+		res.status(400).json({ message: 'an array of attendeeIds is required to delete attendee(s)'});
 	}
 
 	models.Attendee.destroy({
@@ -80,7 +80,7 @@ function deleteMultipleAttendees(req: Request, res: Response) {
 	.then(() => res.send({}))
 	.catch(err => {
 		console.log(err)
-		res.sendStatus(400).send(err);
+		res.status(400).send(err);
 	});
 }
 

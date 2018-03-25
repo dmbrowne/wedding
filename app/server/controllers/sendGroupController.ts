@@ -66,10 +66,10 @@ export async function createSendGroup(req: Request, res: Response) {
 	if (attendeeIds) {
 		const [err, attendeesExist] = await asyncAwaitTryCatch(checkAttendeeExistence(attendeeIds));
 		if (err) {
-			res.sendStatus(400).json({ error: err });
+			res.status(400).json({ error: err });
 		}
 		if (!attendeesExist) {
-			return res.sendStatus(400).json({ message: 'The provided attendeeIds do not exist'});
+			return res.status(400).json({ message: 'The provided attendeeIds do not exist'});
 		}
 	}
 
@@ -84,7 +84,7 @@ export async function createSendGroup(req: Request, res: Response) {
 		})
 		.catch((err) => {
 			if (req.xhr) {
-				return res.sendStatus(400).send(err);
+				return res.status(400).send(err);
 			}
 			return res.redirect('/admin/sendgroups/new?error=undefined');
 		});
@@ -98,11 +98,11 @@ export async function editSendGroup(req: Request, res: Response) {
 	const [err, sendGroup] = await asyncAwaitTryCatch(models.SendGroup.findById(sendGroupId));
 
 	if (err) {
-		return res.sendStatus(400).json({ error: err, message: '' });
+		return res.status(400).json({ error: err, message: '' });
 	}
 
 	if (!sendGroup) {
-		return res.sendStatus(400).json({ message: 'Incorrect sendGroupId: A send group with the given id cannot be found' });
+		return res.status(400).json({ message: 'Incorrect sendGroupId: A send group with the given id cannot be found' });
 	}
 
 	if (groupDetails) {
@@ -111,19 +111,19 @@ export async function editSendGroup(req: Request, res: Response) {
 
 	if (attendeeIds) {
 		if (!Array.isArray(attendeeIds) || attendeeIds.length === 0) {
-			res.sendStatus(400).json({ message: 'AttendeeIds should be an array of 1 or more attendee.id\'s' });
+			res.status(400).json({ message: 'AttendeeIds should be an array of 1 or more attendee.id\'s' });
 		}
 		const [error, attendeesExist] = await asyncAwaitTryCatch(checkAttendeeExistence(attendeeIds));
 		if (error) {
-			res.sendStatus(400).json({ error: err });
+			res.status(400).json({ error: err });
 		}
 		if (!attendeesExist) {
-			return res.sendStatus(400).json({ message: 'The provided attendeeIds do not exist'});
+			return res.status(400).json({ message: 'The provided attendeeIds do not exist'});
 		}
 		const [setAttendeeError] = await asyncAwaitTryCatch(sendGroup.setAttendees(attendeeIds));
 
 		if (setAttendeeError) {
-			res.sendStatus(400).json({ error: err });
+			res.status(400).json({ error: err });
 		}
 	}
 
@@ -142,7 +142,7 @@ export function deleteMultipleSendGroups(req: Request, res: Response) {
 	const { sendGroupIds } = req.body;
 
 	if (!sendGroupIds || !Array.isArray(sendGroupIds) || sendGroupIds.length === 0) {
-		res.sendStatus(400).json({ message: 'an array of sendGroupIds is required to delete attendee(s)'});
+		res.status(400).json({ message: 'an array of sendGroupIds is required to delete attendee(s)'});
 	}
 
 	models.SendGroup.destroy({
@@ -153,6 +153,6 @@ export function deleteMultipleSendGroups(req: Request, res: Response) {
 	.then(() => res.send({}))
 	.catch(err => {
 		console.log(err);
-		res.sendStatus(400).send(err);
+		res.status(400).send(err);
 	});
 }
