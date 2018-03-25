@@ -32,7 +32,7 @@ export function createEvent(req: NextAppRequest, res: Response) {
 	const eventDetails = getDesiredValuesFromRequestBody(['name', 'description', 'startTime', 'endTime'], req.body);
 	if (!eventDetails.name) {
 		(req.xhr ?
-			res.sendStatus(400).json({ message: 'Name of event is required' }) :
+			res.status(400).json({ message: 'Name of event is required' }) :
 			res.redirect('/admin/events/new')
 		);
 	}
@@ -42,7 +42,7 @@ export function createEvent(req: NextAppRequest, res: Response) {
 			res.redirect('/admin/events')
 		))
 		.catch(err => (req.xhr ?
-			res.sendStatus(400).json({ erorr: err }) :
+			res.status(400).json({ erorr: err }) :
 			res.redirect('/admin/events/new')
 		));
 }
@@ -58,7 +58,7 @@ export function editEvent(req: NextAppRequest, res: Response) {
 	models.Event.findById(eventId).then(event => {
 		if (!event) {
 			return (req.xhr ?
-				res.sendStatus(400).json({ message: 'event does not exist' }) :
+				res.status(400).json({ message: 'event does not exist' }) :
 				res.redirect(`/admin/events/${eventId}`));
 		}
 		event.update(eventDetails).then(evnt => {
@@ -75,7 +75,7 @@ export function deleteEvent(req: NextAppRequest, res: Response) {
 	models.Event.findById(eventId).then(event => {
 		if (!event) {
 			return (req.xhr ?
-				res.sendStatus(400).json({ message: 'event does not exist' }) :
+				res.status(400).json({ message: 'event does not exist' }) :
 				res.redirect(`/admin/events`));
 		}
 		event.destroy().then(() => {
@@ -115,12 +115,12 @@ export function addAttendeesToEvent(req: Request, res: Response) {
 					.then(() => res.send({}))
 					.catch(err => {
 						console.log('fucking erorrrr!!!!!', err);
-						res.sendStatus(400).json({ error: err });
+						res.status(400).json({ error: err });
 					});
 			}
 		})
 		.catch(({ code, message }) => {
-			res.sendStatus(code).json({ message });
+			res.status(code).json({ message });
 		});
 }
 
@@ -128,7 +128,7 @@ export async function removeAttendeesFromEvent(req: Request, res: Response) {
 	const [err, {event, attendeeIds}] = await asyncAwaitTryCatch(addOrRemoveGuestsSanityCheck(req));
 
 	if (err) {
-		res.sendStatus(err.code).json({ message: err.message });
+		res.status(err.code).json({ message: err.message });
 	}
 
 	const currentGuests = await event.getGuests();
