@@ -71,7 +71,7 @@ class AttendeeEdit extends React.Component {
 								placeholder="Last name"
 							/>
 						</div>
-						<Link href="/admin/attendees">
+						<Link href="attendees" as="/admin/attendees">
 							<div className="uk-button uk-button-default">Cancel</div>
 						</Link>
 						<div onClick={this.submit} className="uk-margin-left uk-button uk-button-primary">Save</div>
