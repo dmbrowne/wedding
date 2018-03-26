@@ -10,6 +10,7 @@ import userRoutes from './routes/userRoutes';
 import attendeeRoutes from './routes/attendeeRoutes';
 import sendGroupRoutes from './routes/sendGroupRoutes';
 import eventsRoutes from './routes/eventRoutes';
+import { sendMail } from './controllers/emailController';
 import { NextAppRequest } from './types';
 
 const RedisStore = connectRedis(session);

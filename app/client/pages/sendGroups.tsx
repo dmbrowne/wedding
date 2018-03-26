@@ -19,6 +19,7 @@ class SendGroups extends React.Component<{ sendGroups: ISendGroup[] }> {
 		return (
 			<tr>
 				<th>Group name</th>
+				<th>Email</th>
 				<th>Members</th>
 				<th style={{width: 50, boxSizing: 'border-box' }} />
 				<th style={{width: 50, boxSizing: 'border-box' }} />
@@ -26,7 +27,7 @@ class SendGroups extends React.Component<{ sendGroups: ISendGroup[] }> {
 		);
 	}
 
-	renderRow(sendGroup, onCheckboxTick, itemIsChecked) {
+	renderRow(sendGroup: ISendGroup, onCheckboxTick: (e) => any, itemIsChecked: boolean) {
 		const attendees = sendGroup.Attendees;
 		const attendeeNamesDisplay = attendees.length ?
 			attendees.map(attendee => `${attendee.firstName} ${attendee.lastName}`).join(', ') :
@@ -35,6 +36,7 @@ class SendGroups extends React.Component<{ sendGroups: ISendGroup[] }> {
 		return (
 			<tr key={`sendGroup-row-${sendGroup.id}`}>
 				<td className="uk-width-small">{sendGroup.name || '-'}</td>
+				<td className="uk-text-meta uk-text-lowercase">{sendGroup.email}</td>
 				<td className="uk-text-meta uk-text-lowercase">{attendeeNamesDisplay}</td>
 				<td>
 					<Link href={`/admin/sendgroups/${sendGroup.id}`}>
