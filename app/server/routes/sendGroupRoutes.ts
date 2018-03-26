@@ -19,7 +19,7 @@ router.route('/')
 	.post(xhrOnly, createSendGroup)
 	.delete(xhrOnly, deleteMultipleSendGroups);
 
-router.get('/new', (req: NextAppRequest, res) => req.nextAppRenderer.render(req, res, '/sendGroupEditCreate'));
+router.get('/new', (req: NextAppRequest, res) => req.nextAppRenderer.render(req, res, '/sendGroupCreate'));
 
 router.route('/:sendGroupId')
 	.get(getSendGroup)
