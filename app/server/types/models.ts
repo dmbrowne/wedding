@@ -3,6 +3,11 @@ export interface IAttendee {
 	email: string;
 	firstName: string;
 	lastName: string;
+	tableId: string;
+	sendGroupId: string;
+	Table?: ITable | null;
+	SendGroup?: ISendGroup | null;
+	Events?: IEvent[] | null;
 }
 
 export interface IBridesmaid {
@@ -20,6 +25,7 @@ export interface IEvent {
 	description: string;
 	startTime: Date;
 	endTime: Date;
+	Attendees?: IAttendee[] | null;
 }
 
 export interface IEventAttendee {
@@ -40,10 +46,12 @@ export interface IGroomsmen {
 export interface ITable {
 	id: string;
 	name: string;
+	TableGuests?: IAttendee[] | null;
 }
 
 export interface ISendGroup {
 	id: string;
 	name: string;
 	email: string;
+	Attendees?: IAttendee[] | null;
 }

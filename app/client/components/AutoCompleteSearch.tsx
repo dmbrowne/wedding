@@ -6,6 +6,8 @@ interface Props {
 	onChange: (e) => any;
 	data: any[];
 	renderRow: (item) => any;
+	value?: string;
+	placeholder?: string;
 }
 
 export default class AutoCompleteSearch extends React.Component<Props, any> {
@@ -32,9 +34,11 @@ export default class AutoCompleteSearch extends React.Component<Props, any> {
 		return (
 			<React.Fragment>
 				<input
+					placeholder={this.props.placeholder}
 					className={adminCss['form-control']}
 					type="search"
 					onChange={this.props.onChange}
+					value={this.props.value}
 					autoFocus={false}
 					onFocus={this.onFocus}
 					onBlur={this.onBlur}

@@ -32,14 +32,16 @@ export async function getAllSendGroups(req: NextAppRequest, res: Response, next:
 
 export async function getSendGroup(req: NextAppRequest, res: Response) {
 	const { sendGroupId } = req.params;
-	const sendGroup = await models.SendGroup.findById(sendGroupId);
-	const attendees = await sendGroup.getAttendees();
+	const sendGroup = await models.SendGroup.findById(sendGroupId, {
+		include: [{
+			model: models.Attendee,
+		}],
+	});
 	res.locals.sendGroup = sendGroup;
-	res.locals.attendees = attendees;
 	if (req.xhr) {
-		res.send({sendGroup, attendees});
+		res.send(sendGroup);
 	} else {
-		req.nextAppRenderer.render(req, res, '/sendGroupEditCreate');
+		req.nextAppRenderer.render(req, res, '/sendGroupEdit');
 	}
 }
 
