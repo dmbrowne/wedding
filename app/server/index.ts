@@ -51,6 +51,7 @@ function startServer(portNumber) {
 }
 
 function configureRoutes(server) {
+	server.use('/email', sendMail);
 	server.use('/admin', userRoutes);
 	server.use('/admin/attendees', attendeeRoutes);
 	server.use('/admin/sendgroups', sendGroupRoutes);
