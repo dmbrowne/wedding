@@ -2,10 +2,8 @@ import React from 'react';
 import AttendeeSearch from '../AttendeeSearch';
 import '../../styles/admin.scss';
 import { IAttendee } from '../../../server/types/models';
-import cx from 'classnames';
 import SelectedAttendees from './SelectedAttendees';
 import AutoCompleteSearch from '../AutoCompleteSearch';
-
 
 interface Props {
 	email: string;

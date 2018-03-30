@@ -5,9 +5,27 @@ import { withAdmin } from '../components/adminLayout';
 import { editAttendee, deleteAttendees } from '../api/attendee';
 import '../styles/admin.scss';
 import Router from 'next/router';
-import withModal from '../components/withModal';
+import withModal, { ChildProps as WithModalProps } from '../components/withModal';
+import {IAttendee } from '../../server/types/models';
 
-class AttendeeEdit extends React.Component {
+interface State {
+	firstName: string;
+	lastName: string;
+	email: string;
+}
+
+interface Props extends WithModalProps {
+	attendee: IAttendee;
+}
+
+class AttendeeEdit extends React.Component<Props, State> {
+	static getInitialProps = async ({ res }) => ({
+		attendee: (res ?
+			res.locals.attendee :
+			null
+		),
+	})
+
 	constructor(props) {
 		super(props);
 		if (props.attendee) {
@@ -82,13 +100,6 @@ class AttendeeEdit extends React.Component {
 		);
 	}
 }
-
-AttendeeEdit.getInitialProps = async ({ req, res }) => ({
-	attendee: (res ?
-		res.locals.attendee :
-		null
-	),
-});
 
 export default withModal(
 	withAdmin({ title: 'Attendees' }, AttendeeEdit),

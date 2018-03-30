@@ -29,5 +29,5 @@ export default (adminLayoutOptions: AdminLayoutProps, Component: NextComponent) 
 				</AdminLayout>
 			);
 		}
-	}
-}
+	};
+};

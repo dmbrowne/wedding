@@ -8,7 +8,7 @@ const blankAttendee = {
 	firstName: '',
 	lastName: '',
 	email: '',
-}
+};
 
 class NewAttendee extends React.Component {
 	state = {
@@ -39,7 +39,7 @@ class NewAttendee extends React.Component {
 	}
 
 	submit() {
-		createAttendees(this.state.newAttendees).then(result => {
+		createAttendees(this.state.newAttendees).then(() => {
 			Router.push('/admin/attendees');
 		});
 	}

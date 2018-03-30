@@ -4,8 +4,9 @@ import { searchForAttendee } from '../api/attendee';
 import { getEventAttendees, setEventAttendees } from '../api/event';
 import withModal from '../components/withModal';
 import { withAdmin } from '../components/adminLayout';
+import { IEvent } from '../../server/types/models';
 
-class EventAttendeesPage extends React.Component {
+class EventAttendeesPage extends React.Component<{event: IEvent}> {
 	static getInitialProps = async ({ res, query }) => {
 		const event = (!res && query && query.eventId ?
 			await getEventAttendees(query.eventId) :

@@ -25,7 +25,7 @@ export interface IEvent {
 	description: string;
 	startTime: Date;
 	endTime: Date;
-	Attendees?: IAttendee[] | null;
+	Guests?: IAttendee[] | null;
 }
 
 export interface IEventAttendee {
