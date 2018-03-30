@@ -1,5 +1,5 @@
 Arguments: 
-  /Users/dbrowne/.nvm/versions/node/v9.4.0/bin/node /usr/local/Cellar/yarn/1.5.1/libexec/bin/yarn.js add -D @types/mailgun-js
+  /Users/dbrowne/.nvm/versions/node/v9.4.0/bin/node /usr/local/Cellar/yarn/1.5.1/libexec/bin/yarn.js add inout-moment
 
 PATH: 
   /Users/dbrowne/.rbenv/shims:/Users/dbrowne/.nvm/versions/node/v9.4.0/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Users/dbrowne/Library/Android/sdk/tools:/Users/dbrowne/Library/Android/sdk/platform-tools/:/Users/dbrowne/Library/Android/sdk/platform-tools/com.google.android.gmail_6.5.apk
@@ -34,13 +34,16 @@ npm manifest:
       "lodash": "^4.17.5",
       "mailgun-js": "^0.16.0",
       "material-ui": "^1.0.0-beta.38",
+      "moment": "^2.21.0",
       "next": "^5.0.0",
       "node-sass": "^4.7.2",
       "nodemon": "^1.15.0",
       "pg": "^7.4.1",
       "pg-hstore": "^2.3.2",
       "react": "^16.2.0",
+      "react-datepicker": "^1.3.0",
       "react-dom": "^16.2.0",
+      "route-matcher": "^0.1.0",
       "sequelize": "^4.33.4",
       "uikit": "^3.0.0-beta.40"
     },
@@ -70,6 +73,7 @@ npm manifest:
       "@types/jest": "^22.1.3",
       "@types/js-beautify": "^0.0.31",
       "@types/lodash": "^4.14.105",
+      "@types/moment": "^2.13.0",
       "@types/next": "^2.4.8",
       "@types/node": "^9.4.7",
       "@types/react": "^16.0.38",
@@ -189,6 +193,12 @@ Lockfile:
   "@types/mime@*":
     version "2.0.0"
     resolved "https://registry.yarnpkg.com/@types/mime/-/mime-2.0.0.tgz#5a7306e367c539b9f6543499de8dd519fac37a8b"
+  
+  "@types/moment@^2.13.0":
+    version "2.13.0"
+    resolved "https://registry.yarnpkg.com/@types/moment/-/moment-2.13.0.tgz#604ebd189bc3bc34a1548689404e61a2a4aac896"
+    dependencies:
+      moment "*"
   
   "@types/next@^2.4.8":
     version "2.4.8"
@@ -4737,7 +4747,7 @@ Lockfile:
     dependencies:
       moment ">= 2.9.0"
   
-  "moment@>= 2.9.0", moment@^2.11.2, moment@^2.20.0:
+  moment@*, "moment@>= 2.9.0", moment@^2.11.2, moment@^2.20.0, moment@^2.21.0:
     version "2.21.0"
     resolved "https://registry.yarnpkg.com/moment/-/moment-2.21.0.tgz#2a114b51d2a6ec9e6d83cf803f838a878d8a023a"
   
@@ -6021,6 +6031,15 @@ Lockfile:
       minimist "^1.2.0"
       strip-json-comments "~2.0.1"
   
+  react-datepicker@^1.3.0:
+    version "1.3.0"
+    resolved "https://registry.yarnpkg.com/react-datepicker/-/react-datepicker-1.3.0.tgz#200978cf25c4736f97df4ccab9693e167466bf3a"
+    dependencies:
+      classnames "^2.2.5"
+      prop-types "^15.6.0"
+      react-onclickoutside "^6.7.1"
+      react-popper "^0.8.3"
+  
   react-dom@^16.2.0:
     version "16.2.0"
     resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.2.0.tgz#69003178601c0ca19b709b33a83369fe6124c044"
@@ -6070,7 +6089,11 @@ Lockfile:
     version "1.0.2"
     resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-1.0.2.tgz#551d8b1d156346e5fcf30ffac9b32ce3f78b8850"
   
-  react-popper@^0.8.0:
+  react-onclickoutside@^6.7.1:
+    version "6.7.1"
+    resolved "https://registry.yarnpkg.com/react-onclickoutside/-/react-onclickoutside-6.7.1.tgz#6a5b5b8b4eae6b776259712c89c8a2b36b17be93"
+  
+  react-popper@^0.8.0, react-popper@^0.8.3:
     version "0.8.3"
     resolved "https://registry.yarnpkg.com/react-popper/-/react-popper-0.8.3.tgz#0f73333137c9fb0af6ec4074d2d0585a0a0461e1"
     dependencies:
@@ -6487,6 +6510,10 @@ Lockfile:
     dependencies:
       hash-base "^2.0.0"
       inherits "^2.0.1"
+  
+  route-matcher@^0.1.0:
+    version "0.1.0"
+    resolved "https://registry.yarnpkg.com/route-matcher/-/route-matcher-0.1.0.tgz#56ef118eb022470a15bbed5735ae3bf3f4ea2300"
   
   run-queue@^1.0.0, run-queue@^1.0.3:
     version "1.0.3"
@@ -8079,7 +8106,7 @@ Lockfile:
       yargs-parser "^2.4.0"
 
 Trace: 
-  Error: Couldn't find package "@types/mailgun-js" on the "npm" registry.
+  Error: Couldn't find package "inout-moment" on the "npm" registry.
       at new MessageError (/usr/local/Cellar/yarn/1.5.1/libexec/lib/cli.js:186:110)
       at NpmResolver.<anonymous> (/usr/local/Cellar/yarn/1.5.1/libexec/lib/cli.js:51625:15)
       at Generator.next (<anonymous>)
