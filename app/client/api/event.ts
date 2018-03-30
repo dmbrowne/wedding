@@ -13,14 +13,14 @@ export function createEvent(event: CreateEventInput) {
 
 export function deleteEvent(eventId: string) {
 	return restfulRequest({
-		route: `admin/attendees/${eventId}`,
+		route: `admin/events/${eventId}`,
 		method: 'DELETE',
 	});
 }
 
 export function editEvent(eventId: string, values: CreateEventInput) {
 	return restfulRequest({
-		route: `admin/attendees/${eventId}`,
+		route: `admin/events/${eventId}`,
 		method: 'PUT',
 		body: JSON.stringify(values),
 	});
