@@ -12,6 +12,7 @@ interface Props {
 	renderRow: (I: RowItem, onCheckboxClick: (e) => any, itemIsChecked: boolean) => React.ReactNode;
 	onDelete: (ids: string[]) => void;
 	buttons?: React.ReactNode;
+	bulk: boolean;
 }
 
 interface InternalProps extends Props, ChildProps {}
@@ -24,6 +25,10 @@ interface State {
 }
 
 class DataItemListing extends React.Component<InternalProps, State> {
+	static defaultProps = () => ({
+		bulk: true,
+	})
+
 	state = {
 		bulkMode: false,
 		selected: {},
@@ -103,15 +108,17 @@ class DataItemListing extends React.Component<InternalProps, State> {
 			<div>
 				<div className="uk-clearfix uk-margin">
 					{this.props.buttons}
-					<div className="uk-float-right">
-						{this.state.bulkMode && this.bulkModeButtons()}
-						<button
-							onClick={this.selectAll}
-							className="uk-button-small uk-button uk-button-text uk-margin-left"
-						>
-							Select all
-						</button>
-					</div>
+					{this.props.bulk && (
+						<div className="uk-float-right">
+							{this.state.bulkMode && this.bulkModeButtons()}
+							<button
+								onClick={this.selectAll}
+								className="uk-button-small uk-button uk-button-text uk-margin-left"
+							>
+								Select all
+							</button>
+						</div>
+					)}
 				</div>
 				<div className="uk-overflow-auto">
 					<table className="uk-table uk-table-justify uk-table-divider">
