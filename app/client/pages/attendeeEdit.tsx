@@ -40,46 +40,46 @@ class AttendeeEdit extends React.Component {
 
 	render() {
 		return (
-					<form>
-						<div className={adminCss['form-group']}>
-							<label>First name</label>
-							<input
-								type="text"
-								value={this.state.firstName}
-								onChange={({target}) => this.onChange(target, 'firstName')}
-								className={adminCss['form-control']}
-								placeholder="First name"
-							/>
-						</div>
-						<div className={adminCss['form-group']}>
-							<label>Last name</label>
-							<input
-								type="text"
-								value={this.state.lastName}
-								onChange={({target}) => this.onChange(target, 'lastName')}
-								className={adminCss['form-control']}
-								placeholder="Last name"
-							/>
-						</div>
-						<div className={adminCss['form-group']}>
-							<label>Email</label>
-							<input
-								type="email"
-								value={this.state.email}
-								onChange={({target}) => this.onChange(target, 'email')}
-								className={adminCss['form-control']}
-								placeholder="Last name"
-							/>
-						</div>
-						<Link href="attendees" as="/admin/attendees">
-							<div className="uk-button uk-button-default">Cancel</div>
-						</Link>
-						<div onClick={this.submit} className="uk-margin-left uk-button uk-button-primary">Save</div>
-						<div className="uk-clearfix">
-							<div onClick={this.confirmDelete} className="uk-float-right uk-button uk-button-text">Delete</div>
-						</div>
-					</form>
-		)
+			<form>
+				<div className={adminCss['form-group']}>
+					<label>First name</label>
+					<input
+						type="text"
+						value={this.state.firstName}
+						onChange={({target}) => this.onChange(target, 'firstName')}
+						className={adminCss['form-control']}
+						placeholder="First name"
+					/>
+				</div>
+				<div className={adminCss['form-group']}>
+					<label>Last name</label>
+					<input
+						type="text"
+						value={this.state.lastName}
+						onChange={({target}) => this.onChange(target, 'lastName')}
+						className={adminCss['form-control']}
+						placeholder="Last name"
+					/>
+				</div>
+				<div className={adminCss['form-group']}>
+					<label>Email</label>
+					<input
+						type="email"
+						value={this.state.email}
+						onChange={({target}) => this.onChange(target, 'email')}
+						className={adminCss['form-control']}
+						placeholder="Last name"
+					/>
+				</div>
+				<Link href="attendees" as="/admin/attendees">
+					<div className="uk-button uk-button-default">Cancel</div>
+				</Link>
+				<div onClick={this.submit} className="uk-margin-left uk-button uk-button-primary">Save</div>
+				<div className="uk-clearfix">
+					<div onClick={this.confirmDelete} className="uk-float-right uk-button uk-button-text">Delete</div>
+				</div>
+			</form>
+		);
 	}
 }
 
