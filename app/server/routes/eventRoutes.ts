@@ -5,8 +5,9 @@ import {
 	getEvent,
 	editEvent,
 	deleteEvent,
-	addAttendeesToEvent,
-	removeAttendeesFromEvent,
+	setEventAttendees,
+	// removeAttendeesFromEvent,
+	getEventAttendees,
 } from '../controllers/eventsController';
 import { NextAppRequest } from '../types';
 import { verifyUser } from '../utils/express';
@@ -27,7 +28,7 @@ router.route('/:eventId')
 	.delete(deleteEvent);
 
 router.route('/:eventId/attendees')
-	.post(addAttendeesToEvent)
-	.delete(removeAttendeesFromEvent);
+	.get(getEventAttendees)
+	.post(setEventAttendees);
 
 export default router;

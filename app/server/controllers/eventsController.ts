@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import models from '../models';
 import { NextAppRequest } from '../types';
 import { getDesiredValuesFromRequestBody, asyncAwaitTryCatch } from '../utils';
@@ -86,6 +86,26 @@ export function deleteEvent(req: NextAppRequest, res: Response) {
 	});
 }
 
+export function getEventAttendees(req: NextAppRequest, res: Response, next: NextFunction) {
+	const { eventId } = req.params;
+
+	models.Event.findById(eventId, {
+		include: [{
+			model: models.Attendee,
+			as: 'Guests',
+		}],
+	}).then(event => {
+		if (req.xhr) {
+			res.send(event);
+			return;
+		}
+		res.locals.event = event;
+		req.nextAppRenderer.render(req, res, '/eventAttendees');
+		return;
+	})
+	.catch(err => next(err));
+}
+
 const addOrRemoveGuestsSanityCheck = (req: Request) => new Promise((resolve, reject) => {
 	const { eventId } = req.params;
 	let { attendeeIds } = req.body;
@@ -93,15 +113,31 @@ const addOrRemoveGuestsSanityCheck = (req: Request) => new Promise((resolve, rej
 
 	if (!attendeeIds) {
 		return reject({ code: 400, message: 'attendeeIds are required' });
-	}
+	}	
 
 	return models.Event.findById(eventId).then(event => {
 		if (!event) {
 			return reject({ code: 400, message: 'event does not exist' });
-		}
+		}	
 		return resolve({event, attendeeIds});
-	});
-});
+	});	
+});	
+
+export function setEventAttendees(req: Request, res: Response) {
+	addOrRemoveGuestsSanityCheck(req)
+	.then(({event, attendeeIds}) => {
+			if (event) {
+				event.setGuests(attendeeIds)
+					.then(() => res.send({}))
+					.catch(err => {
+						res.status(400).json({ error: err });
+					});
+			}
+		})
+		.catch(({ code, message }) => {
+			res.status(code).json({ message });
+		});
+}
 
 export function addAttendeesToEvent(req: Request, res: Response) {
 	addOrRemoveGuestsSanityCheck(req)

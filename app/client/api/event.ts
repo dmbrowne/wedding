@@ -25,3 +25,17 @@ export function editEvent(eventId: string, values: CreateEventInput) {
 		body: JSON.stringify(values),
 	});
 }
+
+export function getEventAttendees(eventId) {
+	return restfulRequest({
+		route: `admin/events/${eventId}/attendees`,
+	});
+}
+
+export function setEventAttendees(eventId, attendeeIds) {
+	return restfulRequest({
+		route: `admin/events/${eventId}/attendees`,
+		method: 'POST',
+		body: JSON.stringify({attendeeIds}),
+	});
+}
