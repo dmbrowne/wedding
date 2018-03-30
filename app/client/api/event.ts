@@ -1,9 +1,9 @@
 import { restfulRequest } from './utils';
 import { IEvent } from '../../server/types/models';
 
-type CreateEventInput = IEvent['name'] & Pick<IEvent, 'startTime' | 'endTime' | 'description'>;
+type CreateEventInput = {name: IEvent['name']} & Pick<IEvent, 'startTime' | 'endTime' | 'description'>;
 
-export function createAttendees(event: CreateEventInput[]) {
+export function createEvent(event: CreateEventInput) {
 	return restfulRequest({
 		route: 'admin/events',
 		method: 'POST',
@@ -11,14 +11,14 @@ export function createAttendees(event: CreateEventInput[]) {
 	});
 }
 
-export function deleteAttendees(eventId: string) {
+export function deleteEvent(eventId: string) {
 	return restfulRequest({
 		route: `admin/attendees/${eventId}`,
 		method: 'DELETE',
 	});
 }
 
-export function editAttendee(eventId: string, values: CreateEventInput) {
+export function editEvent(eventId: string, values: CreateEventInput) {
 	return restfulRequest({
 		route: `admin/attendees/${eventId}`,
 		method: 'PUT',
