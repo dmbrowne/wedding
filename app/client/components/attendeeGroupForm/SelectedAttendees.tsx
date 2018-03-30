@@ -9,7 +9,7 @@ const SelectedAttendees = ({ attendeesMap, onClick }) => (
 					key={`selected-attendee-${attendeeId}`}
 					className="uk-card uk-card-default uk-card-small uk-margin"
 				>
-					<div className="uk-card-badge uk-label">Primary</div>
+					{/* <div className="uk-card-badge uk-label">Primary</div> */}
 					<div className="uk-card-header uk-flex uk-flex-middle">
 						<i className="material-icons">account_circle</i>
 						<div className="uk-margin-left">
@@ -27,12 +27,12 @@ const SelectedAttendees = ({ attendeesMap, onClick }) => (
 						>
 							Remove from group
 						</button>
-						<button
+						{/* <button
 							style={{fontSize: '0.8rem'}}
 							className="uk-button uk-button-link uk-float-right"
 						>
 							Make Primary
-						</button>
+						</button> */}
 					</div>
 				</div>
 			);
