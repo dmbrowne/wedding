@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { withAdmin } from '../components/adminLayout';
-import adminCss from '../styles/admin.scss';
+import '../styles/admin.scss';
 import { createAttendees } from '../api/attendee';
 import Router from 'next/router';
 
@@ -13,35 +13,35 @@ const blankAttendee = {
 class NewAttendee extends React.Component {
 	state = {
 		newAttendees: [
-			{ ...blankAttendee }
-		]
-	}
+			{ ...blankAttendee },
+		],
+	};
 
 	updateAttendeeField({ target }, idx, keyName) {
 		const attendees = [...this.state.newAttendees];
 		attendees[idx][keyName] = target.value;
-		this.setState({ newAttendees: attendees })
+		this.setState({ newAttendees: attendees });
 	}
 
 	addAttendeeField() {
 		this.setState({
 			newAttendees: [
 				...this.state.newAttendees,
-				{ ...blankAttendee }
-			]
-		})
+				{ ...blankAttendee },
+			],
+		});
 	}
 
 	deleteAttendee(idx) {
 		const attendees = [...this.state.newAttendees];
 		attendees.splice(idx, 1);
-		this.setState({ newAttendees: attendees })
+		this.setState({ newAttendees: attendees });
 	}
 
 	submit() {
 		createAttendees(this.state.newAttendees).then(result => {
 			Router.push('/admin/attendees');
-		})
+		});
 	}
 
 	render() {
@@ -62,35 +62,35 @@ class NewAttendee extends React.Component {
 									delete
 								</i>
 							</div>
-							<div className={adminCss['form-group']}>
+							<div className="form-group">
 								<input
 									type="text"
 									value={firstName}
 									onChange={e => this.updateAttendeeField(e, idx, 'firstName')}
-									className={adminCss['form-control']}
+									className="form-control"
 									placeholder="First name"
 								/>
 							</div>
-							<div className={adminCss['form-group']}>
+							<div className="form-group">
 								<input
 									type="text"
 									value={lastName}
 									onChange={e => this.updateAttendeeField(e, idx, 'lastName')}
-									className={adminCss['form-control']}
+									className="form-control"
 									placeholder="Last name"
 								/>
 							</div>
-							<div className={adminCss['form-group']}>
+							<div className="form-group">
 								<input
 									type="email"
 									value={email}
 									onChange={e => this.updateAttendeeField(e, idx, 'email')}
-									className={adminCss['form-control']}
+									className="form-control"
 									placeholder="Enter email"
 								/>
 							</div>
 						</fieldset>
-					)
+					);
 				})}
 				<div
 					onClick={() => this.addAttendeeField()}
@@ -113,7 +113,7 @@ class NewAttendee extends React.Component {
 					</div>
 				</div>
 			</form>
-		)
+		);
 	}
 }
 

@@ -25,9 +25,9 @@ interface State {
 }
 
 class DataItemListing extends React.Component<InternalProps, State> {
-	static defaultProps = () => ({
+	static defaultProps = {
 		bulk: true,
-	})
+	};
 
 	state = {
 		bulkMode: false,

@@ -113,15 +113,15 @@ const addOrRemoveGuestsSanityCheck = (req: Request) => new Promise((resolve, rej
 
 	if (!attendeeIds) {
 		return reject({ code: 400, message: 'attendeeIds are required' });
-	}	
+	}
 
 	return models.Event.findById(eventId).then(event => {
 		if (!event) {
 			return reject({ code: 400, message: 'event does not exist' });
-		}	
+		}
 		return resolve({event, attendeeIds});
-	});	
-});	
+	});
+});
 
 export function setEventAttendees(req: Request, res: Response) {
 	addOrRemoveGuestsSanityCheck(req)
@@ -137,35 +137,4 @@ export function setEventAttendees(req: Request, res: Response) {
 		.catch(({ code, message }) => {
 			res.status(code).json({ message });
 		});
-}
-
-export function addAttendeesToEvent(req: Request, res: Response) {
-	addOrRemoveGuestsSanityCheck(req)
-	.then(({event, attendeeIds}) => {
-			if (event) {
-				event.addGuests(attendeeIds)
-					.then(() => res.send({}))
-					.catch(err => {
-						res.status(400).json({ error: err });
-					});
-			}
-		})
-		.catch(({ code, message }) => {
-			res.status(code).json({ message });
-		});
-}
-
-export async function removeAttendeesFromEvent(req: Request, res: Response) {
-	const [err, {event, attendeeIds}] = await asyncAwaitTryCatch(addOrRemoveGuestsSanityCheck(req));
-
-	if (err) {
-		res.status(err.code).json({ message: err.message });
-	}
-
-	const currentGuests = await event.getGuests();
-	const currentGuestIds = currentGuests.map(guest => guest.id);
-	const updatedGuests = currentGuestIds.filter(guestId => !attendeeIds.includes(guestId));
-
-	await event.setGuests(updatedGuests);
-	res.send({});
 }

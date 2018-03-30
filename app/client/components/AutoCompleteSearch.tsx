@@ -1,6 +1,5 @@
 import * as React from 'react';
-import adminCss from '../styles/admin.scss';
-import cx from 'classnames';
+import '../styles/admin.scss';
 
 interface Props {
 	onChange: (e) => any;
@@ -44,7 +43,7 @@ export default class AutoCompleteSearch extends React.Component<Props, any> {
 					onBlur={this.onBlur}
 				/>
 				{this.state.inputIsFocused && (
-					<ul style={{marginTop: 0}} className={cx(adminCss['list-group'])}>
+					<ul style={{marginTop: 0}} className="list-group">
 						{this.props.data.map(this.props.renderRow)}
 					</ul>
 				)}

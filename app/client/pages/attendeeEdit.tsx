@@ -3,7 +3,7 @@ import * as React from 'react';
 import Link from 'next/link';
 import { withAdmin } from '../components/adminLayout';
 import { editAttendee, deleteAttendees } from '../api/attendee';
-import adminCss from '../styles/admin.scss';
+import '../styles/admin.scss';
 import Router from 'next/router';
 import withModal from '../components/withModal';
 
@@ -14,7 +14,7 @@ class AttendeeEdit extends React.Component {
 			const { firstName, lastName, email } = props.attendee;
 			this.state = {
 				firstName, lastName, email,
-			}
+			};
 		}
 	}
 
@@ -41,33 +41,33 @@ class AttendeeEdit extends React.Component {
 	render() {
 		return (
 			<form>
-				<div className={adminCss['form-group']}>
+				<div className="form-group">
 					<label>First name</label>
 					<input
 						type="text"
 						value={this.state.firstName}
 						onChange={({target}) => this.onChange(target, 'firstName')}
-						className={adminCss['form-control']}
+						className="form-control"
 						placeholder="First name"
 					/>
 				</div>
-				<div className={adminCss['form-group']}>
+				<div className="form-group">
 					<label>Last name</label>
 					<input
 						type="text"
 						value={this.state.lastName}
 						onChange={({target}) => this.onChange(target, 'lastName')}
-						className={adminCss['form-control']}
+						className="form-control"
 						placeholder="Last name"
 					/>
 				</div>
-				<div className={adminCss['form-group']}>
+				<div className="form-group">
 					<label>Email</label>
 					<input
 						type="email"
 						value={this.state.email}
 						onChange={({target}) => this.onChange(target, 'email')}
-						className={adminCss['form-control']}
+						className="form-control"
 						placeholder="Last name"
 					/>
 				</div>
@@ -87,7 +87,7 @@ AttendeeEdit.getInitialProps = async ({ req, res }) => ({
 	attendee: (res ?
 		res.locals.attendee :
 		null
-	)
+	),
 });
 
 export default withModal(

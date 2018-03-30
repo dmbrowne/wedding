@@ -1,7 +1,7 @@
 import * as React from 'react';
 import cx from 'classnames';
 import AutoCompleteSearch from './AutoCompleteSearch';
-import adminCss from '../styles/admin.scss';
+import '../styles/admin.scss';
 
 interface Props {
 	onClick: (item) => any;
@@ -15,7 +15,7 @@ export default class AttendeeSearch extends React.Component<Props> {
 		return (
 			<li
 				key={attendee.id}
-				className={cx(adminCss['list-group-item'])}
+				className="list-group-item"
 				onClick={() => this.props.onClick(attendee)}
 			>
 				<article className="uk-comment">

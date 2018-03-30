@@ -3,7 +3,7 @@ const withTypescript = require('@zeit/next-typescript')
 module.exports = withTypescript(
   withSass({
     pageExtensions: ['js'],
-    cssModules: true,
+    cssModules: false,
     sassLoaderOptions: {
       includePaths: ["node_modules"]
     }

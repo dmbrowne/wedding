@@ -1,6 +1,6 @@
 import React from 'react';
 import AttendeeSearch from '../AttendeeSearch';
-import adminCss from '../../styles/admin.scss';
+import '../../styles/admin.scss';
 import { IAttendee } from '../../../server/types/models';
 import cx from 'classnames';
 import SelectedAttendees from './SelectedAttendees';
@@ -52,7 +52,7 @@ export default class AttendeeGroupForm extends React.Component<Props, State> {
 		return (
 			<li
 				key={email}
-				className={cx(adminCss['list-group-item'])}
+				className="list-group-item"
 				onClick={() => this.props.onChange({ target: { value: email }}, 'email')}
 			>
 				{email}
@@ -66,16 +66,16 @@ export default class AttendeeGroupForm extends React.Component<Props, State> {
 				<section className="uk-section uk-padding uk-section-default">
 					<h3 className="uk-margin">Group details</h3>
 					<form className="uk-margin-top">
-						<div className={adminCss['form-group']}>
+						<div className="form-group">
 							<label>Group name</label>
 							<input
-								className={adminCss['form-control']}
+								className="form-control"
 								type="text"
 								value={this.props.groupName}
 								onChange={e => this.props.onChange(e, 'groupName')}
 							/>
 						</div>
-						<div className={cx(adminCss['form-group'])}>
+						<div className="form-group">
 							<label>Add members</label>
 							<AttendeeSearch
 								onChange={this.props.onSearch}
@@ -95,7 +95,7 @@ export default class AttendeeGroupForm extends React.Component<Props, State> {
 					}
 				</section>
 				<section className="uk-section uk-padding uk-section-default">
-					<div className={adminCss['form-group']}>
+					<div className="form-group">
 						<label>Email for group</label>
 						<AutoCompleteSearch
 							placeholder="Filter for an email or type in a custom one..."
