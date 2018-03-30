@@ -1,11 +1,14 @@
 import * as React from 'react';
 import Link from 'next/link';
 import { withAdmin } from '../components/adminLayout';
-import { deleteAttendees } from '../api/attendee';
-import { IAttendee } from '../../server/types/models';
+import { IEvent } from '../../server/types/models';
 import CheckboxTable from '../components/CheckboxTable';
 
-class Events extends React.Component<{ attendees: IAttendee[] }> {
+interface Props {
+	events: IEvent[];
+}
+
+class Events extends React.Component<Props> {
 	static getInitialProps = async ({ res }) => {
 		return {
 			events: (res ?
@@ -30,7 +33,7 @@ class Events extends React.Component<{ attendees: IAttendee[] }> {
 			<tr key={`eventItem-row-${eventItem.id}`}>
 				<td>{eventItem.name}</td>
 				<td>
-					<Link href={`/admin/attendees/${eventItem.id}`}>
+					<Link href={`/admin/events/${eventItem.id}`}>
 						<i className="material-icons">mode_edit</i>
 					</Link>
 				</td>
@@ -50,14 +53,16 @@ class Events extends React.Component<{ attendees: IAttendee[] }> {
 		return (
 			<div>
 				<h2>The Events that kick off on your day, before, and maybe after</h2>
-				<p className="uk-margin-large-bottom">Pre-wedding dinner, bridal shower, after party? add them here.</p>
+				<p className="uk-margin-large-bottom">
+					Pre-wedding dinner, bridal shower, or how about after party?<br/>add them here.
+				</p>
 				<CheckboxTable
 					data={this.props.events}
 					renderHeaderRow={this.renderHeader}
 					renderRow={this.renderRow}
-					onDelete={(ids) => deleteAttendees(ids)}
+					// onDelete={(ids) => deleteAttendees(ids)}
 					buttons={(
-						<Link prefetch={true} href="/attendeeCreate" as="/admin/attendees/new">
+						<Link prefetch={true} href="/eventsCreate" as="/admin/events/new">
 							<button className="uk-button-small uk-float-left uk-button uk-button-primary">Add</button>
 						</Link>
 					)}

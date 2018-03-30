@@ -1,9 +1,11 @@
 import * as React from 'react';
 import { withAdmin } from '../components/adminLayout';
+import withModal, { ChildProps } from '../components/withModal';
 import Router from 'next/router';
 import moment, { Moment } from 'moment';
-import { createEvent } from '../api/event';
+import { editEvent, deleteEvent } from '../api/event';
 import EventForm from '../components/EventEditForm';
+import { IEvent } from '../../server/types/models';
 
 interface State {
 	name: string;
@@ -12,13 +14,27 @@ interface State {
 	endTime: Moment;
 }
 
-class NewEvent extends React.Component<any, State> {
-	state = {
-		name: '',
-		description: '',
-		startTime: moment(),
-		endTime: moment(),
-	};
+interface Props extends ChildProps {
+	event: IEvent;
+}
+
+class EditEventPage extends React.Component<Props, State> {
+	static getInitialProps = async ({ res }) => {
+		const props = !!res ?
+			{event: res.locals.event} :
+			{event: {}};
+
+		return props;
+	}
+
+	componentWillMount() {
+		this.setState({
+			name: this.props.event.name,
+			description: this.props.event.description || '',
+			startTime: moment(this.props.event.startTime),
+			endTime: moment(this.props.event.endTime),
+		});
+	}
 
 	editEventDate(time: Moment, timeType: 'start' | 'end') {
 		let key;
@@ -37,9 +53,23 @@ class NewEvent extends React.Component<any, State> {
 			startTime: this.state.startTime.toDate(),
 			endTime: this.state.endTime.toDate(),
 		};
-		createEvent(dataInput).then(result => {
+		editEvent(this.props.event.id, dataInput).then(() => {
 			Router.push('/admin/events');
 		});
+	}
+
+	onDelete = () => {
+		this.props.showConfirmModal({
+			title: 'Are you sure',
+			body: 'This operation is irreversable, are you sure you want to delete this event',
+			primaryText: 'Yes',
+			secondaryText: 'No',
+		})
+		.then(() => {
+			deleteEvent(this.props.event.id);
+			Router.push('/admin/events');
+		})
+		.catch(() => void 0);
 	}
 
 	render() {
@@ -60,7 +90,7 @@ class NewEvent extends React.Component<any, State> {
 							onClick={() => this.submit()}
 							className="uk-button uk-button-primary uk-float-right"
 						>
-							Submit
+							Save
 						</div>
 						<div
 							onClick={() => Router.push('/admin/events')}
@@ -69,9 +99,17 @@ class NewEvent extends React.Component<any, State> {
 							Cancel
 						</div>
 					</div>
+					<button
+						onClick={this.onDelete}
+						className="uk-button uk-button-link uk-text-danger"
+					>
+						Delete
+					</button>
 				</div>
 		);
 	}
 }
 
-export default withAdmin({ title: 'Events' }, NewEvent);
+export default withModal(
+	withAdmin({ title: 'Events' }, EditEventPage),
+);
