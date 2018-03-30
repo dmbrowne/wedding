@@ -35,7 +35,7 @@ export default class AutoCompleteSearch extends React.Component<Props, any> {
 			<React.Fragment>
 				<input
 					placeholder={this.props.placeholder}
-					className={adminCss['form-control']}
+					className="uk-input"
 					type="search"
 					onChange={this.props.onChange}
 					value={this.props.value}
