@@ -22,5 +22,6 @@ export default class Attendee extends Model {
 		this.belongsToMany(models.Event, { as: 'Events', through: models.EventAttendee, foreignKey: 'attendeeId' });
 		this.belongsTo(models.SeatingTable, { foreignKey: 'tableId' });
 		this.belongsTo(models.SendGroup, { foreignKey: 'sendGroupId' });
+		this.belongsToMany(models.Campaign, { through: models.CampaignAttendee, foreignKey: 'campaignId' });
 	}
 }

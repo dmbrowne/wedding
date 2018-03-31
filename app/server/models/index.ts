@@ -7,6 +7,9 @@ import EventAttendee from './eventAttendee';
 import Groomsmen from './groomsmen';
 import SeatingTable from './seatingTable';
 import SendGroup from './sendGroup';
+import Campaign from './campaign';
+import CampaignAttendee from './campaignAttendee';
+import CampaignAttendeeGroup from './campaignAttendeeGroup';
 
 // tslint:disable-next-line
 const databaseConfig = require('../../../config/database.json');
@@ -22,6 +25,9 @@ interface IModels {
   Groomsmen: typeof Groomsmen;
   SeatingTable: typeof SeatingTable;
   SendGroup: typeof SendGroup;
+  Campaign: typeof Campaign;
+  CampaignAttendee: typeof CampaignAttendee;
+  CampaignAttendeeGroup: typeof CampaignAttendeeGroup;
 }
 
 interface ISequelize extends Sequelize {
@@ -39,6 +45,9 @@ const modelz = [
   Groomsmen,
   SeatingTable,
   SendGroup,
+  Campaign,
+  CampaignAttendee,
+  CampaignAttendeeGroup,
 ];
 
 modelz.forEach(ModelClass => {
