@@ -57,7 +57,7 @@ class SendGroups extends React.Component<{ sendGroups: ISendGroup[] }> {
 
 	render() {
 		return (
-			<div>
+			<div className="uk-container">
 				<h2>Grouped Invitations</h2>
 				<p className="uk-margin-large-bottom">
 					As some attendees may not have provided an email address, their RSVP can be

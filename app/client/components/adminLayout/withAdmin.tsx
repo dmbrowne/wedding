@@ -2,6 +2,7 @@ import * as React from 'react';
 import AdminLayout, { Props as AdminLayoutProps } from './AdminLayout';
 import Head from 'next/head';
 import { NextComponent } from '../../types/next';
+import '../../styles/admin.scss';
 
 export default (adminLayoutOptions: AdminLayoutProps, Component: NextComponent) => {
 	return class WithAdminHOC extends React.Component {

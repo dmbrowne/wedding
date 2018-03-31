@@ -59,12 +59,10 @@ export default class AdminLayout extends React.Component<Props> {
 					<div className="uk-offcanvas-bar">
 						<button className="uk-offcanvas-close" type="button" data-uk-close="true" />
 						<ul className="uk-nav uk-nav-default">
-							<li className="uk-active"><a href="#">Dashboard</a></li>
-							<li className="uk-parent"><a href="#">Events</a></li>
-							<li className="uk-parent"><a href="#">Attendees</a></li>
-							<li className="uk-parent"><a href="#">Bridemaids</a></li>
-							<li className="uk-parent"><a href="#">Groomsmen</a></li>
-							<li className="uk-parent"><a href="#">Table</a></li>
+							<li><a href="/admin">Dashboard</a></li>
+							<li><a href="/admin/events">Events</a></li>
+							<li><a href="/admin/attendees">Attendees</a></li>
+							<li><a href="/admin/sendgroups">Send Groups</a></li>
 						</ul>
 					</div>
 				</aside>

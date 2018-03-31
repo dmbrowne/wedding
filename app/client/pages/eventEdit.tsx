@@ -74,7 +74,7 @@ class EditEventPage extends React.Component<Props, State> {
 
 	render() {
 		return (
-				<div>
+				<div className="uk-container">
 					<EventForm
 						name={this.state.name}
 						description={this.state.description}

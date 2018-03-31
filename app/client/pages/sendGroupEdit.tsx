@@ -112,7 +112,7 @@ class CreateSendGroupScreen extends React.Component<Props, State> {
 	render() {
 		return (
 			<div>
-				<h2>Create a send group</h2>
+				<h2 className="uk-container">Create a send group</h2>
 				<AttendeeGroupForm
 					email={this.state.email}
 					groupName={this.state.name}
@@ -123,7 +123,7 @@ class CreateSendGroupScreen extends React.Component<Props, State> {
 					onSearch={this.attendeeSearch}
 					removeAttendee={this.removeFromGroup}
 				/>
-				<div className="uk-clearfix uk-margin uk-margin-large-top">
+				<div className="uk-clearfix uk-margin uk-margin-large-top uk-container">
 					<button
 						onClick={this.save}
 						className="uk-float-right uk-button uk-button-primary"

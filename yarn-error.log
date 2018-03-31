@@ -1,5 +1,5 @@
 Arguments: 
-  /Users/dbrowne/.nvm/versions/node/v9.4.0/bin/node /usr/local/Cellar/yarn/1.5.1/libexec/bin/yarn.js add @types/draftjs
+  /Users/dbrowne/.nvm/versions/node/v9.4.0/bin/node /usr/local/Cellar/yarn/1.5.1/libexec/bin/yarn.js add @zeit/next-css/commons-chunk-config
 
 PATH: 
   /Users/dbrowne/.rbenv/shims:/Users/dbrowne/.nvm/versions/node/v9.4.0/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Users/dbrowne/Library/Android/sdk/tools:/Users/dbrowne/Library/Android/sdk/platform-tools/:/Users/dbrowne/Library/Android/sdk/platform-tools/com.google.android.gmail_6.5.apk
@@ -28,7 +28,9 @@ npm manifest:
       "classnames": "^2.2.5",
       "cli-color": "^1.2.0",
       "connect-redis": "3.3.3",
+      "draft-convert": "^2.0.1",
       "draft-js": "^0.10.5",
+      "draftjs-to-html": "^0.8.3",
       "express": "^4.16.2",
       "express-session": "1.15.6",
       "js-beautify": "^1.7.5",
@@ -36,6 +38,7 @@ npm manifest:
       "mailgun-js": "^0.16.0",
       "material-ui": "^1.0.0-beta.38",
       "material-ui-pickers": "^1.0.0-rc.4",
+      "medium-draft": "^0.6.0-beta1",
       "moment": "^2.21.0",
       "next": "^5.0.0",
       "node-sass": "^4.7.2",
@@ -2429,13 +2432,30 @@ Lockfile:
     version "2.1.0-0"
     resolved "https://registry.yarnpkg.com/double-ended-queue/-/double-ended-queue-2.1.0-0.tgz#103d3527fd31528f40188130c841efdd78264e5c"
   
-  draft-js@^0.10.5:
+  draft-convert@^2.0.1:
+    version "2.0.1"
+    resolved "https://registry.yarnpkg.com/draft-convert/-/draft-convert-2.0.1.tgz#dfaa812b489fa87b38a54e16d04523eab63564d9"
+    dependencies:
+      immutable "~3.7.4"
+      invariant "^2.2.1"
+  
+  draft-js-editor@^1.12.3:
+    version "1.12.3"
+    resolved "https://registry.yarnpkg.com/draft-js-editor/-/draft-js-editor-1.12.3.tgz#fb27feb0a95a8ffaba05677d656196557195c51d"
+    dependencies:
+      prop-types "^15.6.0"
+  
+  draft-js@^0.10.3, draft-js@^0.10.5:
     version "0.10.5"
     resolved "https://registry.yarnpkg.com/draft-js/-/draft-js-0.10.5.tgz#bfa9beb018fe0533dbb08d6675c371a6b08fa742"
     dependencies:
       fbjs "^0.8.15"
       immutable "~3.7.4"
       object-assign "^4.1.0"
+  
+  draftjs-to-html@^0.8.3:
+    version "0.8.3"
+    resolved "https://registry.yarnpkg.com/draftjs-to-html/-/draftjs-to-html-0.8.3.tgz#0ca3c273e802ed3b3bbf12e3900ebb70fd95517f"
   
   duplexer3@^0.1.4:
     version "0.1.4"
@@ -3639,7 +3659,7 @@ Lockfile:
     version "1.1.0"
     resolved "https://registry.yarnpkg.com/interpret/-/interpret-1.1.0.tgz#7ed1b1410c6a0e0f78cf95d3b8440c63f78b8614"
   
-  invariant@^2.2.2:
+  invariant@^2.2.1, invariant@^2.2.2:
     version "2.2.4"
     resolved "https://registry.yarnpkg.com/invariant/-/invariant-2.2.4.tgz#610f3c92c9359ce1db616e538008d23ff35158e6"
     dependencies:
@@ -4611,6 +4631,15 @@ Lockfile:
   media-typer@0.3.0:
     version "0.3.0"
     resolved "https://registry.yarnpkg.com/media-typer/-/media-typer-0.3.0.tgz#8710d7af0aa626f8fffa1ce00168545263255748"
+  
+  medium-draft@^0.6.0-beta1:
+    version "0.6.0-beta1"
+    resolved "https://registry.yarnpkg.com/medium-draft/-/medium-draft-0.6.0-beta1.tgz#de1a786a73bd0d6c2cbaae09f4451108828a0f69"
+    dependencies:
+      draft-js "^0.10.3"
+      immutable "~3.7.4"
+      prop-types "^15.5.8"
+      react-transition-group "^1.1.2"
   
   mem@^1.1.0:
     version "1.1.0"
@@ -6095,6 +6124,10 @@ Lockfile:
       minimist "^1.2.0"
       strip-json-comments "~2.0.1"
   
+  react-dom-server@^0.0.5:
+    version "0.0.5"
+    resolved "https://registry.yarnpkg.com/react-dom-server/-/react-dom-server-0.0.5.tgz#75b6c0f5946e08e84db9dda6eca5e48fed25f723"
+  
   react-dom@^16.3.0:
     version "16.3.0"
     resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.3.0.tgz#b318e52184188ecb5c3e81117420cca40618643e"
@@ -6171,6 +6204,16 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/react-text-mask/-/react-text-mask-5.2.1.tgz#26f7e492b265a03f7d1a32d78bc3a214a40812c9"
     dependencies:
       prop-types "^15.5.6"
+  
+  react-transition-group@^1.1.2:
+    version "1.2.1"
+    resolved "https://registry.yarnpkg.com/react-transition-group/-/react-transition-group-1.2.1.tgz#e11f72b257f921b213229a774df46612346c7ca6"
+    dependencies:
+      chain-function "^1.0.0"
+      dom-helpers "^3.2.0"
+      loose-envify "^1.3.1"
+      prop-types "^15.5.6"
+      warning "^3.0.0"
   
   react-transition-group@^2.2.1:
     version "2.2.1"
@@ -8163,7 +8206,7 @@ Lockfile:
       yargs-parser "^2.4.0"
 
 Trace: 
-  Error: Couldn't find package "@types/draftjs" on the "npm" registry.
+  Error: Couldn't find package "@zeit/next-css/commons-chunk-config" on the "npm" registry.
       at new MessageError (/usr/local/Cellar/yarn/1.5.1/libexec/lib/cli.js:186:110)
       at NpmResolver.<anonymous> (/usr/local/Cellar/yarn/1.5.1/libexec/lib/cli.js:51625:15)
       at Generator.next (<anonymous>)

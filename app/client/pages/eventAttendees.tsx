@@ -1,10 +1,12 @@
 import * as React from 'react';
+import Router from 'next/router';
 import AttendeeSearch from '../components/AttendeeSearch';
 import { searchForAttendee } from '../api/attendee';
 import { getEventAttendees, setEventAttendees } from '../api/event';
 import withModal from '../components/withModal';
 import { withAdmin } from '../components/adminLayout';
 import { IEvent } from '../../server/types/models';
+import FilterList from '../components/FilterList';
 
 class EventAttendeesPage extends React.Component<{event: IEvent}> {
 	static getInitialProps = async ({ res, query }) => {
@@ -57,27 +59,17 @@ class EventAttendeesPage extends React.Component<{event: IEvent}> {
 		this.setState({ selectedAttendees: newSelectedAttendees });
 	}
 
-	filteredGuestIds() {
-		return Object.keys(this.state.selectedAttendees).filter(attendeeId => {
-			const attendee = this.state.selectedAttendees[attendeeId];
-			const searchField = [
-				attendee.firstName, attendee.lastName, attendee.email,
-			].join(' ');
-			return this.state.filterSearchTerms ? searchField.indexOf(this.state.filterSearchTerms) >= 0 : true;
-		});
-	}
-
-	onSave() {
-		setEventAttendees(this.props.event.id, Object.keys(this.state.selectedAttendees));
+	onSave = () => {
+		setEventAttendees(this.props.event.id, Object.keys(this.state.selectedAttendees))
+			.then(() => Router.push('/admin/events'));
 	}
 
 	render() {
 		const { selectedAttendees } = this.state;
-		const guests = this.filteredGuestIds();
 		return (
 			<div>
-				<h1>{this.props.event.name}</h1>
-				<div className="uk-section uk-section-xsmall">
+				<h1 className="uk-container">{this.props.event.name}</h1>
+				<div className="uk-section uk-section-xsmall uk-container">
 					<h3>Add Attendee</h3>
 					<p>Search for an attendee, to add them to this event</p>
 					<AttendeeSearch
@@ -86,38 +78,20 @@ class EventAttendeesPage extends React.Component<{event: IEvent}> {
 						onChange={this.attendeeSearch}
 					/>
 				</div>
-				{!!guests.length &&
+				{!!Object.keys(selectedAttendees).length &&
 					<div className="uk-section uk-section-muted uk-section-xsmall">
-						<h3>Guests</h3>
-						<input
-							type="search"
-							className="uk-input"
-							value={this.state.filterSearchTerms}
-							onChange={e => this.setState({ filterSearchTerms: e.target.value })}
-							placeholder="filter attendees"
-						/>
-						<dl className="uk-description-list uk-description-list-divider uk-margin">
-							{guests.map(attendeeId => {
-								const attendee = selectedAttendees[attendeeId];
-								return (
-									<React.Fragment key={attendeeId}>
-										<dt className="uk-flex uk-flex-middle uk-flex-between">
-											<div>{attendee.firstName} {attendee.lastName}</div>
-											<i
-												className="material-icons"
-												onClick={() => this.removeAttendee(attendeeId)}
-											>
-												delete
-											</i>
-										</dt>
-										<dd>{attendee.email || '-'}</dd>
-									</React.Fragment>
-								);
-							})}
-						</dl>
+						<div className="uk-container">
+							<h3>Guests</h3>
+							<FilterList
+								data={selectedAttendees}
+								headerFields={['firstName', 'lastName']}
+								bodyFields={['email']}
+								onRemove={this.removeAttendee}
+							/>
+						</div>
 					</div>
 				}
-				<div className="uk-clearfix uk-margin">
+				<div className="uk-clearfix uk-margin uk-container">
 					<button
 						className="uk-button uk-button-primary uk-float-right"
 						onClick={this.onSave}

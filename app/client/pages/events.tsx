@@ -50,7 +50,7 @@ class Events extends React.Component<Props> {
 
 	render() {
 		return (
-			<div>
+			<div className="uk-container">
 				<h2>The Events that kick off on your day, before, and maybe after</h2>
 				<p className="uk-margin-large-bottom">
 					Pre-wedding dinner, bridal shower, or how about after party?<br/>add them here.

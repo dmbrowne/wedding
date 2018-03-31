@@ -40,3 +40,9 @@ export function searchForAttendee(terms: string) {
 		route: 'admin/attendees?search=' + encodedSearchTerms,
 	});
 }
+
+export function getAllAttendees() {
+	return restfulRequest({
+		route: 'admin/attendees',
+	});
+}

@@ -19,6 +19,6 @@ router
 
 router
 	.route('/')
-	.get(verifyUser, (req: NextAppRequest, res) => req.nextAppRenderer.render(req, res, '/dashboard'));
+	.get((req: NextAppRequest, res) => req.nextAppRenderer.render(req, res, '/dashboard'));
 
 export default router;

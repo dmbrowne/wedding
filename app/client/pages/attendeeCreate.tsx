@@ -46,73 +46,75 @@ class NewAttendee extends React.Component {
 
 	render() {
 		return (
-			<form>
-				{this.state.newAttendees.map((attendee, idx) => {
-					const { firstName, lastName, email} = attendee;
-					return (
-						<fieldset
-							key={`new-attendee-${idx}`}
-							className="uk-tile uk-tile-muted uk-padding-small uk-margin"
+			<div className="uk-container">
+				<form>
+					{this.state.newAttendees.map((attendee, idx) => {
+						const { firstName, lastName, email} = attendee;
+						return (
+							<div
+								key={`new-attendee-${idx}`}
+								className="uk-tile uk-tile-muted uk-padding-small uk-margin"
+							>
+								<div className="uk-clearfix uk-margin">
+									<i
+										onClick={() => this.deleteAttendee(idx)}
+										className="uk-float-right material-icons"
+									>
+										delete
+									</i>
+								</div>
+								<div className="form-group">
+									<input
+										type="text"
+										value={firstName}
+										onChange={e => this.updateAttendeeField(e, idx, 'firstName')}
+										className="uk-input"
+										placeholder="First name"
+									/>
+								</div>
+								<div className="form-group">
+									<input
+										type="text"
+										value={lastName}
+										onChange={e => this.updateAttendeeField(e, idx, 'lastName')}
+										className="uk-input"
+										placeholder="Last name"
+									/>
+								</div>
+								<div className="form-group">
+									<input
+										type="email"
+										value={email}
+										onChange={e => this.updateAttendeeField(e, idx, 'email')}
+										className="uk-input"
+										placeholder="Enter email"
+									/>
+								</div>
+							</div>
+						);
+					})}
+					<div
+						onClick={() => this.addAttendeeField()}
+						className="uk-button uk-button-secondary"
+					>
+						Add More
+					</div>
+					<div className="uk-clearfix">
+						<div
+							onClick={() => this.submit()}
+							className="uk-button uk-button-primary uk-float-right"
 						>
-							<div className="uk-clearfix uk-margin">
-								<i
-									onClick={() => this.deleteAttendee(idx)}
-									className="uk-float-right material-icons"
-								>
-									delete
-								</i>
-							</div>
-							<div className="form-group">
-								<input
-									type="text"
-									value={firstName}
-									onChange={e => this.updateAttendeeField(e, idx, 'firstName')}
-									className="form-control"
-									placeholder="First name"
-								/>
-							</div>
-							<div className="form-group">
-								<input
-									type="text"
-									value={lastName}
-									onChange={e => this.updateAttendeeField(e, idx, 'lastName')}
-									className="form-control"
-									placeholder="Last name"
-								/>
-							</div>
-							<div className="form-group">
-								<input
-									type="email"
-									value={email}
-									onChange={e => this.updateAttendeeField(e, idx, 'email')}
-									className="form-control"
-									placeholder="Enter email"
-								/>
-							</div>
-						</fieldset>
-					);
-				})}
-				<div
-					onClick={() => this.addAttendeeField()}
-					className="uk-button uk-button-secondary"
-				>
-					Add More
-				</div>
-				<div className="uk-clearfix">
-					<div
-						onClick={() => this.submit()}
-						className="uk-button uk-button-primary uk-float-right"
-					>
-						Submit
+							Submit
+						</div>
+						<div
+							onClick={() => Router.push('/admin/attendees')}
+							className="uk-button uk-button-default uk-margin-right uk-float-right"
+						>
+							Cancel
+						</div>
 					</div>
-					<div
-						onClick={() => Router.push('/admin/attendees')}
-						className="uk-button uk-button-default uk-margin-right uk-float-right"
-					>
-						Cancel
-					</div>
-				</div>
-			</form>
+				</form>
+			</div>
 		);
 	}
 }

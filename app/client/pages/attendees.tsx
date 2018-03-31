@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Link from 'next/link';
 import { withAdmin } from '../components/adminLayout';
-import { deleteAttendees } from '../api/attendee';
+import { deleteAttendees, getAllAttendees } from '../api/attendee';
 import { IAttendee } from '../../server/types/models';
 import CheckboxTable from '../components/CheckboxTable';
 
@@ -10,7 +10,7 @@ class Attendees extends React.Component<{ attendees: IAttendee[] }> {
 		return {
 			attendees: (res ?
 				res.locals.attendees :
-				[]
+				await getAllAttendees()
 			),
 		};
 	}
@@ -52,7 +52,7 @@ class Attendees extends React.Component<{ attendees: IAttendee[] }> {
 
 	render() {
 		return (
-			<div>
+			<div className="uk-container">
 				<h2>Everyone that you would like to come.</h2>
 				<p className="uk-margin-large-bottom">No matter which events you would like them to attend, this list represents
 					the total people you would like to attend throughout the day</p>

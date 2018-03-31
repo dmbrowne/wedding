@@ -62,38 +62,42 @@ export default class AttendeeGroupForm extends React.Component<Props, State> {
 		return (
 			<React.Fragment>
 				<section className="uk-section uk-padding uk-section-default">
-					<h3 className="uk-margin">Group details</h3>
-					<form className="uk-margin-top">
-						<div className="form-group">
-							<label>Group name</label>
-							<input
-								className="form-control"
-								type="text"
-								value={this.props.groupName}
-								onChange={e => this.props.onChange(e, 'groupName')}
-							/>
-						</div>
-						<div className="form-group">
-							<label>Add members</label>
-							<AttendeeSearch
-								onChange={this.props.onSearch}
-								onClick={this.props.onSelectAttendee}
-								data={this.props.attendeesSearchResults}
-							/>
-						</div>
-					</form>
+					<div className="uk-container">
+						<h3 className="uk-margin">Group details</h3>
+						<form className="uk-margin-top">
+							<div className="uk-margin">
+								<label>Group name</label>
+								<input
+									className="uk-input"
+									type="text"
+									value={this.props.groupName}
+									onChange={e => this.props.onChange(e, 'groupName')}
+								/>
+							</div>
+							<div className="uk-margin">
+								<label>Add members</label>
+								<AttendeeSearch
+									onChange={this.props.onSearch}
+									onClick={this.props.onSelectAttendee}
+									data={this.props.attendeesSearchResults}
+								/>
+							</div>
+						</form>
+					</div>
 				</section>
 				<section className="uk-section-muted uk-padding">
-					<h3 className="uk-margin">Selected Attendees</h3>
-					{Object.keys(this.props.selectedAttendees).length > 0 &&
-						<SelectedAttendees
-							attendeesMap={this.props.selectedAttendees}
-							onClick={this.props.removeAttendee}
-						/>
-					}
+					<div className="uk-container">
+						<h3 className="uk-margin">Selected Attendees</h3>
+						{Object.keys(this.props.selectedAttendees).length > 0 &&
+							<SelectedAttendees
+								attendeesMap={this.props.selectedAttendees}
+								onClick={this.props.removeAttendee}
+							/>
+						}
+					</div>
 				</section>
 				<section className="uk-section uk-padding uk-section-default">
-					<div className="form-group">
+					<div className="uk-container uk-margin">
 						<label>Email for group</label>
 						<AutoCompleteSearch
 							placeholder="Filter for an email or type in a custom one..."
