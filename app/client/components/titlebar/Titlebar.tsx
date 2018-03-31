@@ -3,10 +3,10 @@ import cx from 'classnames';
 import './titlebar.scss';
 
 export default ({children, onMenuPress}) => (
-	<div className={'titlebar'}>
+	<div className="titlebar">
 		<i
 			onClick={onMenuPress}
-			className={cx('material-icons', 'menu')}
+			className="material-icons menu"
 		>
 			menu
 		</i>
