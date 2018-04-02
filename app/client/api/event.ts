@@ -3,6 +3,12 @@ import { IEvent } from '../../server/types/models';
 
 type CreateEventInput = {name: IEvent['name']} & Pick<IEvent, 'startTime' | 'endTime' | 'description'>;
 
+export function getEvents() {
+	return restfulRequest({
+		route: 'admin/events',
+	});
+}
+
 export function createEvent(event: CreateEventInput) {
 	return restfulRequest({
 		route: 'admin/events',
