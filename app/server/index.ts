@@ -51,11 +51,12 @@ function startServer(portNumber) {
 }
 
 function configureRoutes(server) {
-	server.use('/email', sendMail);
 	server.use('/admin', userRoutes);
+	server.use('/admin/email', sendMail);
 	server.use('/admin/attendees', attendeeRoutes);
 	server.use('/admin/sendgroups', sendGroupRoutes);
 	server.use('/admin/events', eventsRoutes);
+	server.use('/admin/sendInvite', (req, res) => req.nextAppRenderer.render(req, res, '/sendInvites'));
 	server.get('*', (req, res) => handler(req, res));
 }
 
