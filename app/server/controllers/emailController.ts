@@ -1,40 +1,88 @@
 import * as mailgun from 'mailgun-js';
 import mailGunConfig = require('../../../config/mailgun.json');
+import models from '../models';
+import * as path from 'path';
 
 const { apiKey, publicKey } = mailGunConfig;
-const mg = mailgun({ username: 'api', apiKey, publicKey, domain: 'thebrownes.info' });
+const mg = mailgun({
+	apiKey,
+	publicKey,
+	domain: 'sandboxee77732dae204720b35b93c18fcff294.mailgun.org',
+});
 
-export function sendMail(req, res) {
+async function getAttendeesThatArentInAGroup() {
+	const attendeesThatArentInAGroup = await models.Attendee.findAll({
+		where: {
+			sendGroupId: null,
+		},
+	});
+
+	const applicableSendees = attendeesThatArentInAGroup.filter(email => email);
+	const sendAddresses = applicableSendees.map(attendee => attendee.getDataValue('email'));
+	const recipientVars = applicableSendees.reduce((accum, attendee) => ({
+		...accum,
+		[attendee.email]: {
+			first: attendee.firstName,
+			last: attendee.lastName,
+			invitationlink: `http://savethedate.thebrownes.info/a/${attendee.id}`,
+		},
+	}), {});
+	return {
+		applicableSendees,
+		sendAddresses,
+		recipientVars,
+	};
+}
+
+async function getSendGroups() {
+	const sendGroups = await models.SendGroup.findAll({
+		where: {
+			email: !null,
+		},
+	});
+
+	const applicableSendees = sendGroups.filter(email => email);
+	const sendAddresses = applicableSendees.map(group => group.getDataValue('email'));
+	const recipientVars = applicableSendees.reduce((accum, group) => ({
+		...accum,
+		[group.email]: {
+			name: group.name,
+			invitationlink: `http://savethedate.thebrownes.info/g/${group.id}`,
+		},
+	}), {});
+
+	return {
+		applicableSendees,
+		sendAddresses,
+		recipientVars,
+	};
+}
+
+export async function sendMail(req, res) {
+	const { subject, sendgroups } = req.body;
+	let { content } = req.body;
+	const filename = path.join(__dirname, '../../client/assets/y&d-logo.png');
+	content = content.replace('%logo%', '<img width="150" src="cid:y&d-logo.png"/>');
+
+	const { sendAddresses, recipientVars } = sendgroups ?
+		await getSendGroups() :
+		await getAttendeesThatArentInAGroup();
+
 	const data = {
-		from: 'The Brownes <y-and-d@thebrownes.info>',
-		to: 'daryl.browne@hotmail.com, yasminobosi@yahoo.co.uk, daryl.browne@gmail.com',
-		subject: 'Our special day',
-		html: '<p>Hello Daryl,</p>\
-		<p>As you know Yasmin and I will wed this year, October. You should have received a \
-		link to our save the date previously, hopefully you did just that!</p>\
-		<br/>\
-		<p>Please do come and join us on our special day. A link to your invite is below.</p>\
-		<p><a href="http://thebrownes.info/" alt="Daryls Invitation">Click here</a> for your invite</p>\
-		<p>Please complete the RSVP at the bottom of the invite by the <strong>31st July</strong>.\
-		unfortunately RSVP\'s completed after this date will not be considered and your place \
-		<i>may</i> be given to someone else</p>\
-		<br />\
-		<p><i>Thank you once again, and hope to see you very soon!! :D</i></p>\
-		<br/>\
-		<br/>\
-		Kind regards,<br/>\
-		The future Mr. and Mrs. Browne of twenty eighteen',
+		'inline': filename,
+		'to': sendAddresses,
+		'from': 'Dazza Youoo <brownes@sandboxee77732dae204720b35b93c18fcff294.mailgun.org>',
+		// 'from': 'The Brownes <y-and-d@thebrownes.info>',
+		'subject': subject,
+		'recipient-variables': recipientVars,
+		'html': content,
 	};
 
-	res.send('ok')
-	// mg.messages().send(data, function (error, body) {
-	// 	if (error) {
-	// 		const { name, message } = error;
-	// 		return res.status(500).send({ name, message });
-	// 	}
-	// 	res.send(body)
-	// 	console.log(body);
-	// });
-
-
+	mg.messages().send(data, function (error, body) {
+		if (error) {
+			const { name, message } = error;
+			return res.status(500).send({ name, message });
+		}
+		res.send({body});
+	});
 }
