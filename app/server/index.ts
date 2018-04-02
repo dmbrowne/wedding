@@ -14,7 +14,7 @@ import { sendMail } from './controllers/emailController';
 import { NextAppRequest } from './types';
 
 const RedisStore = connectRedis(session);
-const port = 4000;
+const port = process.env.PORT || 4000;
 const dev = process.env.NODE_ENV !== 'production';
 const app = next({
 	dir: './app/client',
