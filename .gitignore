@@ -4,5 +4,5 @@ redis_data
 .next
 !next.config.js
 **/*.js
-config/databse.json
+config/database.json
 config/mailgun.json
