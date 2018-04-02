@@ -55,11 +55,28 @@ export function createNewAttendees(req: NextAppRequest, res: Response) {
 	const { newAttendees } = req.body;
 	const attendees = newAttendees.filter(attendee => !!attendee.firstName && !!attendee.lastName);
 
-	return models.Attendee.bulkCreate(attendees)
+	return bulkCreateWithAssociations(attendees)
 		.then(() => res.json({success: true}))
 		.catch((err) => {
 			res.status(400).send(err);
 		});
+
+	function bulkCreateWithAssociations(attndees) {
+		const bulkCreation = attndees.map(attendee => {
+			return models.Attendee.create({
+				firstName: attendee.firstName,
+				lastName: attendee.lastName,
+				email: attendee.email || null,
+			})
+			.then((createdAttendee): Promise<any> => {
+				if (!attendee.eventIds) {
+					return Promise.resolve(createdAttendee);
+				}
+				return createdAttendee.setEvents(attendee.eventIds);
+			});
+		});
+		return Promise.all(bulkCreation);
+	}
 }
 
 export async function editAttendee(req: NextAppRequest, res: Response) {

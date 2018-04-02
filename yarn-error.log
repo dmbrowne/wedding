@@ -1,5 +1,5 @@
 Arguments: 
-  /Users/dbrowne/.nvm/versions/node/v9.4.0/bin/node /usr/local/Cellar/yarn/1.5.1/libexec/bin/yarn.js add @zeit/next-css/commons-chunk-config
+  /Users/dbrowne/.nvm/versions/node/v9.4.0/bin/node /usr/local/Cellar/yarn/1.5.1/libexec/bin/yarn.js add react-dom/server
 
 PATH: 
   /Users/dbrowne/.rbenv/shims:/Users/dbrowne/.nvm/versions/node/v9.4.0/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Users/dbrowne/Library/Android/sdk/tools:/Users/dbrowne/Library/Android/sdk/platform-tools/:/Users/dbrowne/Library/Android/sdk/platform-tools/com.google.android.gmail_6.5.apk
@@ -8206,11 +8206,20 @@ Lockfile:
       yargs-parser "^2.4.0"
 
 Trace: 
-  Error: Couldn't find package "@zeit/next-css/commons-chunk-config" on the "npm" registry.
-      at new MessageError (/usr/local/Cellar/yarn/1.5.1/libexec/lib/cli.js:186:110)
-      at NpmResolver.<anonymous> (/usr/local/Cellar/yarn/1.5.1/libexec/lib/cli.js:51625:15)
-      at Generator.next (<anonymous>)
-      at step (/usr/local/Cellar/yarn/1.5.1/libexec/lib/cli.js:98:30)
-      at /usr/local/Cellar/yarn/1.5.1/libexec/lib/cli.js:109:13
-      at <anonymous>
-      at process._tickCallback (internal/process/next_tick.js:160:7)
+  Error: Command failed.
+  Exit code: 128
+  Command: git
+  Arguments: ls-remote --tags --heads ssh://git@github.com/react-dom/server.git
+  Directory: /Users/dbrowne/Dev/wedding
+  Output:
+  ERROR: Repository not found.
+  fatal: Could not read from remote repository.
+  
+  Please make sure you have the correct access rights
+  and the repository exists.
+      at ProcessTermError.MessageError (/usr/local/Cellar/yarn/1.5.1/libexec/lib/cli.js:186:110)
+      at new ProcessTermError (/usr/local/Cellar/yarn/1.5.1/libexec/lib/cli.js:226:113)
+      at ChildProcess.<anonymous> (/usr/local/Cellar/yarn/1.5.1/libexec/lib/cli.js:30281:17)
+      at ChildProcess.emit (events.js:160:13)
+      at maybeClose (internal/child_process.js:943:16)
+      at Process.ChildProcess._handle.onexit (internal/child_process.js:220:5)
