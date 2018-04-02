@@ -2,7 +2,13 @@
 node_modules
 redis_data
 .next
-!next.config.js
+*.js
 **/*.js
+!ecosystem.config.js
+!next.config.js
+# config/*.js
+# migrations/*.js
+# seeders/*.js
+# app/**/*.js
 config/database.json
 config/mailgun.json
