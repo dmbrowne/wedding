@@ -42,7 +42,7 @@
     "start:production": "NODE_ENV=production node index.js",
     "dev": "npm run tsc || true && concurrently \"nodemon -w app/server index.js\" \"npm run tsc:server -- --watch\" \"npm run tsc:client -- --watch\"",
     "test": "jest",
-    "tsc": "npm run tsc:client && npm run tsc:server",
+    "tsc": "npm run tsc:client || true && npm run tsc:server || true",
     "tsc:client": "tsc -p app/client/tsconfig.json",
     "tsc:server": "tsc -p tsconfig.json",
     "lint": "tslint **/*.ts",
