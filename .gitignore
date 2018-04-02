@@ -2,4 +2,7 @@
 node_modules
 redis_data
 .next
+!next.config.js
 **/*.js
+config/databse.json
+config/mailgun.json
