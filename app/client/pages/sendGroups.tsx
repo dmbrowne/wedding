@@ -8,7 +8,7 @@ import CheckboxTable from '../components/CheckboxTable';
 class SendGroups extends React.Component<{ sendGroups: ISendGroup[] }> {
 	static getInitialProps = async ({ res }) => {
 		return {
-			sendGroups: (res ?
+			sendGroups: (res && res.locals.sendGroups ?
 				res.locals.sendGroups :
 				[]
 			),
