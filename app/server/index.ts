@@ -12,6 +12,7 @@ import sendGroupRoutes from './routes/sendGroupRoutes';
 import eventsRoutes from './routes/eventRoutes';
 import { sendMail } from './controllers/emailController';
 import { NextAppRequest } from './types';
+import { verifyUser } from './utils/express';
 
 const RedisStore = connectRedis(session);
 const port = process.env.PORT || 4000;
@@ -51,12 +52,12 @@ function startServer(portNumber) {
 }
 
 function configureRoutes(server) {
-	server.use('/admin', userRoutes);
-	server.use('/admin/email', sendMail);
-	server.use('/admin/attendees', attendeeRoutes);
-	server.use('/admin/sendgroups', sendGroupRoutes);
-	server.use('/admin/events', eventsRoutes);
-	server.use('/admin/sendInvite', (req, res) => req.nextAppRenderer.render(req, res, '/sendInvites'));
+	server.use('/admin', verifyUser, userRoutes);
+	server.use('/admin/email', verifyUser, sendMail);
+	server.use('/admin/attendees', verifyUser, attendeeRoutes);
+	server.use('/admin/sendgroups', verifyUser, sendGroupRoutes);
+	server.use('/admin/events', verifyUser, eventsRoutes);
+	server.use('/admin/sendInvite', verifyUser, (req, res) => req.nextAppRenderer.render(req, res, '/sendInvites'));
 	server.get('*', (req, res) => handler(req, res));
 }
 
