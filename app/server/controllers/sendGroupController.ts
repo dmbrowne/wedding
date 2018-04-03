@@ -26,7 +26,7 @@ export async function getAllSendGroups(req: NextAppRequest, res: Response, next:
 	if (req.xhr) {
 		res.send(sendGroups);
 	} else {
-		req.nextAppRenderer.render(req, res, '/sendGroups');
+		req.nextAppRenderer.render(req, res, '/sendGroup');
 	}
 }
 
