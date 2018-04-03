@@ -1,4 +1,3 @@
-const host = 'http://localhost:4000';
 import * as es6Promise from 'es6-promise';
 es6Promise.polyfill();
 import 'isomorphic-fetch';
@@ -34,7 +33,7 @@ export const restfulRequest = (opts) => {
 	}
 
 	return fetch(
-		`${host}/${route}`,
+		`/${route}`,
 		options,
 	)
 	.then(errorHandler)
