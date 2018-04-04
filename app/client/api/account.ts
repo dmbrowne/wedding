@@ -1,5 +1,11 @@
 import { restfulRequest } from './utils';
 
+export const getUserAccount = () => {
+	return restfulRequest({
+		route: 'me',
+	});
+};
+
 export const updateAccount = (input) => {
 	return restfulRequest({
 		route: 'me',
