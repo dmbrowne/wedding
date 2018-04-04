@@ -67,8 +67,8 @@ function configureRouteMiddleware(server) {
 	server.use(session({
 		store: new RedisStore(redisConfig[process.env.NODE_ENV || 'development']),
 		secret: 'theNewBrownesWeeding',
-		resave: false,
-		saveUninitialized: false,
+		resave: true,
+		saveUninitialized: true,
 	}));
 
 	server.use('/static', express.static(path.join(__dirname, '../client', '.next/static')));
