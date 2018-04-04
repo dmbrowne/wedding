@@ -34,7 +34,7 @@ class LoginScreen extends React.Component {
 				<h1>Admin area login</h1>
 				<img className="logo" src="/assets/y&d-logo.png" />
 				{!!this.props.loginError && this.errorAlert()}
-				<form method="POST" action="/admin/login">
+				<form method="POST" action="/login">
 					<div className="uk-margin">
 						<input
 							type="email"
