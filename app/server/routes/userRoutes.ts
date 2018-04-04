@@ -11,9 +11,14 @@ import { NextAppRequest } from '../types';
 const router = Router();
 
 const dashboardRedirect = (req: NextAppRequest, res: Response, next: NextFunction) => {
-	// if (req.session && req.session.user) {
-	// 	return res.redirect('/dashboard');
-	// }
+	if (req.xhr) {
+		return next();
+	}
+
+	if (req.session && req.session.user) {
+		return res.redirect('/admin');
+	}
+
 	next();
 };
 
