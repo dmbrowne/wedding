@@ -1,8 +1,0 @@
-{
-	"files.exclude": {
-		"app/**/*.js": true,
-		"migrations/*.js": true,
-		"config/*.js": true,
-		"seeders/*.js": true,
-	},
-}
