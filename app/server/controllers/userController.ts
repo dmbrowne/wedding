@@ -55,36 +55,37 @@ export function register(req: Request, res: Response, next: NextFunction) {
 }
 
 export function login(req: Request, res: Response, next) {
-	if (req.session && req.session.loginError) {
-		delete req.session.loginError;
-	}
-
 	const { email, password } = req.body;
 
 	if (!email || !password) {
 		req.session.loginError = 'Email and password is required to log in';
-		return res.redirect('/admin/login');
+		return res.redirect('/login');
 	}
 
-	models.User.findOne({
+	const UserWithPassword = models.User.scope('allFields');
+
+	UserWithPassword.findOne({
 		where: { email },
 	})
-	.then((user) => {
+	.then(user => {
 		if (!user) {
-			return res.redirect('/admin/login?error=404');
+			return res.redirect('/login?error=404');
 		}
+
 		user.checkPassword(password).then(correctPassword => {
 			if (!correctPassword) {
 				req.session.loginError = `The given password mismatches the one stored for ${email}.`;
-				return res.redirect('/admin/login?error=401');
+				return res.redirect('/login?error=401');
 			}
-			req.session.user = user;
-			res.redirect('/admin');
+
+			models.User.findById(user.id).then(safeUser => {
+				delete req.session.loginError;
+				req.session.user = safeUser;
+				res.redirect('/admin');
+			});
 		});
 	})
-	.catch(err => {
-		next(err);
-	});
+	.catch(err => next(err));
 }
 
 export function getSessionUser(req: Request, res: Response) {
@@ -99,14 +100,13 @@ export function updateAccount(req: Request, res: Response, next: NextFunction) {
 	}
 
 	const updateValues = getDesiredValuesFromRequestBody(['email', 'username'], req.body);
-	models.User.update(
-		updateValues,
-  	{ where: { id: user.id } },
-	)
-	.then(updatedUser => {
-		res.send(updatedUser);
-	})
-	.catch(err => next(err));
+	models.User.findById(user.id)
+		.then(usr => usr.update(updateValues))
+		.then(updatedUser => {
+			req.session.user = updatedUser;
+			return res.send(updatedUser);
+		})
+		.catch(err => { console.log('fucking Error!!!', err); });
 }
 
 export async function changeUserPassword(req: Request, res: Response, next: NextFunction) {
