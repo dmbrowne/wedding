@@ -7,6 +7,7 @@ import {
 	changeUserPassword,
 } from '../controllers/userController';
 import { NextAppRequest } from '../types';
+import { verifyUser, xhrOnly } from '../utils/express';
 
 const router = Router();
 
@@ -28,14 +29,10 @@ router
 	.post(login);
 
 router
-	.route('/')
-	.get((req: NextAppRequest, res) => req.nextAppRenderer.render(req, res, '/dashboard'));
-
-router
 	.route('/me')
-	.get(getSessionUser)
-	.put(updateAccount);
+	.get([verifyUser, getSessionUser], getSessionUser)
+	.put([verifyUser, getSessionUser], updateAccount);
 
-router.put('/me/password', changeUserPassword);
+router.put('/me/password', verifyUser, xhrOnly, changeUserPassword);
 
 export default router;
