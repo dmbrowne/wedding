@@ -57,7 +57,7 @@
     "migrate": "tsc -p migrations || true && sequelize db:migrate",
     "migrate:undo": "tsc -p migrations || true && sequelize db:migrate:undo",
     "migrate:undo:all": "tsc -p migrations || true && sequelize db:migrate:undo:all",
-    "seed": "tsc -p migrations || true && sequelize db:seed",
+    "seed": "tsc -p seeders || true && sequelize db:seed:all",
     "seed:undo": "tsc -p migrations || true && sequelize db:seed:undo",
     "seed:undo:all": "tsc -p migrations || true && sequelize db:seed:undo:all"
   },
