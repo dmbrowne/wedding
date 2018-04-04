@@ -1,7 +1,7 @@
-import Sequelize, { QueryInterface } from 'sequelize';
+import { QueryInterface } from 'sequelize';
 
 module.exports = {
-  up: async (queryInterface: QueryInterface) => {
+  up: async (queryInterface: QueryInterface, Sequelize) => {
     queryInterface.sequelize.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp";');
     const userTable = queryInterface.createTable('Users', {
       id: {
@@ -25,10 +25,12 @@ module.exports = {
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
+        defaultValue: Sequelize.fn('now'),
       },
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
+        defaultValue: Sequelize.fn('now'),
       },
     });
     return userTable;
