@@ -33,6 +33,6 @@ router
 	.get([verifyUser, getSessionUser], getSessionUser)
 	.put([verifyUser, getSessionUser], updateAccount);
 
-router.put('/me/password', verifyUser, xhrOnly, changeUserPassword);
+router.put('/me/password', [verifyUser, getSessionUser], changeUserPassword);
 
 export default router;
