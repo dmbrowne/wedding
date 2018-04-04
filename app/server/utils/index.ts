@@ -1,9 +1,9 @@
 import { Request } from 'express';
 
-export const getDesiredValuesFromRequestBody = (
+export function getDesiredValuesFromRequestBody(
 	desiredValues: string[],
 	requestBody: Request['body'],
-): {[key: string]: any} | null => {
+): {[key: string]: any} | null {
 	const foundValues = desiredValues.reduce((values, keyValue: string) => {
 		const value = requestBody[keyValue];
 		return (value ?
@@ -13,7 +13,7 @@ export const getDesiredValuesFromRequestBody = (
 	}, {});
 
 	return Object.keys(foundValues).length ? foundValues : null;
-};
+}
 
 export function asyncAwaitTryCatch(promise) {
 	return promise.then(data => {

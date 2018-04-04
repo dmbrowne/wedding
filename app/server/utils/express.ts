@@ -7,6 +7,10 @@ export function withRenderer(controller, app: Server, route: string) {
 }
 
 export function verifyUser(req: Request, res: Response, next: NextFunction) {
+	if (process.env.NODE_ENV !== 'production') {
+		next();
+	}
+
 	if (req.session && req.session.user) {
 		return next();
 	}
