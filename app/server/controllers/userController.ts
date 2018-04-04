@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { NextAppRequest } from '../types';
 import models from '../models';
+import { getDesiredValuesFromRequestBody } from '../utils';
 
 const loginErrorCatalogue = (code) => {
 	switch (code) {
@@ -84,4 +85,40 @@ export function login(req: Request, res: Response, next) {
 	.catch(err => {
 		next(err);
 	});
+}
+
+export function getSessionUser(req: Request, res: Response) {
+	res.send(req.session.user);
+}
+
+export function updateAccount(req: Request, res: Response, next: NextFunction) {
+	const { user } = req.session;
+	const { email, username } = req.body;
+	if (!email && !username) {
+		res.send(user);
+	}
+
+	const updateValues = getDesiredValuesFromRequestBody(['email', 'username'], req.body);
+	models.User.update(
+		updateValues,
+  	{ where: { id: user.id } },
+	)
+	.then(updatedUser => {
+		res.send(updatedUser);
+	})
+	.catch(err => next(err));
+}
+
+export async function changeUserPassword(req: Request, res: Response, next: NextFunction) {
+	const { user: sessionUser } = req.session;
+	const { currentPassword, newPassword } = req.body;
+	const user = await models.User.findById(sessionUser.id);
+	const currentPwCorrect = await user.checkPassword(currentPassword);
+
+	if (!currentPwCorrect) {
+		return res.status(400).send({ message: 'The current password given is incorrect' });
+	}
+
+	const updatedUser = await user.update({ password: newPassword });
+	return res.send(updatedUser);
 }

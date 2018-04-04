@@ -1,7 +1,12 @@
 import { Router, Response, NextFunction } from 'express';
-import { login, signIn } from '../controllers/userController';
+import {
+	login,
+	signIn,
+	getSessionUser,
+	updateAccount,
+	changeUserPassword,
+} from '../controllers/userController';
 import { NextAppRequest } from '../types';
-import { verifyUser } from '../utils/express';
 
 const router = Router();
 
@@ -20,5 +25,12 @@ router
 router
 	.route('/')
 	.get((req: NextAppRequest, res) => req.nextAppRenderer.render(req, res, '/dashboard'));
+
+router
+	.route('/me')
+	.get(getSessionUser)
+	.put(updateAccount);
+
+router.put('/me/password', changeUserPassword);
 
 export default router;
