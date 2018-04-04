@@ -52,12 +52,13 @@ function startServer(portNumber) {
 }
 
 function configureRoutes(server) {
-	server.use('/admin', verifyUser, userRoutes);
+	server.use('/', userRoutes);
+	server.get('/admin', verifyUser, (req: NextAppRequest, res) => req.nextAppRenderer.render(req, res, '/dashboard'));
 	server.use('/admin/email', verifyUser, sendMail);
 	server.use('/admin/attendees', verifyUser, attendeeRoutes);
 	server.use('/admin/sendgroups', verifyUser, sendGroupRoutes);
 	server.use('/admin/events', verifyUser, eventsRoutes);
-	server.use('/admin/sendInvite', verifyUser, (req, res) => req.nextAppRenderer.render(req, res, '/sendInvites'));
+	server.get('/admin/sendInvite', verifyUser, (req, res) => req.nextAppRenderer.render(req, res, '/sendInvites'));
 	server.get('*', (req, res) => handler(req, res));
 }
 
