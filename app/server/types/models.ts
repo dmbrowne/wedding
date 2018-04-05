@@ -1,3 +1,10 @@
+export interface IUser {
+	email: string;
+	firstName: string;
+	lastName: string;
+	id: string;
+	role: 'admin' | 'user';
+}
 export interface IAttendee {
 	id: string;
 	email: string;
