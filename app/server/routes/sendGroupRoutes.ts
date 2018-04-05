@@ -12,7 +12,7 @@ import { verifyUser, xhrOnly } from '../utils/express';
 
 const router = Router();
 
-// router.use(verifyUser);
+router.use(verifyUser);
 
 router.route('/')
 	.get(getAllSendGroups)

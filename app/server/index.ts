@@ -6,10 +6,11 @@ import * as next from 'next';
 import * as bodyParser from 'body-parser';
 
 import redisConfig = require('../../config/redis.json');
-import userRoutes from './routes/userRoutes';
+import accountRoutes from './routes/accountRoutes';
 import attendeeRoutes from './routes/attendeeRoutes';
 import sendGroupRoutes from './routes/sendGroupRoutes';
-import eventsRoutes from './routes/eventRoutes';
+import eventRoutes from './routes/eventRoutes';
+import userRoutes from './routes/userRoutes';
 import { sendMail } from './controllers/emailController';
 import { NextAppRequest } from './types';
 import { verifyUser } from './utils/express';
@@ -52,13 +53,14 @@ function startServer(portNumber) {
 }
 
 function configureRoutes(server) {
-	server.use('/', userRoutes);
-	server.get('/admin', verifyUser, (req: NextAppRequest, res) => req.nextAppRenderer.render(req, res, '/dashboard'));
-	server.use('/admin/email', verifyUser, sendMail);
-	server.use('/admin/attendees', verifyUser, attendeeRoutes);
-	server.use('/admin/sendgroups', verifyUser, sendGroupRoutes);
-	server.use('/admin/events', verifyUser, eventsRoutes);
-	server.get('/admin/sendInvite', verifyUser, (req, res) => req.nextAppRenderer.render(req, res, '/sendInvites'));
+	server.use('/', accountRoutes);
+	server.use('/admin/email', sendMail);
+	server.use('/admin/users', userRoutes);
+	server.use('/admin/attendees', attendeeRoutes);
+	server.use('/admin/sendgroups', sendGroupRoutes);
+	server.use('/admin/events', eventRoutes);
+	server.get('/admin', verifyUser, (req: NextAppRequest, res) => {req.nextAppRenderer.render(req, res, '/dashboard')});
+	server.get('/admin/sendInvites', verifyUser, (req, res) => req.nextAppRenderer.render(req, res, '/sendInvites'));
 	server.get('*', (req, res) => handler(req, res));
 }
 

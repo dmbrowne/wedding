@@ -88,6 +88,11 @@ export function login(req: Request, res: Response, next) {
 	.catch(err => next(err));
 }
 
+export function logout(req: Request, res: Response) {
+	delete req.session.user;
+	res.redirect('/login');
+}
+
 export function getSessionUser(req: Request, res: Response) {
 	res.send(req.session.user);
 }
@@ -121,4 +126,74 @@ export async function changeUserPassword(req: Request, res: Response, next: Next
 
 	const updatedUser = await user.update({ password: newPassword });
 	return res.send(updatedUser);
+}
+
+export function allUsers(req: NextAppRequest, res: Response) {
+	models.User.findAll().then(users => {
+		if (req.xhr) {
+			return res.send(users);
+		}
+		res.locals.users = users;
+		req.nextAppRenderer.render(req, res, '/users');
+	});
+}
+
+export function getUser(req: NextAppRequest, res: Response) {
+	const { userId } = req.params;
+	return models.User.findById(userId).then(user => {
+		if (req.xhr) {
+			return res.send(user);
+		}
+		res.locals.user = user;
+		req.nextAppRenderer.render(req, res, '/userEdit');
+	});
+}
+
+export function createNewUser(req: Request, res: Response, next: NextFunction) {
+	const { email, password, role, firstName, lastName } = req.body;
+	models.User.create({
+		email, password, role, firstName, lastName,
+	})
+	.then(user => {
+		if (req.xhr) {
+			return res.send(user);
+		}
+		res.redirect('/admin/users');
+	})
+	.catch(error => next(error));
+}
+
+export function editOtherUser(req: Request, res: Response, next: NextFunction) {
+	if (req.session.user.role !== 'admin') {
+		res.status(403);
+		const errMessage = 'User does not have permission to edit this user';
+		if (req.xhr) {
+			return res.send({ message: errMessage });
+		}
+		next(new Error(errMessage));
+	}
+
+	const { userId } = req.params;
+	const updateValues = getDesiredValuesFromRequestBody(
+		['email', 'password', 'role', 'firstName', 'lastName'],
+		req.body,
+	);
+	return models.User.findById(userId).then(user => {
+		user.update(updateValues).then(updatedUser => {
+			if (req.xhr) {
+				return res.send(updatedUser);
+			}
+			res.redirect('/admin/users');
+		});
+	});
+}
+
+export function deleteUser(req: Request, res: Response, next: NextFunction) {
+	if (req.session.user.role !== 'admin') {
+		return res.status(403).send({ message: 'User does not have permission to edit this user' });
+	}
+	const { userId } = req.params;
+	return models.User.findById(userId).then(user => {
+		return user.destroy().then(() => res.send({ result: 'ok' }));
+	});
 }

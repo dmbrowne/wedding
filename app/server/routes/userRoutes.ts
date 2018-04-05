@@ -1,38 +1,29 @@
-import { Router, Response, NextFunction } from 'express';
+import { Router } from 'express';
 import {
-	login,
-	signIn,
-	getSessionUser,
-	updateAccount,
-	changeUserPassword,
+	allUsers,
+	getUser,
+	createNewUser,
+	deleteUser,
+	editOtherUser,
 } from '../controllers/userController';
+import { xhrOnly, verifyUser } from '../utils/express';
 import { NextAppRequest } from '../types';
-import { verifyUser, xhrOnly } from '../utils/express';
 
 const router = Router();
 
-const dashboardRedirect = (req: NextAppRequest, res: Response, next: NextFunction) => {
-	if (req.xhr) {
-		return next();
-	}
-
-	if (req.session && req.session.user) {
-		return res.redirect('/admin');
-	}
-
-	next();
-};
+router.use(verifyUser);
 
 router
-	.route('/login')
-	.get(dashboardRedirect, signIn)
-	.post(login);
+	.route('/')
+	.get(allUsers)
+	.post(createNewUser);
+
+router.get('/new', (req: NextAppRequest, res) => req.nextAppRenderer.render(req, res, '/userCreate'));
 
 router
-	.route('/me')
-	.get([verifyUser, getSessionUser], getSessionUser)
-	.put([verifyUser, getSessionUser], updateAccount);
-
-router.put('/me/password', [verifyUser, getSessionUser], changeUserPassword);
+	.route('/:userId')
+	.get(getUser)
+	.put(editOtherUser)
+	.delete(xhrOnly, deleteUser);
 
 export default router;

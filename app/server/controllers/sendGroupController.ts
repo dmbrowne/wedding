@@ -5,7 +5,7 @@ import models from '../models';
 import { getDesiredValuesFromRequestBody, asyncAwaitTryCatch } from '../utils';
 import { IAttendee } from '../types/models';
 
-export async function getAllSendGroups(req: NextAppRequest, res: Response, next: NextFunction) {
+export async function getAllSendGroups(req: NextAppRequest, res: Response) {
 	const [err, sendGroups] = await asyncAwaitTryCatch(
 		models.SendGroup.findAll({
 			include: [{
@@ -18,7 +18,7 @@ export async function getAllSendGroups(req: NextAppRequest, res: Response, next:
 		if (req.xhr) {
 			return res.status(400).json({ name: err.name, message: err.message });
 		} else {
-			return next(err);
+			throw Error(err);
 		}
 	}
 
