@@ -19,7 +19,8 @@ module.exports = withTypescript(
       },
       cssLoaderOptions: {
         includePaths: ["node_modules"]
-      }
+      },
+      useFileSystemPublicRoutes: false,
     })
   )
 )
