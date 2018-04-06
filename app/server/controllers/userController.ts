@@ -114,18 +114,24 @@ export function updateAccount(req: Request, res: Response, next: NextFunction) {
 		.catch(err => { console.log('fucking Error!!!', err); });
 }
 
-export async function changeUserPassword(req: Request, res: Response, next: NextFunction) {
+export function changeUserPassword(req: Request, res: Response, next: NextFunction) {
 	const { user: sessionUser } = req.session;
 	const { currentPassword, newPassword } = req.body;
-	const user = await models.User.findById(sessionUser.id);
-	const currentPwCorrect = await user.checkPassword(currentPassword);
-
-	if (!currentPwCorrect) {
-		return res.status(400).send({ message: 'The current password given is incorrect' });
-	}
-
-	const updatedUser = await user.update({ password: newPassword });
-	return res.send(updatedUser);
+	const UserWithPassword = models.User.scope('allFields');
+	UserWithPassword.findById(sessionUser.id)
+		.then(user => {
+			return user.checkPassword(currentPassword).then(currentPwCorrect => {
+				if (!currentPwCorrect) {
+					return res.status(400).send({ message: 'The current password given is incorrect' });
+				}
+				return user.update({ password: newPassword }).then(updatedUser => {
+					res.send(updatedUser);
+				});
+			});
+		})
+		.catch(e => {
+			res.sendStatus(400);
+		});
 }
 
 export function allUsers(req: NextAppRequest, res: Response) {
