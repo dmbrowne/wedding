@@ -58,20 +58,23 @@ class Account extends React.Component<Props, State> {
 
 	saveAccountDetails = () => {
 		updateAccount({email: this.state.email})
-			.then(res => this.refresh())
+			.then((res) => {
+				alert('saved');
+				this.refresh();
+			})
 			.catch(err => {
 				alert('There was an error updating your account');
-				console.error(err)
+				console.error(err);
 			});
 	}
 
 	saveNewPassword = () => {
 		const { newPassword, currentPassword } = this.state;
 		if (newPassword !== this.state.confirmNewPassword) {
-			return console.error('confirmed password does not match');
+			return alert('confirmed password does not match');
 		}
 		changePassword({ newPassword, currentPassword })
-			.then(res => console.log(res))
+			.then(res => alert('saved'))
 			.catch(err => {
 				alert('Oops, something went wrong with updating the password');
 				console.error(err)
