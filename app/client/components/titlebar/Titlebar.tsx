@@ -1,15 +1,6 @@
 import * as React from 'react';
 import './titlebar.scss';
 
-// <div className="titlebar">
-// 	<i
-// 		onClick={onMenuPress}
-// 		className="material-icons menu"
-// 	>
-// 		menu
-// 	</i>
-// 	<h3 className={'title'}>{children}</h3>
-// </div>
 export default ({children, onMenuPress, firstName, lastName, onLogout }) => (
 	<div className="uk-background-secondary">
 		<div className="uk-navbar-container uk-navbar-transparent uk-light" data-uk-navbar={true}>
