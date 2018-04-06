@@ -43,7 +43,10 @@ class AttendeeEdit extends React.Component<Props, State> {
 	submit = () => {
 		editAttendee(this.props.attendee.id, this.state)
 			.then(() => Router.push('/admin/attendees'))
-			.catch(err => console.error(err));
+			.catch(err => {
+				console.error(err)
+				alert('Ooops, something went wrong :( \n Try again later');
+			});
 	}
 
 	confirmDelete = () => {
@@ -53,7 +56,10 @@ class AttendeeEdit extends React.Component<Props, State> {
 		})
 		.then(() => deleteAttendees([this.props.attendee.id]))
 		.then(() => Router.push('/admin/attendees'))
-		.catch(() => undefined);
+		.catch(e => {
+			console.error(e)
+			alert('Ooops, something went wrong :( \n Try again later');
+		});
 	}
 
 	render() {

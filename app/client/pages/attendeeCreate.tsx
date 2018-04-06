@@ -4,7 +4,6 @@ import '../styles/admin.scss';
 import { createAttendees } from '../api/attendee';
 import { getEvents } from '../api/event';
 import Router from 'next/router';
-import attendees from './attendees';
 
 const blankAttendee = {
 	firstName: '',
@@ -42,7 +41,7 @@ class NewAttendee extends React.Component {
 		});
 	}
 
-	deleteAttendee(idx) {
+	removeAttendeeFromList(idx) {
 		const attendees = [...this.state.newAttendees];
 		attendees.splice(idx, 1);
 		this.setState({ newAttendees: attendees });
@@ -59,9 +58,13 @@ class NewAttendee extends React.Component {
 			};
 		});
 
-		createAttendees(this.state.newAttendees).then(() => {
-			Router.push('/admin/attendees');
-		});
+		createAttendees(newAttendees)
+			.then(() => {
+				Router.push('/admin/attendees');
+			})
+			.catch(e => {
+				alert('ooops, something went wrong :(')
+			});
 	}
 
 	onSelectEvent(e, idx) {
@@ -83,7 +86,7 @@ class NewAttendee extends React.Component {
 							>
 								<div className="uk-clearfix uk-margin">
 									<i
-										onClick={() => this.deleteAttendee(idx)}
+										onClick={() => this.removeAttendeeFromList(idx)}
 										className="uk-float-right material-icons"
 									>
 										delete

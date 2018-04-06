@@ -55,6 +55,10 @@ class EditEventPage extends React.Component<Props, State> {
 		};
 		editEvent(this.props.event.id, dataInput).then(() => {
 			Router.push('/admin/events');
+		})
+		.catch(e =>  {
+			console.error(e);
+			alert('Ooops, there was problem updating this event');
 		});
 	}
 

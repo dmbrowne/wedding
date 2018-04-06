@@ -1,8 +1,20 @@
 import * as React from 'react';
 import { withAdmin } from '../components/adminLayout';
 import { getUserAccount, updateAccount, changePassword } from '../api/account';
+import { IUser } from '../../server/types/models';
 
-class Account extends React.Component {
+interface Props {
+	user: IUser;
+}
+
+interface State extends IUser {
+	email: string;
+	currentPassword: string;
+	newPassword: string;
+	confirmNewPassword: string;
+}
+
+class Account extends React.Component<Props, State> {
 	static getInitialProps = async ({ req }) => {
 		const user = req && req.session ?
 			req.session.user :
@@ -17,6 +29,14 @@ class Account extends React.Component {
 			newPassword: '',
 			confirmNewPassword: '',
 		});
+	}
+
+	refresh() {
+		getUserAccount()
+			.then(user => this.setState({
+				...this.props.user,
+			}))
+			.catch(e => alert('There was an error while refreshing the data'));
 	}
 
 	onUpdatePasswordField = (e: React.ChangeEvent<HTMLInputElement>, passwordType: 'current' | 'new' | 'confirm') => {
@@ -38,8 +58,11 @@ class Account extends React.Component {
 
 	saveAccountDetails = () => {
 		updateAccount({email: this.state.email})
-			.then(res => console.log(res))
-			.catch(err => console.error(err));
+			.then(res => this.refresh())
+			.catch(err => {
+				alert('There was an error updating your account');
+				console.error(err)
+			});
 	}
 
 	saveNewPassword = () => {
@@ -49,7 +72,10 @@ class Account extends React.Component {
 		}
 		changePassword({ newPassword, currentPassword })
 			.then(res => console.log(res))
-			.catch(err => console.error(err));
+			.catch(err => {
+				alert('Oops, something went wrong with updating the password');
+				console.error(err)
+			});
 	}
 
 	render() {

@@ -39,6 +39,9 @@ class NewEvent extends React.Component<any, State> {
 		};
 		createEvent(dataInput).then(result => {
 			Router.push('/admin/events');
+		})
+		.catch(e => {
+			alert('Oops something went wrong');
 		});
 	}
 

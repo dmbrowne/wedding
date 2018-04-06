@@ -1,18 +1,30 @@
 import * as React from 'react';
 import Link from 'next/link';
 import { withAdmin } from '../components/adminLayout';
-import { deleteSendGroups } from '../api/sendGroup';
+import { deleteSendGroups, getSendGroups } from '../api/sendGroup';
 import { ISendGroup } from '../../server/types/models';
 import CheckboxTable from '../components/CheckboxTable';
 
-class SendGroups extends React.Component<{ sendGroups: ISendGroup[] }> {
+class SendGroups extends React.Component<{ sendGroups: ISendGroup[] }, { sendGroups: ISendGroup[] }> {
 	static getInitialProps = async ({ res }) => {
 		return {
 			sendGroups: (res && res.locals.sendGroups ?
 				res.locals.sendGroups :
-				[]
+				await getSendGroups()
 			),
 		};
+	}
+
+	componentWillMount() {
+		this.setState({
+			sendGroups: this.props.sendGroups,
+		});
+	}
+
+	refreshList() {
+		getSendGroups()
+			.then(groups => this.setState({ sendGroups: groups }))
+			.catch(e => alert('Something went wrong when refreshing send groups list'));
 	}
 
 	renderHeader() {
@@ -53,6 +65,20 @@ class SendGroups extends React.Component<{ sendGroups: ISendGroup[] }> {
 				</td>
 			</tr>
 		);
+	}
+
+	onDelete(ids) {
+		deleteSendGroups(ids)
+		.then(() => {
+			const optimisticUpdatedAttendees = this.state.sendGroups.filter(({id}) => ids.indexOf(id) < 0);
+			this.setState(
+				{ sendGroups: optimisticUpdatedAttendees },
+				() => this.refreshList(),
+			);
+		})
+		.catch(() => {
+			alert('Something went wrong with the deletion, try again later');
+		});
 	}
 
 	render() {
