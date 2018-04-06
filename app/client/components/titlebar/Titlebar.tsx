@@ -18,9 +18,10 @@ export default ({children, onMenuPress, firstName, lastName, onLogout }) => (
 			<div className="uk-navbar-right">
 				<ul className="uk-navbar-nav" style={{paddingRight: 15}}>
 					<li>
-						<a className="user-avatar">{firstName.charAt(0) + lastName.charAt(0)}</a>
+						<a className="user-avatar" href="/admin/myaccount">{firstName.charAt(0) + lastName.charAt(0)}</a>
 						<div className="uk-navbar-dropdown">
 							<ul className="uk-nav uk-navbar-dropdown-nav">
+								<li><a href="/admin/myaccount">Account</a></li>
 								<li onClick={onLogout}><a href="#">Logout</a></li>
 							</ul>
 						</div>

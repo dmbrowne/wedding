@@ -60,6 +60,10 @@ function configureRoutes(server) {
 	server.use('/admin/sendgroups', sendGroupRoutes);
 	server.use('/admin/events', eventRoutes);
 	server.get('/admin', verifyUser, (req: NextAppRequest, res) => {req.nextAppRenderer.render(req, res, '/dashboard')});
+	server.get('/admin/myaccount',
+		verifyUser,
+		(req: NextAppRequest, res) => {req.nextAppRenderer.render(req, res, '/account')}
+	);
 	server.get('/admin/sendInvites', verifyUser, (req, res) => req.nextAppRenderer.render(req, res, '/sendInvites'));
 	server.get('*', (req, res) => handler(req, res));
 }
