@@ -60,11 +60,12 @@ class Attendees extends React.Component<{ attendees: IAttendee[] }> {
 				this.setState({ attendees });
 			})
 			.catch(e => {
+				console.log(e)
 				alert('There was an error refreshing the list. Try manually refreshing');
 			});
 	}
 
-	onDelete(ids) {
+	onDelete= (ids) => {
 		deleteAttendees(ids)
 			.then(() => {
 				const optimisticUpdatedAttendees = this.state.attendees.filter(({id}) => ids.indexOf(id) < 0);
@@ -74,6 +75,7 @@ class Attendees extends React.Component<{ attendees: IAttendee[] }> {
 				);
 			})
 			.catch(e => {
+				console.log(e)
 				alert('Something went wrong with the deletion, try again later');
 			});
 	}

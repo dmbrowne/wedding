@@ -67,7 +67,7 @@ class SendGroups extends React.Component<{ sendGroups: ISendGroup[] }, { sendGro
 		);
 	}
 
-	onDelete(ids) {
+	onDelete = (ids) => {
 		deleteSendGroups(ids)
 		.then(() => {
 			const optimisticUpdatedAttendees = this.state.sendGroups.filter(({id}) => ids.indexOf(id) < 0);
