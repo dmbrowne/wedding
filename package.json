@@ -9,6 +9,7 @@
     "bcrypt": "^1.0.3",
     "body-parser": "^1.18.2",
     "bootstrap": "^4.0.0",
+    "browser-sync": "^2.23.6",
     "classnames": "^2.2.5",
     "cli-color": "^1.2.0",
     "connect-redis": "3.3.3",
@@ -39,8 +40,9 @@
   },
   "scripts": {
     "start": "node index.js",
+    "browserSync": "browser-sync start --proxy localhost:4000 --files \"app/**/*.js\" \"app/**/*.css\"",
     "start:production": "NODE_ENV=production node index.js",
-    "dev": "npm run tsc || true && concurrently \"nodemon -w app/server index.js\" \"npm run tsc:server -- --watch\" \"npm run tsc:client -- --watch\"",
+    "dev": "npm run tsc || true && concurrently \"npm start\" \"npm run tsc:server -- --watch\" \"npm run tsc:client -- --watch\" \"npm run browserSync\"",
     "test": "jest",
     "tsc": "npm run tsc:client || true && npm run tsc:server || true",
     "tsc:client": "tsc -p app/client/tsconfig.json",
