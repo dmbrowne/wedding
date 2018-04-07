@@ -6,8 +6,9 @@ export default class MyDocument extends Document {
 		return (
 			<html>
 				<Head>
-					<title key="document-title">Mr and Mrs Browne 2018</title>
+					<title>Mr and Mrs Browne 2018</title>
 					<link rel="stylesheet" href="/static/style.css" key="base-styleshet"/>
+					<meta name="viewport" content="width=device-width, initial-scale=1" />
 				</Head>
 				<body>
 					<Main />
