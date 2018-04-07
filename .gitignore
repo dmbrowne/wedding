@@ -6,6 +6,7 @@ redis_data
 **/*.js
 !ecosystem.config.js
 !next.config.js
+!app/client/assets/*.js
 # config/*.js
 # migrations/*.js
 # seeders/*.js
