@@ -69,7 +69,6 @@ class SendInvites extends React.Component {
 	}
 
 	send = () => {
-		console.log('ey')
 		const { editorState } = this.state;
 		const markup = draftToHtml(convertToRaw(editorState.getCurrentContent()));
 		return sendAttendeeEmails({

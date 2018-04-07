@@ -6,6 +6,7 @@ import * as next from 'next';
 import * as bodyParser from 'body-parser';
 
 import redisConfig = require('../../config/redis.json');
+import accountRoutes from './routes/accountRoutes';
 import attendeeRoutes from './routes/attendeeRoutes';
 import sendGroupRoutes from './routes/sendGroupRoutes';
 import eventRoutes from './routes/eventRoutes';
@@ -75,8 +76,8 @@ function configureRouteMiddleware(server) {
 	server.use(session({
 		store: new RedisStore(redisConfig[process.env.NODE_ENV || 'development']),
 		secret: 'theNewBrownesWeeding',
-		resave: false,
-		saveUninitialized: false,
+		resave: true,
+		saveUninitialized: true,
 	}));
 
 	server.use('/static', express.static(path.join(__dirname, '../client', '.next/static')));

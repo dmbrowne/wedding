@@ -11,6 +11,7 @@ interface GetInitialPropsDefinition {
 	asPath?: string;
 	jsonPageRes?: Response;
 	err?: { [key: string]: any };
+	[key: string]: any;
 }
 
 export interface NextComponent<T = {}> extends React.ComponentClass<T> {

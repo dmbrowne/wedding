@@ -61,7 +61,8 @@ class EventAttendeesPage extends React.Component<{event: IEvent}> {
 
 	onSave = () => {
 		setEventAttendees(this.props.event.id, Object.keys(this.state.selectedAttendees))
-			.then(() => Router.push('/admin/events'));
+			.then(() => Router.push('/admin/events'))
+			.catch(() => alert('Ooops, something went wrong, try again later'));
 	}
 
 	render() {

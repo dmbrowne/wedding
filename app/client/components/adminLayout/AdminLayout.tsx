@@ -5,7 +5,13 @@ export interface Props {
 	title: string;
 }
 
-export default class AdminLayout extends React.Component<Props> {
+interface InternalProps extends Props {
+	firstName: string;
+	lastName: string;
+	onLogout: () => any;
+}
+
+export default class AdminLayout extends React.Component<InternalProps> {
 	offMenuEl = null;
 	offMenu = null;
 	UIkit = undefined;
@@ -51,7 +57,14 @@ export default class AdminLayout extends React.Component<Props> {
 	render() {
 		return (
 			<div className="uk-offcanvas-content">
-				<Titlebar onMenuPress={this.toggleMenu}>{this.props.title}</Titlebar>
+				<Titlebar
+					firstName={this.props.firstName}
+					lastName={this.props.lastName}
+					onMenuPress={this.toggleMenu}
+					onLogout={this.props.onLogout}
+				>
+					{this.props.title}
+				</Titlebar>
 				<main style={{paddingTop: 15}}>
 					{this.props.children}
 				</main>
@@ -63,6 +76,10 @@ export default class AdminLayout extends React.Component<Props> {
 							<li><a href="/admin/events">Events</a></li>
 							<li><a href="/admin/attendees">Attendees</a></li>
 							<li><a href="/admin/sendgroups">Send Groups</a></li>
+							<li className="uk-nav-divider uk-margin" />
+							<li><a href="/admin/sendInvites">Send Invites</a></li>
+							<li className="uk-nav-divider uk-margin" />
+							<li><a href="/admin/users">CMS users</a></li>
 						</ul>
 					</div>
 				</aside>

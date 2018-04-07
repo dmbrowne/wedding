@@ -15,6 +15,10 @@ class Attendees extends React.Component<{ attendees: IAttendee[] }> {
 		};
 	}
 
+	state = {
+		attendees: [...this.props.attendees],
+	};
+
 	renderHeader() {
 		return (
 			<tr>
@@ -50,6 +54,32 @@ class Attendees extends React.Component<{ attendees: IAttendee[] }> {
 		);
 	}
 
+	refreshList() {
+		getAllAttendees()
+			.then(attendees => {
+				this.setState({ attendees });
+			})
+			.catch(e => {
+				console.log(e)
+				alert('There was an error refreshing the list. Try manually refreshing');
+			});
+	}
+
+	onDelete= (ids) => {
+		deleteAttendees(ids)
+			.then(() => {
+				const optimisticUpdatedAttendees = this.state.attendees.filter(({id}) => ids.indexOf(id) < 0);
+				this.setState(
+					{ attendees: optimisticUpdatedAttendees },
+					() => this.refreshList(),
+				);
+			})
+			.catch(e => {
+				console.log(e)
+				alert('Something went wrong with the deletion, try again later');
+			});
+	}
+
 	render() {
 		return (
 			<div className="uk-container">
@@ -57,10 +87,10 @@ class Attendees extends React.Component<{ attendees: IAttendee[] }> {
 				<p className="uk-margin-large-bottom">No matter which events you would like them to attend, this list represents
 					the total people you would like to attend throughout the day</p>
 				<CheckboxTable
-					data={this.props.attendees}
+					data={this.state.attendees}
 					renderHeaderRow={this.renderHeader}
 					renderRow={this.renderRow}
-					onDelete={(ids) => deleteAttendees(ids)}
+					onDelete={this.onDelete}
 					buttons={(
 						<Link prefetch={true} href="/attendeeCreate" as="/admin/attendees/new">
 							<button className="uk-button-small uk-float-left uk-button uk-button-primary">Add</button>

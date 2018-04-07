@@ -35,7 +35,7 @@
     "react": "^16.3.0",
     "react-dom": "^16.3.0",
     "route-matcher": "^0.1.0",
-    "sequelize": "^4.33.4",
+    "sequelize": "^4.37.6",
     "uikit": "^3.0.0-beta.40"
   },
   "scripts": {
@@ -59,7 +59,7 @@
     "migrate": "tsc -p migrations || true && sequelize db:migrate",
     "migrate:undo": "tsc -p migrations || true && sequelize db:migrate:undo",
     "migrate:undo:all": "tsc -p migrations || true && sequelize db:migrate:undo:all",
-    "seed": "tsc -p migrations || true && sequelize db:seed",
+    "seed": "tsc -p seeders || true && sequelize db:seed:all",
     "seed:undo": "tsc -p migrations || true && sequelize db:seed:undo",
     "seed:undo:all": "tsc -p migrations || true && sequelize db:seed:undo:all"
   },

@@ -1,7 +1,7 @@
-import Sequelize, { QueryInterface } from 'sequelize';
+import { QueryInterface } from 'sequelize';
 
 module.exports = {
-	up: (queryInterface: QueryInterface) => {
+	up: (queryInterface: QueryInterface, Sequelize) => {
 		return queryInterface.createTable('Attendees', {
 			id: {
 				allowNull: false,
@@ -20,10 +20,12 @@ module.exports = {
 			createdAt: {
 				allowNull: false,
 				type: Sequelize.DATE,
+				defaultValue: Sequelize.fn('now'),
 			},
 			updatedAt: {
 				allowNull: false,
 				type: Sequelize.DATE,
+				defaultValue: Sequelize.fn('now'),
 			},
 		});
 	},

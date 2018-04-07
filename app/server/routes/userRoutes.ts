@@ -1,24 +1,29 @@
-import { Router, Response, NextFunction } from 'express';
-import { login, signIn } from '../controllers/userController';
+import { Router } from 'express';
+import {
+	allUsers,
+	getUser,
+	createNewUser,
+	deleteUser,
+	editOtherUser,
+} from '../controllers/userController';
+import { xhrOnly, verifyUser } from '../utils/express';
 import { NextAppRequest } from '../types';
-import { verifyUser } from '../utils/express';
 
 const router = Router();
 
-const dashboardRedirect = (req: NextAppRequest, res: Response, next: NextFunction) => {
-	// if (req.session && req.session.user) {
-	// 	return res.redirect('/dashboard');
-	// }
-	next();
-};
-
-router
-	.route('/login')
-	.get(dashboardRedirect, signIn)
-	.post(login);
+router.use(verifyUser);
 
 router
 	.route('/')
-	.get((req: NextAppRequest, res) => req.nextAppRenderer.render(req, res, '/dashboard'));
+	.get(allUsers)
+	.post(createNewUser);
+
+router.get('/new', (req: NextAppRequest, res) => req.nextAppRenderer.render(req, res, '/userCreate'));
+
+router
+	.route('/:userId')
+	.get(getUser)
+	.put(editOtherUser)
+	.delete(xhrOnly, deleteUser);
 
 export default router;

@@ -11,7 +11,7 @@ import { verifyUser } from '../utils/express';
 
 const router = Router();
 
-// router.use(verifyUser);
+router.use(verifyUser);
 
 router.route('/')
 	.get(getAllAttendees)
