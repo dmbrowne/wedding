@@ -1,7 +1,7 @@
-import { authenticate as  sequelizeAuthenticate} from './app/server/models';
+import dbAuthenticate from './app/server/models/lib/dbAuthenticate';
 import { startApp } from './app/server';
 
-sequelizeAuthenticate().then(() => {
+dbAuthenticate().then(() => {
 	startApp();
 })
 .catch(err => {

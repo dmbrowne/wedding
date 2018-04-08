@@ -1,4 +1,3 @@
-import { Sequelize } from 'sequelize';
 import User from './user';
 import Attendee from './attendee';
 import Bridesmaid from './bridesmaid';
@@ -10,31 +9,21 @@ import SendGroup from './sendGroup';
 import Campaign from './campaign';
 import CampaignAttendee from './campaignAttendee';
 import CampaignAttendeeGroup from './campaignAttendeeGroup';
-
-// tslint:disable-next-line
-const databaseConfig = require('../../../config/database.json');
-const env = process.env.NODE_ENV || 'development';
-const config = databaseConfig[env];
+import sequelizeConnection from './lib/connection';
 
 interface IModels {
-  User: typeof User;
-  Attendee: typeof Attendee;
-  Bridesmaid: typeof Bridesmaid;
-  Event: typeof Event;
-  EventAttendee: typeof EventAttendee;
-  Groomsmen: typeof Groomsmen;
-  SeatingTable: typeof SeatingTable;
-  SendGroup: typeof SendGroup;
-  Campaign: typeof Campaign;
-  CampaignAttendee: typeof CampaignAttendee;
-  CampaignAttendeeGroup: typeof CampaignAttendeeGroup;
+  User: User;
+  Attendee: Attendee;
+  Bridesmaid: Bridesmaid;
+  Event: Event;
+  EventAttendee: EventAttendee;
+  Groomsmen: Groomsmen;
+  SeatingTable: SeatingTable;
+  SendGroup: SendGroup;
+  Campaign: Campaign;
+  CampaignAttendee: CampaignAttendee;
+  CampaignAttendeeGroup: CampaignAttendeeGroup;
 }
-
-interface ISequelize extends Sequelize {
-  models: IModels;
-}
-
-const sequelize = new Sequelize(config.database, config.username, config.password, config) as ISequelize;
 
 const modelz = [
   User,
@@ -50,22 +39,22 @@ const modelz = [
   CampaignAttendeeGroup,
 ];
 
-modelz.forEach(ModelClass => {
-  ModelClass.init(sequelize);
-  if (!sequelize.models[ModelClass.name]) {
-    sequelize.models[ModelClass.name] = ModelClass;
+const dbModels = modelz.reduce((models, ModelClass) => {
+  ModelClass.init(sequelizeConnection);
+  if (models[ModelClass.name]) {
+    return models;
   }
-});
+  return {
+    ...models,
+    [ModelClass.name]: ModelClass,
+  };
+}, {}) as IModels;
+
 modelz.forEach((ModelClass: any) => {
   if (ModelClass.associate) {
-    ModelClass.associate(sequelize.models);
+    ModelClass.associate(dbModels);
   }
 });
 
-export function authenticate() {
-  return sequelize.authenticate().then(() => sequelize);
-}
-
-const models = sequelize.models;
-
-export default models;
+export { sequelizeConnection as sequelize };
+export default dbModels;
