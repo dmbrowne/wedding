@@ -6,12 +6,12 @@ import * as next from 'next';
 import * as bodyParser from 'body-parser';
 
 import redisConfig = require('../../config/redis.json');
-import accountRoutes from './routes/accountRoutes';
-import attendeeRoutes from './routes/attendeeRoutes';
-import sendGroupRoutes from './routes/sendGroupRoutes';
-import eventRoutes from './routes/eventRoutes';
-import userRoutes from './routes/userRoutes';
-import invitationRoutes from './routes/invitationRoutes';
+import accountRoutes from './routers/accountRoutes';
+import attendeeRoutes from './routers/attendeeRoutes';
+import sendGroupRoutes from './routers/sendGroupRoutes';
+import eventRoutes from './routers/eventRoutes';
+import userRoutes from './routers/userRoutes';
+import invitationRoutes from './routers/invitationRoutes';
 import { sendMail } from './controllers/emailController';
 import { NextAppRequest } from './types';
 import { verifyUser } from './utils/express';
