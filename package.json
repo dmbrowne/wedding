@@ -40,9 +40,10 @@
   },
   "scripts": {
     "start": "node index.js",
-    "browserSync": "browser-sync start --proxy localhost:4000 --files \"app/**/*.js\" \"app/**/*.css\"",
+    "start:dev": "nodemon index.js -w \"app/server/**/*.js\"",
     "start:production": "NODE_ENV=production node index.js",
-    "dev": "npm run tsc || true && concurrently \"npm start\" \"npm run tsc:server -- --watch\" \"npm run tsc:client -- --watch\" \"npm run browserSync\"",
+    "browserSync": "browser-sync start --proxy localhost:4000 --files \"app/client/**/*.(js|css|png|jpg|jpeg|svg)\"",
+    "dev": "npm run tsc && concurrently \"npm run start:dev\" \"npm run tsc:server -- --watch\" \"npm run tsc:client -- --watch\" \"npm run browserSync\"",
     "test": "jest",
     "tsc": "npm run tsc:client || true && npm run tsc:server || true",
     "tsc:client": "tsc -p app/client/tsconfig.json",
