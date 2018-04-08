@@ -25,4 +25,9 @@ export default class EventAttendee extends Model {
 		});
 		return EventAttendee;
 	}
+
+	eventId: string;
+	attendeeId: string;
+	attending: boolean;
+	confirmed: boolean;
 }

@@ -1,6 +1,11 @@
-import Sequelize, { Model, BelongsToManyGetAssociationsMixin } from 'sequelize';
+import Sequelize, { Model, HasManyHasAssociationMixin, BelongsToManyGetAssociationsMixin } from 'sequelize';
 import Event from './event';
 import SendGroup from './sendGroup';
+import EventAttendee from './eventAttendee';
+
+interface EventWithDetailsJoin extends Event {
+	EventAttendee: EventAttendee;
+}
 
 export default class Attendee extends Model {
 	static init(sequelizeConnection) {
@@ -21,7 +26,7 @@ export default class Attendee extends Model {
 	}
 
 	static associate(models) {
-		this.belongsToMany(models.Event, { as: 'Events', through: models.EventAttendee, foreignKey: 'attendeeId' });
+		this.belongsToMany(models.Event, { through: models.EventAttendee, foreignKey: 'attendeeId' });
 		this.belongsTo(models.SeatingTable, { foreignKey: 'tableId' });
 		this.belongsTo(models.SendGroup, { foreignKey: 'sendGroupId' });
 		this.belongsToMany(models.Campaign, { through: models.CampaignAttendee, foreignKey: 'campaignId' });
@@ -35,26 +40,24 @@ export default class Attendee extends Model {
 	sendGroupId: string;
 	createdAt: Date;
 	updatedAt: Date;
-	Events?: Event[];
+	Events?: EventWithDetailsJoin[];
 	SendGroup: SendGroup;
-	getEvents: BelongsToManyGetAssociationsMixin<Event>;
+	getEvents: BelongsToManyGetAssociationsMixin<EventWithDetailsJoin>;
+	hasEvent: HasManyHasAssociationMixin<EventWithDetailsJoin, EventWithDetailsJoin['id']>;
 
-	updateEventAttendance = async (rsvps: {[eventId: string]: boolean }) => {
-		const events = this.Events || await this.getEvents();
-		const updateEventsPromise = Promise.all(
-			events.reduce((promises, event) => {
-				const eventId = event.id;
-				if (!(eventId in rsvps)) {
-					return promises;
-				}
-				const attending = rsvps[event.id];
-				const updatePromise = event.update({ confirmed: true, attending });
-				return [
-					...promises,
-					updatePromise,
-				];
-			}, []),
+	updateEventAttendance = (models, rsvps: {[eventId: string]: boolean }) => {
+		return Promise.all(
+			Object.keys(rsvps).map(eventId => {
+				return models.EventAttendee.update({
+					confirmed: true,
+					attending: rsvps[eventId],
+				}, {
+					where: {
+						attendeeId: this.id,
+						eventId,
+					},
+				});
+			}),
 		);
-		return updateEventsPromise;
 	}
 }

@@ -195,13 +195,13 @@ export function getSingleInvitation(req: NextAppRequest, res: Response, next: Ne
 }
 
 const updateSendGroupRsvps = (sendGroup: SendGroupModel, rsvps: Rsvp[]) => {
-	return SendGroupModel.getAttendees().then(attendees => Promise.all(
+	return sendGroup.getAttendees().then(attendees => Promise.all(
 		attendees.map(attendee => {
-			const attendeeRsvp = rsvps.filter(rsvp => rsvp.attendeeId === attedee.id)[0];
+			const attendeeRsvp = rsvps.filter(rsvp => rsvp.attendeeId === attendee.id)[0];
 			if (!attendeeRsvp) {
 				throw Error(`attendee ${attendee.id} is not part of the specified send group`);
 			}
-			return attendee.updateEventAttendance(attendeeRsvp.events);
+			return attendee.updateEventAttendance(models, attendeeRsvp.events);
 		}),
 	));
 };
@@ -209,11 +209,11 @@ const updateSendGroupRsvps = (sendGroup: SendGroupModel, rsvps: Rsvp[]) => {
 export function rsvpConfirm(req: Request, res: Response, next: NextFunction) {
 	const attendeeRsvps: Rsvp[] | Rsvp  = req.body;
 	const { invitationId } = req.params;
-	const { invitationId: sessionInvitationId } = req.session;
+	// const { invitationId: sessionInvitationId } = req.session;
 
-	if (invitationId !== sessionInvitationId) {
-		return res.status(401).json({ message: 'This user doesn\'t have permission to modify this RSVP' });
-	}
+	// if (invitationId !== sessionInvitationId) {
+	// 	return res.status(401).json({ message: 'This user doesn\'t have permission to modify this RSVP' });
+	// }
 
 	const rsvpIsForAGroup = Array.isArray(attendeeRsvps);
 	const dbModel = rsvpIsForAGroup ? models.SendGroup : models.Attendee;
@@ -227,7 +227,7 @@ export function rsvpConfirm(req: Request, res: Response, next: NextFunction) {
 
 			const updateAttendance = rsvpIsForAGroup ?
 				updateSendGroupRsvps(result, attendeeRsvps as Rsvp[]) :
-				result.updateEventAttendance(attendeeRsvps.events);
+				result.updateEventAttendance(models, attendeeRsvps.events);
 
 			return updateAttendance.then(() => {
 				res.send({ success: 'ok' });
