@@ -43,14 +43,13 @@ export default class Invitation extends React.Component {
 					<link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons" key="material-icons" />
 					<script src="/assets/globalFunctions.js" />
 				</Head>
-				<div className="hero">
+				<div className="section section-hero" style={{height: this.state.windowHeight}}>
 					<FireFlies>
-						<div className="header-bg-img" style={{ minHeight: this.state.windowHeight }}/>
-						<header className="section">
+						<div className="content">
 							<div />
 							{/* <img className="logo" src="/assets/y&d-logo-white.png" /> */}
 							<img className="emblem" src="/assets/emblem.png" />
-							<div className="content">
+							<header>
 								<h1 className="title">We're getting married!</h1>
 								<div className="date" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
 									<div style={{ display: 'flex', alignItems: 'center' }}>
@@ -60,8 +59,8 @@ export default class Invitation extends React.Component {
 									</div>
 									<span>2018</span>
 								</div>
-							</div>
-						</header>
+							</header>
+						</div>
 					</FireFlies>
 				</div>
 				<div className="section section-invited">
