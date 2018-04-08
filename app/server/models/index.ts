@@ -12,17 +12,17 @@ import CampaignAttendeeGroup from './campaignAttendeeGroup';
 import sequelizeConnection from './lib/connection';
 
 interface IModels {
-  User: User;
-  Attendee: Attendee;
-  Bridesmaid: Bridesmaid;
-  Event: Event;
-  EventAttendee: EventAttendee;
-  Groomsmen: Groomsmen;
-  SeatingTable: SeatingTable;
-  SendGroup: SendGroup;
-  Campaign: Campaign;
-  CampaignAttendee: CampaignAttendee;
-  CampaignAttendeeGroup: CampaignAttendeeGroup;
+  User: typeof User;
+  Attendee: typeof Attendee;
+  Bridesmaid: typeof Bridesmaid;
+  Event: typeof Event;
+  EventAttendee: typeof EventAttendee;
+  Groomsmen: typeof Groomsmen;
+  SeatingTable: typeof SeatingTable;
+  SendGroup: typeof SendGroup;
+  Campaign: typeof Campaign;
+  CampaignAttendee: typeof CampaignAttendee;
+  CampaignAttendeeGroup: typeof CampaignAttendeeGroup;
 }
 
 const modelz = [
