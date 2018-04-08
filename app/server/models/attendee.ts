@@ -1,4 +1,6 @@
-import Sequelize, { Model } from 'sequelize';
+import Sequelize, { Model, BelongsToManyGetAssociationsMixin } from 'sequelize';
+import Event from './event';
+import SendGroup from './sendGroup';
 
 export default class Attendee extends Model {
 	static init(sequelizeConnection) {
@@ -24,4 +26,16 @@ export default class Attendee extends Model {
 		this.belongsTo(models.SendGroup, { foreignKey: 'sendGroupId' });
 		this.belongsToMany(models.Campaign, { through: models.CampaignAttendee, foreignKey: 'campaignId' });
 	}
+
+	id: string;
+	email: string;
+	firstName: string;
+	lastName: string;
+	tableId: string;
+	sendGroupId: string;
+	createdAt: Date;
+	updatedAt: Date;
+	Events?: Event[];
+	SendGroup: SendGroup;
+	getEvents: BelongsToManyGetAssociationsMixin<Event>;
 }
