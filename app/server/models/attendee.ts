@@ -38,4 +38,23 @@ export default class Attendee extends Model {
 	Events?: Event[];
 	SendGroup: SendGroup;
 	getEvents: BelongsToManyGetAssociationsMixin<Event>;
+
+	updateEventAttendance = async (rsvps: {[eventId: string]: boolean }) => {
+		const events = this.Events || await this.getEvents();
+		const updateEventsPromise = Promise.all(
+			events.reduce((promises, event) => {
+				const eventId = event.id;
+				if (!(eventId in rsvps)) {
+					return promises;
+				}
+				const attending = rsvps[event.id];
+				const updatePromise = event.update({ confirmed: true, attending });
+				return [
+					...promises,
+					updatePromise,
+				];
+			}, []),
+		);
+		return updateEventsPromise;
+	}
 }
