@@ -5,3 +5,5 @@ function onTransitionEnd(element, callback) {
 		callback();
 	}
 }
+
+window.onTransitionEnd = onTransitionEnd;
