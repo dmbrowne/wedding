@@ -10,6 +10,15 @@ services:
       POSTGRES_PASSWORD: wedding
     ports:
       - "5400:5432"
+  postgresTest:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: wedding-test
+      POSTGRES_USER: wedding-test
+      POSTGRES_PASSWORD: wedding-test
+    ports:
+      - "5433:5432"
   redis:
     image: redis
     volumes:
