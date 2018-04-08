@@ -3,6 +3,16 @@ import { Op } from 'sequelize';
 import { NextAppRequest } from '../types';
 import models from '../models';
 import { getDesiredValuesFromRequestBody } from '../utils';
+import AttendeeModel from '../models/attendee';
+import SendGroupModel from '../models/sendGroup';
+
+interface Rsvp {
+	attendeeId: string;
+	email: string;
+	events: {
+		[eventId: string]: boolean;
+	};
+}
 
 export async function getAllAttendees(req: NextAppRequest, res: Response) {
 	const { search } = req.query;
@@ -134,4 +144,101 @@ export function deleteAttendee(req: NextAppRequest, res: Response, next: NextFun
 	})
 	.then(() => res.redirect('/admin/attendees'))
 	.catch(err => next(err));
+}
+
+export function getGroupInvitation(req: NextAppRequest, res: Response, next: NextFunction) {
+	const { sendGroupId } = req.params;
+	models.SendGroup.findById(sendGroupId, {
+		include: [{
+			model: models.Attendee,
+			include: [{
+					model: models.Event,
+					as: 'Events',
+			}],
+		}],
+	})
+	.then(sendGroup => {
+		if (!sendGroup) {
+			res.status(404);
+			throw Error(`sendGroup cannot be found with id ${sendGroupId}`);
+		}
+		req.session.invitationId = sendGroupId;
+		res.locals.sendGroup = sendGroup;
+		res.locals.singleInvitation = false;
+		return req.nextAppRenderer.render(req, res, '/invitation');
+	})
+	.catch(err => {
+		next(err);
+	});
+}
+
+export function getSingleInvitation(req: NextAppRequest, res: Response, next: NextFunction) {
+	const { attendeeId } = req.params;
+	models.Attendee.findById(attendeeId, {
+		include: [{
+			model: models.Event,
+			as: 'Events',
+		}],
+	})
+	.then(attendee => {
+		if (!attendee) {
+			throw Error(`sendGroup cannot be found with id ${attendeeId}`);
+		}
+		req.session.invitationId = attendeeId;
+		res.locals.attedee = attendee;
+		res.locals.singleInvitation = true;
+		return req.nextAppRenderer.render(req, res, '/invitation');
+	})
+	.catch(err => {
+		next(err);
+	});
+}
+
+const updateSendGroupRsvps = (sendGroup: SendGroupModel, rsvps: Rsvp[]) => {
+	return SendGroupModel.getAttendees().then(attendees => Promise.all(
+		attendees.map(attendee => {
+			const attendeeRsvp = rsvps.filter(rsvp => rsvp.attendeeId === attedee.id)[0];
+			if (!attendeeRsvp) {
+				throw Error(`attendee ${attendee.id} is not part of the specified send group`);
+			}
+			return attendee.updateEventAttendance(attendeeRsvp.events);
+		}),
+	));
+};
+
+export function rsvpConfirm(req: Request, res: Response, next: NextFunction) {
+	const attendeeRsvps: Rsvp[] | Rsvp  = req.body;
+	const { invitationId } = req.params;
+	const { invitationId: sessionInvitationId } = req.session;
+
+	if (invitationId !== sessionInvitationId) {
+		return res.status(401).json({ message: 'This user doesn\'t have permission to modify this RSVP' });
+	}
+
+	const rsvpIsForAGroup = Array.isArray(attendeeRsvps);
+	const dbModel = rsvpIsForAGroup ? models.SendGroup : models.Attendee;
+	const entityType = rsvpIsForAGroup ? 'SendGroup' : 'Attendee';
+
+	dbModel.findById(invitationId)
+		.then((result) => {
+			if (!result) {
+				return res.status(404).json({ message: `A ${entityType} with the invitationId provided does not exist`});
+			}
+
+			const updateAttendance = rsvpIsForAGroup ?
+				updateSendGroupRsvps(result, attendeeRsvps as Rsvp[]) :
+				result.updateEventAttendance(attendeeRsvps.events);
+
+			return updateAttendance.then(() => {
+				res.send({ success: 'ok' });
+				delete req.session.invitationId;
+			})
+			.catch(err => {
+				res.status(400).json({ message: err.message });
+			});
+		})
+		.catch(err => {
+			res.status(500);
+			next(err);
+		});
 }
