@@ -83,9 +83,20 @@
     "rimraf": "^2.6.2",
     "sequelize-cli": "^4.0.0",
     "svg-to-react-cli": "^1.5.0",
-    "ts-jest": "^22.0.4",
+    "ts-jest": "^22.4.2",
     "tslint": "^5.9.1",
     "tslint-react": "^3.5.1",
     "typescript": "^2.8.0-rc"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
+    "transform": {
+      "\\.(ts|tsx)$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    },
+    "testRegex": "/__tests__/.*\\.spec.(ts|tsx|js)$"
   }
 }
