@@ -202,6 +202,7 @@ export function getSingleInvitation(req: NextAppRequest, res: Response, next: Ne
 		}
 		req.session.invitationId = attendeeId;
 		res.locals.attendee = attendee;
+		res.locals.services = attendee.Events;
 		res.locals.singleInvitation = true;
 		return req.nextAppRenderer.render(req, res, '/invitation');
 	})
