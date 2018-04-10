@@ -201,7 +201,7 @@ export function getSingleInvitation(req: NextAppRequest, res: Response, next: Ne
 			throw Error(`sendGroup cannot be found with id ${attendeeId}`);
 		}
 		req.session.invitationId = attendeeId;
-		res.locals.attedee = attendee;
+		res.locals.attendee = attendee;
 		res.locals.singleInvitation = true;
 		return req.nextAppRenderer.render(req, res, '/invitation');
 	})
