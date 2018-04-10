@@ -14,7 +14,7 @@ export default class SendGroup extends Model {
 	}
 
 	static associate(models) {
-		this.hasMany(models.Attendee, { foreignKey: 'sendGroupId' });
-		this.belongsToMany(models.Campaign, { through: models.CampaignAttendee, foreignKey: 'campaignId' });
+		this.hasMany(models.Attendee, { foreignKey: 'sendGroupId', onDelete: 'CASCADE' });
+		this.belongsToMany(models.Campaign, { through: models.CampaignAttendee, foreignKey: 'campaignId', onDelete: 'CASCADE' });
 	}
 }

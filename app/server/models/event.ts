@@ -19,7 +19,12 @@ export default class Event extends Model {
 	}
 
 	static associate(models) {
-		this.belongsToMany(models.Attendee, { as: 'Guests', through: models.EventAttendee, foreignKey: 'eventId' });
+		this.belongsToMany(models.Attendee, {
+			as: 'Guests',
+			through: models.EventAttendee,
+			foreignKey: 'eventId',
+			onDelete: 'CASCADE',
+		});
 	}
 
 	id: string;

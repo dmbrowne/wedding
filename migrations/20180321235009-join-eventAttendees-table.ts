@@ -9,7 +9,9 @@ module.exports = {
 		await queryInterface.addConstraint('EventAttendees', ['eventId'], {
 			name: 'event_attendee_eventId_fk',
 			type: 'foreign key',
+			onDelete: 'CASCADE',
 			references: {
+				onDelete: 'cascade',
 				table: 'Events',
 				field: 'id',
 			},
@@ -17,6 +19,7 @@ module.exports = {
 		await queryInterface.addConstraint('EventAttendees', ['attendeeId'], {
 			name: 'event_attendee_attendeeId_fk',
 			type: 'foreign key',
+			onDelete: 'CASCADE',
 			references: {
 				table: 'Attendees',
 				field: 'id',

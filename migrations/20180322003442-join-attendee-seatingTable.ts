@@ -5,6 +5,7 @@ module.exports = {
 		return queryInterface.addConstraint('Attendees', ['tableId'], {
 			type: 'foreign key',
 			name: 'attendee_table_fk',
+			onDelete: 'CASCADE',
 			references: {
 				table: 'SeatingTables',
 				field: 'id',

@@ -26,10 +26,18 @@ export default class Attendee extends Model {
 	}
 
 	static associate(models) {
-		this.belongsToMany(models.Event, { through: models.EventAttendee, foreignKey: 'attendeeId' });
-		this.belongsTo(models.SeatingTable, { foreignKey: 'tableId' });
-		this.belongsTo(models.SendGroup, { foreignKey: 'sendGroupId' });
-		this.belongsToMany(models.Campaign, { through: models.CampaignAttendee, foreignKey: 'campaignId' });
+		this.belongsToMany(models.Event, {
+			through: models.EventAttendee,
+			foreignKey: 'attendeeId',
+			onDelete: 'CASCADE',
+		});
+		this.belongsTo(models.SeatingTable, { foreignKey: 'tableId', onDelete: 'CASCADE' });
+		this.belongsTo(models.SendGroup, { foreignKey: 'sendGroupId', onDelete: 'CASCADE' });
+		this.belongsToMany(models.Campaign, {
+			through: models.CampaignAttendee,
+			foreignKey: 'campaignId',
+			onDelete: 'CASCADE',
+		});
 	}
 
 	id: string;

@@ -8,6 +8,7 @@ module.exports = {
 		await queryInterface.addConstraint('Attendees', ['sendGroupId'], {
 			type: 'foreign key',
 			name: 'attendee_sendGroup_fk',
+			onDelete: 'CASCADE',
 			references: {
 				table: 'SendingGroups',
 				field: 'id',
