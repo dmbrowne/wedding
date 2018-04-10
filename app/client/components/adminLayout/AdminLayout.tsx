@@ -1,5 +1,6 @@
 import * as React from 'react';
 import Titlebar from '../titlebar';
+import Head from 'next/head';
 
 export interface Props {
 	title: string;
@@ -57,6 +58,16 @@ export default class AdminLayout extends React.Component<InternalProps> {
 	render() {
 		return (
 			<div className="uk-offcanvas-content">
+				<Head>
+					<title key="document-title">{this.props.title}</title>
+					<link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons" key="material-icons" />
+					<link
+						rel="stylesheet"
+						href="//cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.40/css/uikit.min.css"
+						key="uikit-stylesheet"
+					/>
+					<script key="uikit-js" src="//cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.40/js/uikit.min.js" />
+				</Head>
 				<Titlebar
 					firstName={this.props.firstName}
 					lastName={this.props.lastName}

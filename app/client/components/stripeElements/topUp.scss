@@ -1,0 +1,50 @@
+.topup-buttons-container {
+	display: flex;
+	align-items: flex-end;
+	justify-content: center;
+}
+
+.topup-button {
+	height: 40px;
+	width: 50px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.topup-amount-value {
+	font-size: 3rem;
+	padding: 0 2rem;
+	min-width: 125px;
+	text-align: center;
+	color: navy;
+}
+
+// .StripeElement {
+//   display: block;
+//   margin: 10px 0 20px 0;
+//   max-width: 600px;
+//   padding: 10px 14px;
+//   box-shadow: rgba(50, 50, 93, 0.14902) 0px 1px 3px, rgba(0, 0, 0, 0.0196078) 0px 1px 0px;
+//   border-radius: 4px;
+// 	background: white;
+// 	border: 1px solid transparent;
+// }
+
+// .StripeElement--focus {
+//   box-shadow: rgba(50, 50, 93, 0.109804) 0px 4px 6px, rgba(0, 0, 0, 0.0784314) 0px 1px 3px;
+//   -webkit-transition: all 150ms ease;
+//   transition: all 150ms ease;
+// }
+
+// .StripeElement.PaymentRequestButton {
+//   padding: 0;
+// }
+
+// .StripeElement--invalid {
+//   border-color: #fa755a;
+// }
+
+// .StripeElement--webkit-autofill {
+//   background-color: #fefde5 !important;
+// }
