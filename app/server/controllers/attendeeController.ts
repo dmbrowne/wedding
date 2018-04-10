@@ -224,7 +224,7 @@ const updateSendGroupRsvps = (sendGroup: SendGroupModel, rsvps: Rsvp[]) => {
 };
 
 export function rsvpConfirm(req: Request, res: Response, next: NextFunction) {
-	const attendeeRsvps: Rsvp[] | Rsvp  = req.body;
+	const attendeeRsvps: Rsvp[] | Rsvp = req.body.attendeeRsvps;
 	const { invitationId } = req.params;
 	// const { invitationId: sessionInvitationId } = req.session;
 
