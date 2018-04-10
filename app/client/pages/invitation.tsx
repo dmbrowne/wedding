@@ -21,6 +21,10 @@ export default class Invitation extends React.Component {
 		this.setState({ noBreakfast: !this.state.noBreakfast });
 	}
 
+	scrollToRsvp = () => {
+		window.UIkit.scroll(this.goToRsvp).scrollTo(this.rsvpSection)
+	}
+
 	render() {
 		if (this.state.windowHeight === 0) {
 			return null;
@@ -28,6 +32,16 @@ export default class Invitation extends React.Component {
 
 		return (
 			<AppLayout>
+				<Head>
+					<link
+						key="google-fonts"
+						href="https://fonts.googleapis.com/css?family=Great+Vibes|Roboto+Condensed:300,400"
+						rel="stylesheet"
+					/>
+					<link key="material-icons" rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons" />
+					<script src="/assets/globalFunctions.js" />
+					<script src="//cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.40/js/uikit.min.js" />
+				</Head>
 				<div id="wedding-invitation">
 					<div className="dev-controls">
 						<header>Dev Controls:</header>
@@ -36,15 +50,6 @@ export default class Invitation extends React.Component {
 							<button onClick={this.toggleBreakfast} className="btn btn-primary btn-sm">No Breakfast</button>
 						</div>
 					</div>
-					<Head>
-						<link
-							key="google-fonts"
-							href="https://fonts.googleapis.com/css?family=Great+Vibes|Roboto+Condensed:300,400"
-							rel="stylesheet"
-						/>
-						<link key="material-icons" rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons" />
-						<script src="/assets/globalFunctions.js" />
-					</Head>
 					<div className="section section-hero" style={{height: this.state.windowHeight}}>
 						<FireFlies>
 							<div className="content">
@@ -67,12 +72,15 @@ export default class Invitation extends React.Component {
 					</div>
 					<div className="section section-invited">
 						<h2 className="section-title"><span>You're</span>Invited</h2>
-						<p>We would like to welcome and invite you to our very special day</p>
-						<p>
-							Ayfer Princess and Sebastian Prince, it would mean the world to us if you could join us for this very special time
-						</p>
-						<p>Read on for more details, and your RSVP at the bottom of this invite</p>
-
+						<p>With great pleasure</p>
+						<p><span className="fancy">Yasmin Obosi</span> and <span className="fancy">Daryl Browne</span></p>
+						<p>invite you to join them
+						at the celebration of their marriage</p>
+						<p><strong>Ayfer Princess</strong> and <strong>Sebastian Prince</strong>,</p>
+						<p>It would mean the world to us if you could join us for this very special time, and we would love it if you could be there.</p>
+						<p>Click the button below to confirm your attendance / absence now,</p>
+						<button ref={ref => this.goToRsvp = ref} className="go-to-rsvp" onClick={this.scrollToRsvp}>RSVP</button>
+						<p>... Or read on for more details...</p>
 					</div>
 					<div className="section section-where">
 						<h2 className="section-title"><span>where &</span>When</h2>
@@ -193,7 +201,7 @@ export default class Invitation extends React.Component {
 							</div>
 						</div>
 					</div>
-					<div className="section section-rsvp">
+					<div ref={ref => this.rsvpSection = ref} className="section section-rsvp">
 						<h2 className="section-title"><span>Please reply</span> Répondez s'il vous plaît</h2>
 						<p>Please send your response by<br/><strong>May 31st</strong><br/>Responses after this date has passed will not be counted and your place will not be guaranteed.</p>
 						<p>Tap on an event to select/unselect it and indicate your attendance.</p>

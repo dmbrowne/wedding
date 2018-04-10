@@ -15,12 +15,8 @@
 	padding: 5px 10px;
 	opacity: 0.1;
 	float:right;
-	&:hover {
-		opacity: 1;
-	}
-	.actions {
-		margin: 10px 0 0;
-	}
+	&:hover { opacity: 1; }
+	.actions { margin: 10px 0 0; }
 }
 
 html, body {
@@ -33,13 +29,16 @@ body {
 	font-weight: 300;
 }
 
-.__next {
-	min-height: 100%;
-}
+.__next { min-height: 100%; }
 
 h1, h2, h3 { font-family: 'Great Vibes', cursive; }
-
 h1 { font: 52px/56px Great Vibes; }
+
+.fancy {
+	font: 1.5em/normal 'Great Vibes';
+	display: inline-block;
+	padding: 0 5px;
+}
 
 .tile {
 	max-width: 450px;
@@ -262,6 +261,32 @@ h1 { font: 52px/56px Great Vibes; }
 .section-invited {
 	@extend .concrete-bg;
 	.section-title { color: #80705e; }
+	.go-to-rsvp {
+		color: #80705e;
+		border: 3px  solid #80705e;
+		background-color: transparent;
+		margin-bottom: 30px;
+
+    display: inline-block;
+    box-sizing: border-box;
+    padding: 0 15px;
+    vertical-align: middle;
+    font-size: 1rem;
+    line-height: 1.8rem;
+    text-align: center;
+    text-transform: uppercase;
+    transition: .1s ease-in-out;
+    transition-property: color,background-color,border-color;
+		touch-action: manipulation;
+		cursor: pointer;
+
+		&:hover {
+			background: lighten(#80705e, 2%);
+			color: #fff;
+			border-color: darken(#80705e, 10%);
+		}
+		&:focus { outline: none; }
+	}
 }
 
 .section-services {
