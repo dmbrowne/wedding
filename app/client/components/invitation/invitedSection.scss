@@ -1,0 +1,35 @@
+@import '../../styles/invite.scss';
+
+.section-invited {
+	@extend .concrete-bg;
+	padding-left: 8vw;
+	padding-right: 8vw;
+	.container { margin: auto; max-width: 600px; }
+	.section-title { color: #80705e; }
+	.go-to-rsvp {
+		color: #80705e;
+		border: 3px  solid #80705e;
+		background-color: transparent;
+		margin-bottom: 30px;
+
+    display: inline-block;
+    box-sizing: border-box;
+    padding: 0 15px;
+    vertical-align: middle;
+    font-size: 1rem;
+    line-height: 1.8rem;
+    text-align: center;
+    text-transform: uppercase;
+    transition: .1s ease-in-out;
+    transition-property: color,background-color,border-color;
+		touch-action: manipulation;
+		cursor: pointer;
+
+		&:hover {
+			background: lighten(#80705e, 2%);
+			color: #fff;
+			border-color: darken(#80705e, 10%);
+		}
+		&:focus { outline: none; }
+	}
+}

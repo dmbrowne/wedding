@@ -2,27 +2,83 @@ import React from 'react';
 import Head from 'next/head';
 import '../styles/invite.scss';
 import AppLayout from '../components/AppLayout';
-import FireFlies from '../components/Fireflies';
-import InfinityIcon from '../components/icons/Infinity';
-import OrnateDivider from '../components/icons/OrnateDivider';
-import LinearOrnament from '../components/icons/LinearOrnament';
+import InvitedSection from '../components/invitation/InvitedSection';
+import HeroSection from '../components/invitation/HeroSection';
+import AddressSection from '../components/invitation/AddressSection';
+import Services from '../components/invitation/Services';
+import RsvpSection from '../components/invitation/RsvpSection';
+import { restfulRequest } from '../api/utils';
 
 export default class Invitation extends React.Component {
-	state = {
-		widowHeight: 0,
-		noBreakfast: false,
-	};
+	static getInitialProps = async ({ req, res, query }) => {
+		if (res && req) {
+			const { sendGroup, singleInvitation, attendee, services } = res.locals;
+			const { invitationId } = req.session;
+
+			const props = { invitationId, singleInvitation, services };
+			if (singleInvitation) {
+				return { ...props, attendees: [attendee] };
+			} else {
+				return { ...props, attendees: sendGroup.Attendees, sendGroup };
+			}
+		}
+		return {};
+	}
+
+	constructor(props) {
+		super(props);
+		this.state = {
+			widowHeight: 0,
+			noBreakfast: false,
+			selectedEvents: props.attendees.reduce((accum, attendee) => ({
+				...accum,
+				[attendee.id]: attendee.Events.reduce((eventAccum, event) => {
+					if (!this.isAnUpdate && event.EventAttendee.confirmed) { this.isAnUpdate = true; }
+					return {
+						...eventAccum,
+						[event.id]: event.EventAttendee.attending,
+					};
+				}, {}),
+			}), {}),
+		};
+	}
 
 	componentDidMount() {
 		this.setState({ windowHeight: window.innerHeight });
 	}
 
-	toggleBreakfast = () => {
-		this.setState({ noBreakfast: !this.state.noBreakfast });
+	scrollToRsvp = (btnElement) => {
+		window.UIkit.scroll(btnElement).scrollTo(this.rsvpSection)
 	}
 
-	scrollToRsvp = () => {
-		window.UIkit.scroll(this.goToRsvp).scrollTo(this.rsvpSection)
+	selectEventForRsvp = (attendeeId, eventId, isSelected) => {
+		this.setState({
+			selectedEvents: {
+				...this.state.selectedEvents,
+				[attendeeId]: {
+					...this.state.selectedEvents[attendeeId],
+					[eventId]: isSelected,
+				},
+			},
+		});
+	}
+
+	onSubmit = () => {
+		let body;
+		body = this.props.attendees.map(attendee => ({
+			attendeeId: attendee.id,
+			events: {
+				...this.state.selectedEvents[attendee.id],
+			},
+		}));
+		body = this.props.singleInvitation ? body[0] : body;
+		return restfulRequest({
+			route: `invitation/rsvp/${this.props.invitationId}`,
+			method: 'POST',
+			body: JSON.stringify({
+				attendeeRsvps: body,
+			}),
+		});
 	}
 
 	render() {
@@ -43,110 +99,16 @@ export default class Invitation extends React.Component {
 					<script src="//cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.40/js/uikit.min.js" />
 				</Head>
 				<div id="wedding-invitation">
-					<div className="dev-controls">
-						<header>Dev Controls:</header>
-						<div>No breakfast: {this.state.noBreakfast.toString()}</div>
-						<div className="actions">
-							<button onClick={this.toggleBreakfast} className="btn btn-primary btn-sm">No Breakfast</button>
-						</div>
+					<div style={{height: this.state.windowHeight}}>
+						<HeroSection />
 					</div>
-					<div className="section section-hero" style={{height: this.state.windowHeight}}>
-						<FireFlies>
-							<div className="content">
-								<div />
-								{/* <img className="logo" src="/assets/y&d-logo-white.png" /> */}
-								<img className="emblem" src="/assets/emblem.png" />
-								<header>
-									<h1 className="title">We're getting married!</h1>
-									<div className="date" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-										<div style={{ display: 'flex', alignItems: 'center' }}>
-											<span>13</span>
-											<InfinityIcon className="infinity-sign" colour="#fff" width={40} />
-											<span>10</span>
-										</div>
-										<span>2018</span>
-									</div>
-								</header>
-							</div>
-						</FireFlies>
-					</div>
-					<div className="section section-invited">
-						<h2 className="section-title"><span>You're</span>Invited</h2>
-						<p>With great pleasure</p>
-						<p><span className="fancy">Yasmin Obosi</span> and <span className="fancy">Daryl Browne</span></p>
-						<p>invite you to join them
-						at the celebration of their marriage</p>
-						<p><strong>Ayfer Princess</strong> and <strong>Sebastian Prince</strong>,</p>
-						<p>It would mean the world to us if you could join us for this very special time, and we would love it if you could be there.</p>
-						<p>Click the button below to confirm your attendance / absence now,</p>
-						<button ref={ref => this.goToRsvp = ref} className="go-to-rsvp" onClick={this.scrollToRsvp}>RSVP</button>
-						<p>... Or read on for more details...</p>
-					</div>
-					<div className="section section-where">
-						<h2 className="section-title"><span>where &</span>When</h2>
-						<div className="ornate-divider">
-							<OrnateDivider colour="#e0b278" />
-						</div>
-						<address>
-							<p>The <span>Islington Town Hall</span></p>
-							<p>Upper Street</p>
-							<p>N1 2UD</p>
-							<small className="uk-text-meta"><i className="material-icons">map</i> open in google maps</small>
-						</address>
-						<div className="caligraphy-divider">
-							<LinearOrnament colour="#e0b278" />
-						</div>
-						<time>
-							Be there for: <span>5'o'Clock</span>
-						</time>
-					</div>
-					<div className="section section-services">
-						<h2 className="section-title"><span>Order of</span>Service</h2>
-						<div className="services">
-							<div className="event-box-wrapper">
-								<div className="event-box">
-									<h2 className="event-title"><span>Ceremony</span></h2>
-									<div className="details">
-										<span className="day">Monday</span>
-										<span className="date">October 13 2018</span>
-										<span className="time">05:00 pm</span>
-									</div>
-									<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ac posuere justo. In tempor ex in blandit euismod. Nullam semper mauris sed erat interdum mollis. Phasellus egestas dictum odio sit amet pulvinar. Ut ligula orci, accumsan sed dui id, maximus rutrum tellus. Nulla facilisi. Suspendisse est quam, viverra sed sapien sit amet, egestas bibendum mauris. Nulla pulvinar viverra tristique. Curabitur malesuada, lacus sed porttitor molestie, justo purus sollicitudin urna, nec cursus justo massa quis justo.</p>
-								</div>
-							</div>
-							{this.state.noBreakfast === false && <div className="event-box-wrapper">
-								<div className="event-box">
-									<h2 className="event-title"><span>Wedding 'Breakfast'</span></h2>
-									<div className="details">
-										<span className="day">Monday</span>
-										<span className="date">October 13 2018</span>
-										<span className="time">05:00 pm</span>
-									</div>
-									<p>Fusce volutpat ante lacus, eu finibus sem maximus aliquam. Suspendisse pulvinar est lectus, at efficitur metus dictum ullamcorper. Vestibulum eget porta velit. Aenean vitae velit imperdiet, consectetur massa id, finibus leo. Nam vulputate luctus libero, ut suscipit arcu ultricies et. Nunc pharetra a libero id porttitor. Quisque non tempor diam, a tempus justo. Donec accumsan est sed neque convallis scelerisque. Donec vulputate libero vel diam pretium viverra.</p>
-								</div>
-							</div>}
-							<div className="event-box-wrapper">
-								<div className="event-box">
-									<h2 className="event-title"><span>Reception</span></h2>
-									<div className="details">
-										<span className="day">Monday</span>
-										<span className="date">October 13 2018</span>
-										<span className="time">05:00 pm</span>
-									</div>
-									<p>Nullam finibus sem metus. Vivamus sapien velit, efficitur et ante id, auctor laoreet orci. Duis tempor augue vel lacus tempus, eget dignissim odio fermentum. Morbi pellentesque vulputate placerat. Donec a congue ex. Sed at diam ac orci blandit finibus ac non justo. Aenean sapien ipsum, sagittis a sem vitae, molestie interdum nisl. Morbi sagittis libero leo, a cursus ligula mattis eget. Phasellus leo turpis, pharetra et dui nec, tempus tristique nunc. Cras posuere sagittis dapibus. Mauris euismod nunc ut lacinia tincidunt.</p>
-								</div>
-							</div>
-						</div>
-						{this.state.noBreakfast && <div className="side-note">
-							<p>
-								<span>*</span>
-								Please note, that between the ceremony and wedding reception, there will be a slight time gap. This is to allow close family to have a sit down with the newly weds, before the wedding reception starts in the evening.
-							</p>
-							<p>
-								Whilst we would love for you to attend both, we understand your reservations if you only choose to attend one
-							</p>
-						</div>}
-					</div>
+					<InvitedSection
+						attendees={this.props.attendees}
+						singleInvitation={this.props.singleInvitation}
+						onGoToRsvp={btnElement => this.scrollToRsvp(btnElement)}
+					/>
+					<AddressSection />
+					<Services events={this.props.services} />
 					<div className="section section-bridemaids">
 						<h2 className="section-title"><span>Meet the</span>Bridal Party</h2>
 						<div className="bridal-party bridemaids">
@@ -201,63 +163,14 @@ export default class Invitation extends React.Component {
 							</div>
 						</div>
 					</div>
-					<div ref={ref => this.rsvpSection = ref} className="section section-rsvp">
-						<h2 className="section-title"><span>Please reply</span> Répondez s'il vous plaît</h2>
-						<p>Please send your response by<br/><strong>May 31st</strong><br/>Responses after this date has passed will not be counted and your place will not be guaranteed.</p>
-						<p>Tap on an event to select/unselect it and indicate your attendance.</p>
-						<form>
-							<div className="row rsvps">
-								<div className="rsvp">
-									<header>Daniel Robinson</header>
-									<p><small>Please tap to select/unselect an event</small></p>
-									<div>
-										<div className="checkbox-group active">
-											<i className="custom-checkbox material-icons">check</i>
-											<label className="form-check-label">
-												Ceremony
-											</label>
-										</div>
-										<div className="checkbox-group">
-											<i className="custom-checkbox material-icons">check</i>
-											<label className="form-check-label">
-												Wedding breakfast
-											</label>
-										</div>
-										<div className="checkbox-group">
-											<i className="custom-checkbox material-icons">check</i>
-											<label className="form-check-label">
-												Reception
-											</label>
-										</div>
-									</div>
-								</div>
-								<div className="rsvp">
-									<header>Danielle Campbell</header>
-									<p><small>Please tap to select/unselect an event</small></p>
-									<div>
-										<div className="checkbox-group active">
-											<i className="custom-checkbox material-icons">check</i>
-											<label className="form-check-label">
-												Ceremony
-											</label>
-										</div>
-										<div className="checkbox-group active">
-											<i className="custom-checkbox material-icons">check</i>
-											<label className="form-check-label">
-												Wedding breakfast
-											</label>
-										</div>
-										<div className="checkbox-group">
-											<i className="custom-checkbox material-icons">check</i>
-											<label className="form-check-label">
-												Reception
-											</label>
-										</div>
-									</div>
-								</div>
-							</div>
-							<button className="btn btn-lg">Send Response</button>
-						</form>
+					<div ref={ref => this.rsvpSection = ref}>
+						<RsvpSection
+							attendees={this.props.attendees}
+							onSelectEvent={(evId, attenId, value) => this.selectEventForRsvp(evId, attenId, value)}
+							selectedEvents={this.state.selectedEvents}
+							onSubmit={this.onSubmit}
+							isAnUpdate={this.isAnUpdate}
+						/>
 					</div>
 				</div>
 			</AppLayout>

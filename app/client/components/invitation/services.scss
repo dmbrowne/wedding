@@ -1,0 +1,130 @@
+
+.section-services {
+	background: url('/assets/dark_wall_@2X.png');
+	color: lighten(#80705e, 20%);
+
+	.section-title { color: #80705e; }
+
+	.services {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		> * {
+			flex: 1;
+		}
+	}
+
+	.side-note {
+		font-size: 14px;
+		max-width: 700px;
+		margin: 60px auto 0;
+		span { color: #7676a2; font-size: 1.5rem;}
+	}
+}
+
+.event-box-wrapper {
+	display: flex;
+	position: relative;
+	margin: 40px 20px 0;
+	@media screen and (min-width: 450px){ max-width: 450px; }
+	@media screen and (min-width: 768px){ max-width: none; }
+	
+	&:before, &:after {
+		content: '';
+		position: absolute;
+		left: 20px;
+		height: 1px;
+		width: calc(100% - 40px);
+		background: #80705e;
+	}
+	&:before { top: 0; }
+	&:after { bottom: 0; }
+}
+
+.event-box {
+	padding: 20px;
+	text-align: center;
+	position: relative;
+	min-height: 400px;
+	flex: 1;
+
+	@media screen and (min-width: 400px) {
+		padding: 40px;
+	}
+
+	&:before, &:after {
+		content: '';
+		position: absolute;
+		top: 40px;
+		width: 1px;
+		height: calc(100% - 80px);
+		background: #80705e;
+	}
+
+	&:before { left: 0; }
+	&:after { right: 0; }
+
+	.event-title {
+		font-family: 'Roboto Condensed';
+		display: flex;
+    align-items: center;
+		justify-content: center;
+		height: 100px;
+		overflow: hidden;
+
+		&:before, &:after {
+			content: "";
+			display: inline-block;
+			width: 10px;
+			height: 10px;
+			border-radius: 50%;
+			border: 3px solid #7676a2;
+			margin: 0 20px;
+		}
+
+		span {
+			letter-spacing: 3px;
+			text-transform: uppercase;
+			padding: 0 5px;
+			display: inline-block;
+			// max-width: 90%;
+
+			&:before, &:after {
+				content: "";
+				display: block;
+				width: 100px;
+				height: 2px;
+				background: #7676a2;
+				margin: 0 auto;
+				text-align: center;
+			}
+			&:before { margin-bottom: 10px; }
+			&:after { margin-top: 10px; }
+		}
+	}
+
+	.details {
+		margin: 30px auto;
+		border-bottom: 1px solid darken(#969696, 15%);
+		font-size: 12px;
+		display: flex;
+		max-width: 500px;
+		align-items: center;
+		justify-content: center;
+		@media screen and (min-width: 500px) {
+			font-size: 1rem;
+		}
+
+		span { color: #969696; display: inline-block; padding: 0 10px; }
+		span:first-of-type { border-left: none; }
+		span.date {
+			font-family: 'Great Vibes';
+			font-size: 1rem;
+			border-left: 1px solid darken(#969696, 15%);
+			border-right: 1px solid darken(#969696, 15%);
+			@media screen and (min-width: 500px) {
+				font-size: 1.5rem;
+			}
+		}
+	}
+}
