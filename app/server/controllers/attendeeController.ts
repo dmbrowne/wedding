@@ -162,9 +162,25 @@ export function getGroupInvitation(req: NextAppRequest, res: Response, next: Nex
 			res.status(404);
 			throw Error(`sendGroup cannot be found with id ${sendGroupId}`);
 		}
+		const mergedEvents = sendGroup.Attendees.reduce((sendGroupsOtherAttendeesEvents, attendee) => {
+			const attendeeEvents = attendee.Events.reduce((events, event) => {
+				delete event.Attendees;
+				return {
+					...events,
+					[event.id]: event,
+				};
+			}, {});
+
+			return {
+				...sendGroupsOtherAttendeesEvents,
+				...attendeeEvents,
+			};
+		}, {});
+
 		req.session.invitationId = sendGroupId;
 		res.locals.sendGroup = sendGroup;
 		res.locals.singleInvitation = false;
+		res.locals.services = Object.keys(mergedEvents).map(eventId => mergedEvents[eventId]);
 		return req.nextAppRenderer.render(req, res, '/invitation');
 	})
 	.catch(err => {
