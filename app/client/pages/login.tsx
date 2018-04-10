@@ -42,10 +42,10 @@ class LoginScreen extends React.Component {
 					<form method="POST" action="/login">
 						<div className="uk-margin">
 							<input
-								type="email"
-								name="email"
+								type="text"
+								name="username"
 								className="uk-input"
-								placeholder="Enter email"
+								placeholder="Enter username"
 							/>
 						</div>
 						<div className="uk-margin">

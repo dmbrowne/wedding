@@ -29,21 +29,21 @@ export function register(req: Request, res: Response, next: NextFunction) {
 		delete req.session.signUpError;
 	}
 
-	const { email, password } = req.body;
+	const { username, password } = req.body;
 
-	if (!email || !password) {
-		req.session.signUpError = 'Email and password is required when creating a new user';
+	if (!username || !password) {
+		req.session.signUpError = 'Username and password is required when creating a new user';
 		return res.redirect('/sign-up');
 	}
 
 	models.User
 		.findOrCreate({
-			where: { email },
+			where: { username },
 			defaults: { password },
 		})
 		.then(([user, created]) => {
 			if (!created) {
-				req.session.signUpError = `User with the email address ${email} already exists`;
+				req.session.signUpError = `User with the username ${username} already exists`;
 				return res.redirect('/sign-up');
 			}
 			req.session.user = user;
@@ -55,17 +55,17 @@ export function register(req: Request, res: Response, next: NextFunction) {
 }
 
 export function login(req: Request, res: Response, next) {
-	const { email, password } = req.body;
+	const { username, password } = req.body;
 
-	if (!email || !password) {
-		req.session.loginError = 'Email and password is required to log in';
+	if (!username || !password) {
+		req.session.loginError = 'Username and password is required to log in';
 		return res.redirect('/login');
 	}
 
 	const UserWithPassword = models.User.scope('allFields');
 
 	UserWithPassword.findOne({
-		where: { email },
+		where: { username },
 	})
 	.then(user => {
 		if (!user) {
@@ -74,7 +74,7 @@ export function login(req: Request, res: Response, next) {
 
 		user.checkPassword(password).then(correctPassword => {
 			if (!correctPassword) {
-				req.session.loginError = `The given password mismatches the one stored for ${email}.`;
+				req.session.loginError = `The given password mismatches the one stored for ${username}.`;
 				return res.redirect('/login?error=401');
 			}
 
@@ -156,9 +156,9 @@ export function getUser(req: NextAppRequest, res: Response) {
 }
 
 export function createNewUser(req: Request, res: Response, next: NextFunction) {
-	const { email, password, role, firstName, lastName } = req.body;
+	const { username, email, password, role, firstName, lastName } = req.body;
 	models.User.create({
-		email, password, role, firstName, lastName,
+		username, email, password, role, firstName, lastName,
 	})
 	.then(user => {
 		if (req.xhr) {
@@ -181,7 +181,7 @@ export function editOtherUser(req: Request, res: Response, next: NextFunction) {
 
 	const { userId } = req.params;
 	const updateValues = getDesiredValuesFromRequestBody(
-		['email', 'password', 'role', 'firstName', 'lastName'],
+		['username', 'email', 'password', 'role', 'firstName', 'lastName'],
 		req.body,
 	);
 	return models.User.findById(userId).then(user => {
