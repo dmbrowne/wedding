@@ -17,4 +17,11 @@ router.post('/', upload.single('image'), (req, res, next) => {
 		});
 });
 
+router.delete('/:galleryImageId', (req, res, next) => {
+	dbModels.GalleryImage.findById(req.params.galleryImageId)
+		.then(galleryImage => galleryImage.delete())
+		.then(() => res.send({ deleted: true }))
+		.catch(e => next(e));
+});
+
 export default router;
