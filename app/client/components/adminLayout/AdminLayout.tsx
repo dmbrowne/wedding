@@ -91,6 +91,7 @@ export default class AdminLayout extends React.Component<InternalProps> {
 							<li><a href="/admin/sendInvites">Send Invites</a></li>
 							<li className="uk-nav-divider uk-margin" />
 							<li><a href="/admin/users">CMS users</a></li>
+							<li><a href="/admin/gallery">Image Gallery</a></li>
 						</ul>
 					</div>
 				</aside>
