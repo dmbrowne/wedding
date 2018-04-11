@@ -12,3 +12,4 @@ redis_data
 # app/**/*.js
 config/database.json
 config/mailgun.json
+uploads/*
