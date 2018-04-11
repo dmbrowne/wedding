@@ -9,6 +9,7 @@ import SendGroup from './sendGroup';
 import Campaign from './campaign';
 import CampaignAttendee from './campaignAttendee';
 import CampaignAttendeeGroup from './campaignAttendeeGroup';
+import GalleryImage from './galleryImage';
 import sequelizeConnection from './lib/connection';
 
 interface IModels {
@@ -23,6 +24,7 @@ interface IModels {
   Campaign: typeof Campaign;
   CampaignAttendee: typeof CampaignAttendee;
   CampaignAttendeeGroup: typeof CampaignAttendeeGroup;
+  GalleryImage: typeof GalleryImage;
 }
 
 const modelz = [
@@ -37,6 +39,7 @@ const modelz = [
   Campaign,
   CampaignAttendee,
   CampaignAttendeeGroup,
+  GalleryImage,
 ];
 
 const dbModels = modelz.reduce((models, ModelClass) => {
