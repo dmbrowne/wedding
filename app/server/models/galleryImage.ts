@@ -34,6 +34,12 @@ export default class GalleryImage extends Model {
 		format: { type: Sequelize.STRING },
 		url: { type: Sequelize.STRING },
 		secureUrl: { type: Sequelize.STRING },
+		squareImage: {
+			type: Sequelize.VIRTUAL,
+			get: function getSquareImage() {
+				return cloudinary.url(this.publicId, { width: 300, height: 300, crop: 'fill' });
+			},
+		},
 	};
 
 	static init(sequelizeConnection) {
@@ -85,6 +91,7 @@ export default class GalleryImage extends Model {
 	format: string;
 	url: string;
 	secureUrl: string;
+	squareImage: string;
 	createdAt: Date;
 	updatedAt: Date;
 
