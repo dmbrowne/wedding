@@ -32,13 +32,39 @@ export const restfulRequest = (opts) => {
 		options.body = body;
 	}
 
-	return fetch(
-		`/${route}`,
-		options,
-	)
+	return fetch(`/${route}`, options)
+		.then(errorHandler)
+		.catch(err => {
+			console.error(err);
+			throw err;
+		});
+};
+
+export const multipartFormRequest = (opts) => {
+	interface RequestOptions {
+		method: Request['method'];
+		body?: any;
+		credentials: RequestCredentials;
+	}
+
+	const { route, method = 'POST', body } = opts;
+	const options: RequestOptions = {
+		method,
+		credentials: 'include' as RequestCredentials,
+	};
+
+	if (body) {
+		options.body = body;
+	}
+
+	return fetch(`/${route}`, {
+		method,
+		body,
+		credentials: 'include' as RequestCredentials,
+	})
 	.then(errorHandler)
 	.catch(err => {
 		console.error(err);
 		throw err;
 	});
-}
+};
