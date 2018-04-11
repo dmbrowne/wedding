@@ -198,7 +198,7 @@ export function getSingleInvitation(req: NextAppRequest, res: Response, next: Ne
 	})
 	.then(attendee => {
 		if (!attendee) {
-			throw Error(`sendGroup cannot be found with id ${attendeeId}`);
+			throw Error(`attendee cannot be found with id ${attendeeId}`);
 		}
 		req.session.invitationId = attendeeId;
 		res.locals.attendee = attendee;
