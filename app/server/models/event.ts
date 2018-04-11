@@ -9,6 +9,7 @@ export default class Event extends Model {
 				allowNull: false,
 			},
 			description: Sequelize.STRING,
+			entryTime: Sequelize.DATE,
 			startTime: Sequelize.DATE,
 			endTime: Sequelize.DATE,
 		},
@@ -30,6 +31,7 @@ export default class Event extends Model {
 	id: string;
 	name: string;
 	description: string;
+	entryTime: string;
 	startTime: string;
 	endTime: string;
 	Guests: Attendee[];
