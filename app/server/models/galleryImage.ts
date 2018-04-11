@@ -61,7 +61,7 @@ export default class GalleryImage extends Model {
 
 	static deleteImageFromCloudinary(publicId) {
 		return new Promise((resolve, reject) => {
-			cloudinary.v2.uploader.upload(publicId, (err, result) => {
+			cloudinary.v2.uploader.destroy(publicId, (err, result) => {
 				if (err) {
 					reject(err);
 				}
