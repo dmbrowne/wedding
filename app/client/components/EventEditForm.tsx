@@ -4,7 +4,7 @@ import MomentUtils from 'material-ui-pickers/utils/moment-utils';
 import MuiPickersUtilsProvider from 'material-ui-pickers/utils/MuiPickersUtilsProvider';
 import DateTimePicker from 'material-ui-pickers/DateTimePicker';
 import GalleryImage from '../../server/models/galleryImage';
-import ImageImportComponent from './ImageImportComponent';
+import AddOrReplaceImage from './image/AddOrReplaceImage';
 
 interface Props {
 	name: string;
@@ -36,6 +36,11 @@ class EventForm extends React.Component<Props> {
 		this.props.onDescriptionChange(e.target.value);
 	}
 
+	onImageChange = (galleryImage: GalleryImage) => {
+		this.props.onImageChange(galleryImage);
+		this.setState({ addImageMode: false });
+	}
+
 	render() {
 		const {
 			startTime, endTime, description, name,
@@ -49,7 +54,7 @@ class EventForm extends React.Component<Props> {
 				locale="en"
 			>
 				<div>
-					<form className="uk-grid-small uk-form-stacked uk-grid uk-margin">
+					<div className="uk-grid-small uk-form-stacked uk-grid uk-margin">
 						<div className="uk-width-1-1 uk-margin-top">
 							<label className="uk-form-label">Event name</label>
 							<input
@@ -90,15 +95,13 @@ class EventForm extends React.Component<Props> {
 								onChange={this.eventDescription}
 							/>
 						</div>
-						{image && <div className="uk-width-1-1 uk-margin-top">
-							<img src={image.squareImage} />
-						</div>}
-					</form>
-					{this.state.addImageMode && (
-						<ImageImportComponent
-							onSelect={this.props.onImageChange}
-						/>
-					)}
+						<div className="uk-width-1-1 uk-margin-top uk-text-center">
+							<AddOrReplaceImage
+								onImageChange={this.props.onImageChange}
+								image={image}
+							/>
+						</div>
+					</div>
 				</div>
 			</ MuiPickersUtilsProvider>
 		);

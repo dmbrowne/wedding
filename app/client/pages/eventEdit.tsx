@@ -57,7 +57,7 @@ class EditEventPage extends React.Component<Props, State> {
 		const dataInput = {
 			name: this.state.name,
 			description: this.state.description || null,
-			entryTime: this.state.startTime.toDate(),
+			entryTime: this.state.entryTime.toDate(),
 			startTime: this.state.startTime.toDate(),
 			endTime: this.state.endTime.toDate(),
 			imageId: this.state.image.id,

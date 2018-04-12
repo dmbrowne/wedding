@@ -3,9 +3,9 @@ import * as React from 'react';
 import moment from 'moment';
 import { withAdmin } from '../components/adminLayout';
 import withModal, { ChildProps } from '../components/withModal';
-import { getAllImages, deleteImage, uploadImage } from '../api/gallery';
-import AddNewImageModal from '../components/AddNewImageModal';
-import GalleryListing from '../components/GalleryListing';
+import { getAllImages, deleteImage } from '../api/gallery';
+import AddNewImageModal from '../components/image/AddNewImageModal';
+import GalleryListing from '../components/image/GalleryListing';
 
 interface Props extends ChildProps {}
 
@@ -72,7 +72,6 @@ class Gallery extends React.Component<Props> {
 	}
 
 	uploadSuccess = async (response) => {
-		console.log(response);
 		this.setState({
 			galleryImages: await getAllImages(),
 		});
@@ -96,16 +95,18 @@ class Gallery extends React.Component<Props> {
 				<h1>Image Gallery</h1>
 				{this.state.galleryImages.length > 0 && this.addImageButton()}
 				<div className="image-gallery">
-					{this.state.galleryImages.length === 0 && (
-						<div>
-							<p>No Images have been added</p>
-							{this.addImageButton()}
-						</div>
-					)}
-					<GalleryListing
-						galleryImages={this.state.galleryImages}
-						onImageClick={(imgObj, idx) => this.selectImage(imgObj, idx)}
-					/>
+					<div className="image-listing-wrapper">
+						{this.state.galleryImages.length === 0 && (
+							<div>
+								<p>No Images have been added</p>
+								{this.addImageButton()}
+							</div>
+						)}
+						<GalleryListing
+							galleryImages={this.state.galleryImages}
+							onImageClick={(imgObj, idx) => this.selectImage(imgObj, idx)}
+						/>
+					</div>
 					{this.state.activeImage && (
 						<aside className="details-pane">
 							<header>
