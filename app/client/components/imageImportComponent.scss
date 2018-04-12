@@ -1,0 +1,31 @@
+.import-gallery-component {
+	.upload-buttons {
+		> button { margin: 10px;}
+	}
+}
+.uk-custom-modal {
+	position: relative;
+	box-sizing: border-box;
+	margin: 0 auto;
+	// width: 80%;
+	max-width: 800px;
+	box-shadow: 0 1px 50px 3px rgba(0,0,0,0.1);
+	opacity: 1;
+	transform: none;
+	padding: 15px 40px;
+	.close { float: right; }
+	> header {
+		display: flex;
+		align-items: center;
+		justify-content: flex-start;
+		padding: 10px 0;
+		width: 100%;
+		i { margin-right: 10px; }
+	}
+	.uk-modal-title { margin: 0; }
+	.uk-modal-body {
+		// height: 300px;
+		height: 50vh;
+		overflow-y: auto;
+	}
+}
