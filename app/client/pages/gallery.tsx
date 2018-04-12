@@ -4,10 +4,10 @@ import moment from 'moment';
 import { withAdmin } from '../components/adminLayout';
 import withModal, { ChildProps } from '../components/withModal';
 import { getAllImages, deleteImage, uploadImage } from '../api/gallery';
+import AddNewImageModal from '../components/AddNewImageModal';
+import GalleryListing from '../components/GalleryListing';
 
-interface Props extends ChildProps {
-	//
-}
+interface Props extends ChildProps {}
 
 class Gallery extends React.Component<Props> {
 	static getInitialProps = async ({ req, res }) => {
@@ -20,14 +20,11 @@ class Gallery extends React.Component<Props> {
 		};
 	}
 
-	fileInput: HTMLInputElement;
 
 	state = {
 		activeImage: null,
 		galleryImages: [],
 		addImageModal: false,
-		addImagePreview: null,
-		addImageFile: null,
 	};
 
 	componentWillMount() {
@@ -35,6 +32,7 @@ class Gallery extends React.Component<Props> {
 			galleryImages: [...this.props.galleryImages],
 		});
 	}
+
 	selectImage(imageObj, idx) {
 		this.setState({ activeImage: {...imageObj, gridViewIdxPosition: idx } });
 	}
@@ -64,84 +62,36 @@ class Gallery extends React.Component<Props> {
 	showAddImageModal = () => {
 		this.setState({
 			addImageModal: true,
-			addImagePreview: null,
-			addImageFile: null,
 		});
 	}
 
 	hideAddImageModal = () => {
 		this.setState({
 			addImageModal: false,
-			addImagePreview: null,
-			addImageFile: null,
 		});
 	}
 
-	onFileInputChange = (e) => {
-		if (!e.target.files || !e.target.files[0]) {
-			return;
-		}
-
-		const file = e.target.files[0];
-		const reader = new FileReader();
-
-		reader.addEventListener("load", () => {
-			this.setState({ addImagePreview: reader.result });
-		}, false);
-
-		reader.readAsDataURL(file);
-		this.setState({ addImageFile: file });
+	uploadSuccess = async (response) => {
+		console.log(response);
+		this.setState({
+			galleryImages: await getAllImages(),
+		});
+		this.hideAddImageModal();
 	}
 
-	upload = () => {
-		const form = new FormData();
-		form.append('image', this.state.addImageFile);
-		uploadImage(form)
-			.then(async () => {
-				this.setState({
-					galleryImages: await getAllImages(),
-				});
-				this.hideAddImageModal();
-			})
-			.catch(err => console.error(err));
-	}
-
-	simulateInputFileClick = () => {
-		this.fileInput.click();
+	uploadFail = (err) => {
+		alert(JSON.stringify(err));
 	}
 
 	render() {
 		return (
 			<div className="uk-padding">
 				{this.state.addImageModal && (
-					<div className="add-new-image-modal uk-section uk-section-small uk-section-muted">
-						<div className="uk-clearfix">
-							<i
-								onClick={this.hideAddImageModal}
-								className="material-icons uk-float-right"
-								style={{marginRight: 30}}
-							>
-								close
-							</i>
-						</div>
-						<div className="image-preview" onClick={this.simulateInputFileClick}>
-							{this.state.addImagePreview ?
-								<img src={this.state.addImagePreview} /> :
-								<div className="uk-placeholder">Click here to add a new image</div>
-							}
-							<input ref={ref => this.fileInput = ref} type="file" onChange={this.onFileInputChange} />
-						</div>
-						{this.state.addImageFile && (
-							<div className="uk-margin uk-text-center">
-								<button
-									onClick={this.upload}
-									className="uk-button uk-button-secondary"
-								>
-									Save
-								</button>
-							</div>
-						)}
-					</div>
+					<AddNewImageModal
+						onClose={this.hideAddImageModal}
+						onUploadSuccess={this.uploadSuccess}
+						onUploadFail={this.uploadFail}
+					/>
 				)}
 				<h1>Image Gallery</h1>
 				{this.state.galleryImages.length > 0 && this.addImageButton()}
@@ -152,20 +102,20 @@ class Gallery extends React.Component<Props> {
 							{this.addImageButton()}
 						</div>
 					)}
-					<div className="image-gallery-listing">
-						{this.state.galleryImages.length > 0 && this.state.galleryImages.map((galleryImage, idx) => {
-							return (
-								<div key={galleryImage.id} className="image-gallery-item">
-									<img src={galleryImage.squareImage} onClick={() => this.selectImage(galleryImage, idx)}/>
-								</div>
-							);
-						})}
-					</div>
+					<GalleryListing
+						galleryImages={this.state.galleryImages}
+						onImageClick={(imgObj, idx) => this.selectImage(imgObj, idx)}
+					/>
 					{this.state.activeImage && (
 						<aside className="details-pane">
 							<header>
 								Details
-								<i className="material-icons">close</i>
+								<i
+									className="material-icons"
+									onClick={() => this.setState({ activeImage: null})}
+								>
+									close
+								</i>
 							</header>
 							<img src={this.state.activeImage.url} />
 							<div>
