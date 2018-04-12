@@ -1,7 +1,7 @@
 import { restfulRequest } from './utils';
 import { IEvent } from '../../server/types/models';
 
-type CreateEventInput = {name: IEvent['name']} & Pick<IEvent, 'startTime' | 'endTime' | 'description'>;
+type CreateEventInput = {name: IEvent['name']} & Pick<IEvent, 'entryTime' | 'startTime' | 'endTime' | 'description' | 'imageId'>;
 
 export function getEvents() {
 	return restfulRequest({
