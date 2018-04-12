@@ -1,3 +1,5 @@
+import GalleryImage from "../models/galleryImage";
+
 export interface IUser {
 	username: string;
 	email: string;
@@ -31,9 +33,12 @@ export interface IEvent {
 	id: string;
 	name: string;
 	description: string;
+	entryTime: Date;
 	startTime: Date;
 	endTime: Date;
+	imageId: string;
 	Guests?: IAttendee[] | null;
+	featureImage?: GalleryImage;
 }
 
 export interface IEventAttendee {
