@@ -4,6 +4,7 @@ import SendGroup from './sendGroup';
 
 interface CreateCampaignOptions {
 	name: string;
+	subject?: string;
 	content?: string;
 	groupCampaign?: boolean;
 }
@@ -15,6 +16,7 @@ export default class Campaign extends Model {
 				type: Sequelize.STRING,
 				allowNull: false,
 			},
+			subjecr: Sequelize.STRING,
 			content: Sequelize.TEXT,
 			groupCampaign: {
 				type: Sequelize.BOOLEAN,

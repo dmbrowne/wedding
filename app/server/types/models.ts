@@ -85,6 +85,6 @@ export interface ICampaign {
 	id?: string;
 	name: string;
 	content?: string;
+	subject?: string;
 	groupCampaign?: boolean;
 }
-
