@@ -8,6 +8,7 @@ import GalleryImage from '../../server/models/galleryImage';
 
 interface State {
 	name: string;
+	slug: string;
 	description: string;
 	entryTime: Moment;
 	startTime: Moment;
@@ -18,6 +19,7 @@ interface State {
 class NewEvent extends React.Component<any, State> {
 	state = {
 		name: '',
+		slug: '',
 		description: '',
 		startTime: moment(),
 		endTime: moment(),
@@ -40,6 +42,7 @@ class NewEvent extends React.Component<any, State> {
 	submit() {
 		const dataInput = {
 			name: this.state.name,
+			slug: this.state.slug,
 			description: this.state.description || null,
 			entryTime: this.state.startTime.toDate(),
 			startTime: this.state.startTime.toDate(),
@@ -59,6 +62,7 @@ class NewEvent extends React.Component<any, State> {
 				<div className="uk-container">
 					<EventForm
 						name={this.state.name}
+						slug={this.state.slug}
 						description={this.state.description}
 						startTime={this.state.startTime}
 						endTime={this.state.endTime}
@@ -70,6 +74,7 @@ class NewEvent extends React.Component<any, State> {
 						onDescriptionChange={description => this.setState({ description })}
 						onDateTimeEntryChange={time => this.editEventDate(time, 'entry')}
 						onImageChange={(galleryImage) => this.setState({ image: galleryImage })}
+						onSlugChange={(slug) => this.setState({ slug })}
 					/>
 					<div className="uk-clearfix">
 						<div

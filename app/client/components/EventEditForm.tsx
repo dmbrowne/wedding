@@ -8,6 +8,7 @@ import AddOrReplaceImage from './image/AddOrReplaceImage';
 
 interface Props {
 	name: string;
+	slug: string;
 	description: string;
 	startTime: Moment;
 	endTime: Moment;
@@ -15,6 +16,7 @@ interface Props {
 	image: GalleryImage;
 	onNameChange: (name: string) => any;
 	onDescriptionChange: (description: string) => any;
+	onSlugChange: (slug: string) => any;
 	onDateTimeEntryChange: (time: Moment) => any;
 	onDateTimeStartChange: (time: Moment) => any;
 	onDateTimeEndChange: (time: Moment) => any;
@@ -32,6 +34,10 @@ class EventForm extends React.Component<Props> {
 		this.props.onNameChange(e.target.value);
 	}
 
+	eventSlug = (e: React.ChangeEvent<HTMLInputElement>) => {
+		this.props.onSlugChange(e.target.value);
+	}
+
 	eventDescription = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
 		this.props.onDescriptionChange(e.target.value);
 	}
@@ -43,7 +49,7 @@ class EventForm extends React.Component<Props> {
 
 	render() {
 		const {
-			startTime, endTime, description, name,
+			startTime, endTime, description, name, slug,
 			onDateTimeStartChange, onDateTimeEndChange,
 			entryTime, onDateTimeEntryChange, image,
 		} = this.props;
@@ -63,6 +69,16 @@ class EventForm extends React.Component<Props> {
 								type="text"
 								placeholder="name of the event"
 								onChange={this.eventName}
+							/>
+						</div>
+						<div className="uk-width-1-1 uk-margin-top">
+							<label className="uk-form-label uk-text-muted">Slug</label>
+							<input
+								className="uk-input uk-form-small"
+								value={slug}
+								type="text"
+								placeholder="name of the event"
+								onChange={this.eventSlug}
 							/>
 						</div>
 						<div className="uk-width-1-3@s uk-margin-top">

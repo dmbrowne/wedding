@@ -10,6 +10,7 @@ import GalleryImage from '../../server/models/galleryImage';
 
 interface State {
 	name: string;
+	slug: string;
 	description: string;
 	startTime: Moment;
 	endTime: Moment;
@@ -33,6 +34,7 @@ class EditEventPage extends React.Component<Props, State> {
 	componentWillMount() {
 		this.setState({
 			name: this.props.event.name,
+			slug: this.props.event.slug,
 			description: this.props.event.description || '',
 			startTime: moment(this.props.event.startTime),
 			endTime: moment(this.props.event.endTime),
@@ -56,6 +58,7 @@ class EditEventPage extends React.Component<Props, State> {
 	submit() {
 		const dataInput = {
 			name: this.state.name,
+			slug: this.state.slug,
 			description: this.state.description || null,
 			entryTime: this.state.entryTime.toDate(),
 			startTime: this.state.startTime.toDate(),
@@ -87,42 +90,44 @@ class EditEventPage extends React.Component<Props, State> {
 
 	render() {
 		return (
-				<div className="uk-container">
-					<EventForm
-						name={this.state.name}
-						description={this.state.description}
-						startTime={this.state.startTime}
-						endTime={this.state.endTime}
-						onDateTimeStartChange={time => this.editEventDate(time, 'start')}
-						onDateTimeEndChange={time => this.editEventDate(time, 'end')}
-						onNameChange={name => this.setState({ name })}
-						onDescriptionChange={description => this.setState({ description })}
-						entryTime={this.state.entryTime}
-						image={this.state.image}
-						onDateTimeEntryChange={time => this.editEventDate(time, 'entry')}
-						onImageChange={(galleryImage) => this.setState({ image: galleryImage })}
-					/>
-					<div className="uk-clearfix">
-						<div
-							onClick={() => this.submit()}
-							className="uk-button uk-button-primary uk-float-right"
-						>
-							Save
-						</div>
-						<div
-							onClick={() => Router.push('/admin/events')}
-							className="uk-button uk-button-default uk-margin-right uk-float-right"
-						>
-							Cancel
-						</div>
-					</div>
-					<button
-						onClick={this.onDelete}
-						className="uk-button uk-button-link uk-text-danger"
+			<div className="uk-container">
+				<EventForm
+					name={this.state.name}
+					slug={this.state.slug}
+					description={this.state.description}
+					startTime={this.state.startTime}
+					endTime={this.state.endTime}
+					onDateTimeStartChange={time => this.editEventDate(time, 'start')}
+					onDateTimeEndChange={time => this.editEventDate(time, 'end')}
+					onNameChange={name => this.setState({ name })}
+					onDescriptionChange={description => this.setState({ description })}
+					onSlugChange={slug => this.setState({ slug })}
+					entryTime={this.state.entryTime}
+					image={this.state.image}
+					onDateTimeEntryChange={time => this.editEventDate(time, 'entry')}
+					onImageChange={(galleryImage) => this.setState({ image: galleryImage })}
+				/>
+				<div className="uk-clearfix">
+					<div
+						onClick={() => this.submit()}
+						className="uk-button uk-button-primary uk-float-right"
 					>
-						Delete
-					</button>
+						Save
+					</div>
+					<div
+						onClick={() => Router.push('/admin/events')}
+						className="uk-button uk-button-default uk-margin-right uk-float-right"
+					>
+						Cancel
+					</div>
 				</div>
+				<button
+					onClick={this.onDelete}
+					className="uk-button uk-button-link uk-text-danger"
+				>
+					Delete
+				</button>
+			</div>
 		);
 	}
 }

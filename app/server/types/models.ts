@@ -32,6 +32,7 @@ export interface IBridesmaid {
 export interface IEvent {
 	id: string;
 	name: string;
+	slug: string;
 	description: string;
 	entryTime: Date;
 	startTime: Date;
