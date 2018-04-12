@@ -64,34 +64,34 @@ class AttendeeEdit extends React.Component<Props, State> {
 
 	render() {
 		return (
-			<form>
-				<div className="form-group">
+			<form className="uk-container">
+				<div className="uk-margin">
 					<label>First name</label>
 					<input
 						type="text"
 						value={this.state.firstName}
 						onChange={({target}) => this.onChange(target, 'firstName')}
-						className="form-control"
+						className="uk-input"
 						placeholder="First name"
 					/>
 				</div>
-				<div className="form-group">
+				<div className="uk-margin">
 					<label>Last name</label>
 					<input
 						type="text"
 						value={this.state.lastName}
 						onChange={({target}) => this.onChange(target, 'lastName')}
-						className="form-control"
+						className="uk-input"
 						placeholder="Last name"
 					/>
 				</div>
-				<div className="form-group">
+				<div className="uk-margin">
 					<label>Email</label>
 					<input
 						type="email"
 						value={this.state.email}
 						onChange={({target}) => this.onChange(target, 'email')}
-						className="form-control"
+						className="uk-input"
 						placeholder="Last name"
 					/>
 				</div>

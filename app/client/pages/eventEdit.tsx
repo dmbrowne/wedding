@@ -6,12 +6,15 @@ import moment, { Moment } from 'moment';
 import { editEvent, deleteEvent } from '../api/event';
 import EventForm from '../components/EventEditForm';
 import { IEvent } from '../../server/types/models';
+import GalleryImage from '../../server/models/galleryImage';
 
 interface State {
 	name: string;
 	description: string;
 	startTime: Moment;
 	endTime: Moment;
+	entryTime: Moment;
+	image: GalleryImage;
 }
 
 interface Props extends ChildProps {
@@ -33,15 +36,19 @@ class EditEventPage extends React.Component<Props, State> {
 			description: this.props.event.description || '',
 			startTime: moment(this.props.event.startTime),
 			endTime: moment(this.props.event.endTime),
+			entryTime: moment(this.props.event.entryTime),
+			image: this.props.event.featureImage,
 		});
 	}
 
-	editEventDate(time: Moment, timeType: 'start' | 'end') {
+	editEventDate(time: Moment, timeType: 'start' | 'end' | 'entry') {
 		let key;
 		if (timeType === 'start') {
 			key = 'startTime';
 		} else if (timeType === 'end') {
 			key = 'endTime';
+		} else if (timeType === 'entry') {
+			key = 'entryTime';
 		}
 		this.setState({ [key]: time });
 	}
@@ -50,8 +57,10 @@ class EditEventPage extends React.Component<Props, State> {
 		const dataInput = {
 			name: this.state.name,
 			description: this.state.description || null,
+			entryTime: this.state.startTime.toDate(),
 			startTime: this.state.startTime.toDate(),
 			endTime: this.state.endTime.toDate(),
+			imageId: this.state.image.id,
 		};
 		editEvent(this.props.event.id, dataInput).then(() => {
 			Router.push('/admin/events');
@@ -88,6 +97,10 @@ class EditEventPage extends React.Component<Props, State> {
 						onDateTimeEndChange={time => this.editEventDate(time, 'end')}
 						onNameChange={name => this.setState({ name })}
 						onDescriptionChange={description => this.setState({ description })}
+						entryTime={this.state.entryTime}
+						image={this.state.image}
+						onDateTimeEntryChange={time => this.editEventDate(time, 'entry')}
+						onImageChange={(galleryImage) => this.setState({ image: galleryImage })}
 					/>
 					<div className="uk-clearfix">
 						<div
