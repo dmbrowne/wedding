@@ -21,6 +21,7 @@ module.exports = {
 		await queryInterface.addConstraint('CampaignAttendees', ['campaignId'], {
 			name: 'campaign_attendee_campaignId_fk',
 			type: 'foreign key',
+			onDelete: 'CASCADE',
 			references: {
 				table: 'Campaigns',
 				field: 'id',
@@ -29,6 +30,7 @@ module.exports = {
 		await queryInterface.addConstraint('CampaignAttendees', ['attendeeId'], {
 			name: 'campaign_attendee_attendeeId_fk',
 			type: 'foreign key',
+			onDelete: 'CASCADE',
 			references: {
 				table: 'Attendees',
 				field: 'id',
