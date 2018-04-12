@@ -4,7 +4,12 @@ import { NextAppRequest } from '../types';
 import { getDesiredValuesFromRequestBody, asyncAwaitTryCatch } from '../utils';
 
 export function getAllEvents(req: NextAppRequest, res: Response) {
-	models.Event.findAll().then(events => {
+	models.Event.findAll({
+		include: [{
+			model: models.GalleryImage,
+			as: 'featureImage',
+		}],
+	}).then(events => {
 		if (req.xhr) {
 			res.send(events);
 			return;
@@ -17,7 +22,12 @@ export function getAllEvents(req: NextAppRequest, res: Response) {
 
 export function getEvent(req: NextAppRequest, res: Response) {
 	const { eventId } = req.params;
-	models.Event.findById(eventId).then(event => {
+	models.Event.findById(eventId, {
+		include: [{
+			model: models.GalleryImage,
+			as: 'featureImage',
+		}],
+	}).then(event => {
 		if (req.xhr) {
 			res.send(event);
 			return;
@@ -29,7 +39,15 @@ export function getEvent(req: NextAppRequest, res: Response) {
 }
 
 export function createEvent(req: NextAppRequest, res: Response) {
-	const eventDetails = getDesiredValuesFromRequestBody(['name', 'description', 'startTime', 'endTime'], req.body);
+	const eventDetails = getDesiredValuesFromRequestBody([
+		'name',
+		'description',
+		'startTime',
+		'endTime',
+		'entryTime',
+		'imageId',
+	], req.body);
+
 	if (!eventDetails.name) {
 		(req.xhr ?
 			res.status(400).json({ message: 'Name of event is required' }) :
@@ -49,7 +67,15 @@ export function createEvent(req: NextAppRequest, res: Response) {
 
 export function editEvent(req: NextAppRequest, res: Response) {
 	const { eventId } = req.params;
-	const eventDetails = getDesiredValuesFromRequestBody(['name', 'description', 'startTime', 'endTime'], req.body);
+	const eventDetails = getDesiredValuesFromRequestBody([
+		'name',
+		'description',
+		'startTime',
+		'endTime',
+		'entryTime',
+		'imageId',
+	], req.body);
+
 	if (!eventDetails) {
 		(req.xhr ?
 			res.send({}) :
