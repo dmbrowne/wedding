@@ -23,6 +23,7 @@ export interface CloudinaryResponse {
 	url: string;
 	secure_url: string;
 }
+
 export default class GalleryImage extends Model {
 	static rawAttributes = {
 		publicId: {

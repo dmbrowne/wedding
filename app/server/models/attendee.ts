@@ -2,6 +2,7 @@ import Sequelize, { Model, HasManyHasAssociationMixin, BelongsToManyGetAssociati
 import Event from './event';
 import SendGroup from './sendGroup';
 import EventAttendee from './eventAttendee';
+import Campaign from './campaign';
 
 interface EventWithDetailsJoin extends Event {
 	EventAttendee: EventAttendee;
@@ -46,12 +47,15 @@ export default class Attendee extends Model {
 	lastName: string;
 	tableId: string;
 	sendGroupId: string;
+	campaignId: string;
 	createdAt: Date;
 	updatedAt: Date;
 	Events?: EventWithDetailsJoin[];
+	Campaigns: Campaign[];
 	SendGroup: SendGroup;
 	getEvents: BelongsToManyGetAssociationsMixin<EventWithDetailsJoin>;
 	hasEvent: HasManyHasAssociationMixin<EventWithDetailsJoin, EventWithDetailsJoin['id']>;
+	getCampaigns: BelongsToManyGetAssociationsMixin<Campaign>;
 
 	updateEventAttendance = (models, rsvps: {[eventId: string]: boolean }) => {
 		return Promise.all(

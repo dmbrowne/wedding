@@ -1,7 +1,7 @@
 import './addNewImageModal.scss';
 import * as React from 'react';
 import { uploadImage } from '../../api/gallery';
-import { CloudinaryResponse } from '../../../server/models/galleryImage';
+import { CloudinaryResponse } from '../../../server/types/index';
 
 interface Props {
 	onClose?: () => any;

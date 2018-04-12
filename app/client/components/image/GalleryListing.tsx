@@ -1,10 +1,10 @@
 import './galleryListing.scss';
 import * as React from 'react';
 import { getAllImages } from '../../api/gallery';
-import GalleryImage from '../../../server/models/galleryImage';
+import {IGalleryImage} from '../../../server/types/models';
 
 interface GalleryListingComponentProps {
-	galleryImages: GalleryImage[];
+	galleryImages: IGalleryImage[];
 	onImageClick: <I>(galleryImage: I, index: number) => any;
 }
 
@@ -21,7 +21,7 @@ const GalleryListing = ({ galleryImages, onImageClick }: GalleryListingComponent
 );
 
 interface GalleryListingProps {
-	galleryImages?: GalleryImage[];
+	galleryImages?: IGalleryImage[];
 	onImageClick: <I>(galleryImage: I, index: number) => any;
 }
 

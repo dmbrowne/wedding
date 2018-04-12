@@ -2,10 +2,10 @@ import './imageImport.scss';
 import React from 'react';
 import AddNewImageModal from './AddNewImageModal';
 import GalleryListing from './GalleryListing';
-import GalleryImage from '../../../server/models/galleryImage';
-
+import {IGalleryImage} from '../../../server/types/models';
+import ModalBackdrop from '../ModalBackdop';
 interface Props {
-	onSelect: (galleryImage: GalleryImage) => any;
+	onSelect: (galleryImage: IGalleryImage) => any;
 	onClose?: () => any;
 }
 
@@ -30,7 +30,6 @@ export class ImageImportComponent extends React.Component<Props, State> {
 	}
 
 	select = (galleryImage) => {
-		console.log(galleryImage);
 		this.props.onSelect(galleryImage);
 	}
 
@@ -93,7 +92,7 @@ export class ImageImportComponent extends React.Component<Props, State> {
 }
 
 export default (props) => (
-	<div className="modal-backdrop">
+	<ModalBackdrop>
 		<ImageImportComponent {...props} />
-	</div>
+	</ModalBackdrop>
 );

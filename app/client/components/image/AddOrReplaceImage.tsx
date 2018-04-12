@@ -1,10 +1,10 @@
 import * as React from 'react';
 import ImageImport from './ImageImport';
-import GalleryImage from '../../../server/models/galleryImage';
+import { IGalleryImage } from '../../../server/types/models';
 
 interface Props {
-	image: GalleryImage;
-	onImageChange: (galleryImage: GalleryImage) => any;
+	image: IGalleryImage;
+	onImageChange: (galleryImage: IGalleryImage) => any;
 }
 
 export default class AddOrReplaceImage extends React.Component<Props> {
@@ -12,7 +12,7 @@ export default class AddOrReplaceImage extends React.Component<Props> {
 		addImageMode: false,
 	};
 
-	imageChange = (galleryImage: GalleryImage) => {
+	imageChange = (galleryImage: IGalleryImage) => {
 		this.props.onImageChange(galleryImage);
 		this.setState({ addImageMode: false });
 	}

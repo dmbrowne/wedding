@@ -1,7 +1,6 @@
 import * as React from 'react';
 import AppLayout from '../AppLayout';
 import AdminLayout, { Props as AdminLayoutProps } from './AdminLayout';
-import Head from 'next/head';
 import { NextComponent } from '../../types/next';
 import '../../styles/admin.scss';
 import { getUserAccount } from '../../api/account';

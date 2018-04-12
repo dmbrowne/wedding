@@ -1,4 +1,15 @@
-import GalleryImage from "../models/galleryImage";
+export interface IGalleryImage {
+	id?: string;
+	publicId: string;
+	width: number;
+	height: number;
+	format: string;
+	url: string;
+	secureUrl: string;
+	squareImage: string;
+	createdAt: Date;
+	updatedAt: Date;
+}
 
 export interface IUser {
 	username: string;
@@ -39,7 +50,7 @@ export interface IEvent {
 	endTime: Date;
 	imageId: string;
 	Guests?: IAttendee[] | null;
-	featureImage?: GalleryImage;
+	featureImage?: IGalleryImage;
 }
 
 export interface IEventAttendee {
@@ -69,3 +80,11 @@ export interface ISendGroup {
 	email: string;
 	Attendees?: IAttendee[] | null;
 }
+
+export interface ICampaign {
+	id?: string;
+	name: string;
+	content?: string;
+	groupCampaign?: boolean;
+}
+

@@ -3,7 +3,7 @@ import moment, { Moment } from 'moment';
 import MomentUtils from 'material-ui-pickers/utils/moment-utils';
 import MuiPickersUtilsProvider from 'material-ui-pickers/utils/MuiPickersUtilsProvider';
 import DateTimePicker from 'material-ui-pickers/DateTimePicker';
-import GalleryImage from '../../server/models/galleryImage';
+import GalleryImage from '../../server/types/models';
 import AddOrReplaceImage from './image/AddOrReplaceImage';
 
 interface Props {

@@ -6,7 +6,7 @@ import moment, { Moment } from 'moment';
 import { editEvent, deleteEvent } from '../api/event';
 import EventForm from '../components/EventEditForm';
 import { IEvent } from '../../server/types/models';
-import GalleryImage from '../../server/models/galleryImage';
+import GalleryImage from '../../server/types/models';
 
 interface State {
 	name: string;

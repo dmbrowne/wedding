@@ -4,7 +4,7 @@ import Router from 'next/router';
 import moment, { Moment } from 'moment';
 import { createEvent } from '../api/event';
 import EventForm from '../components/EventEditForm';
-import GalleryImage from '../../server/models/galleryImage';
+import GalleryImage from '../../server/types/models';
 
 interface State {
 	name: string;

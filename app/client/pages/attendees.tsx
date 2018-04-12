@@ -65,7 +65,7 @@ class Attendees extends React.Component<{ attendees: IAttendee[] }> {
 			});
 	}
 
-	onDelete= (ids) => {
+	onDelete = (ids) => {
 		deleteAttendees(ids)
 			.then(() => {
 				const optimisticUpdatedAttendees = this.state.attendees.filter(({id}) => ids.indexOf(id) < 0);

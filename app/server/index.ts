@@ -13,6 +13,7 @@ import eventRoutes from './routers/eventRoutes';
 import userRoutes from './routers/userRoutes';
 import invitationRoutes from './routers/invitationRoutes';
 import galleryRoutes from './routers/galleryRoutes';
+import campaignRoutes from './routers/campaignRoutes';
 import { donate } from './routers/donateRouters';
 import { sendMail } from './controllers/emailController';
 import { NextAppRequest } from './types';
@@ -63,6 +64,7 @@ function configureRoutes(server) {
 	server.use('/admin/sendgroups', sendGroupRoutes);
 	server.use('/admin/events', eventRoutes);
 	server.use('/admin/gallery', galleryRoutes);
+	server.use('/admin/campaigns', campaignRoutes);
 	server.use('/invitation', invitationRoutes);
 	server.get('/admin', verifyUser, (req: NextAppRequest, res) => {req.nextAppRenderer.render(req, res, '/dashboard')});
 	server.get('/admin/myaccount',
