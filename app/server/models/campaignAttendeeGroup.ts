@@ -14,6 +14,7 @@ export default class CampaignAttendeeGroup extends Model {
 		},
 		{
 			sequelize: sequelizeConnection,
+			timestamps: false,
 		});
 		return CampaignAttendeeGroup;
 	}

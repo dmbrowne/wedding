@@ -14,6 +14,7 @@ export default class CampaignAttendee extends Model {
 		},
 		{
 			sequelize: sequelizeConnection,
+			timestamps: false,
 		});
 		return CampaignAttendee;
 	}
