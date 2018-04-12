@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import models from '../models';
 import { NextAppRequest } from '../types';
-import { getDesiredValuesFromRequestBody, asyncAwaitTryCatch } from '../utils';
+import { getDesiredValuesFromRequestBody } from '../utils';
 
 export function getAllEvents(req: NextAppRequest, res: Response) {
 	models.Event.findAll({
@@ -41,6 +41,7 @@ export function getEvent(req: NextAppRequest, res: Response) {
 export function createEvent(req: NextAppRequest, res: Response) {
 	const eventDetails = getDesiredValuesFromRequestBody([
 		'name',
+		'slug',
 		'description',
 		'startTime',
 		'endTime',
@@ -69,6 +70,7 @@ export function editEvent(req: NextAppRequest, res: Response) {
 	const { eventId } = req.params;
 	const eventDetails = getDesiredValuesFromRequestBody([
 		'name',
+		'slug',
 		'description',
 		'startTime',
 		'endTime',

@@ -8,6 +8,7 @@ export default class Event extends Model {
 				type: Sequelize.STRING,
 				allowNull: false,
 			},
+			slug: Sequelize.STRING,
 			description: Sequelize.STRING,
 			entryTime: Sequelize.DATE,
 			startTime: Sequelize.DATE,
@@ -36,6 +37,7 @@ export default class Event extends Model {
 
 	id: string;
 	name: string;
+	slug: string;
 	description: string;
 	entryTime: string;
 	startTime: string;
