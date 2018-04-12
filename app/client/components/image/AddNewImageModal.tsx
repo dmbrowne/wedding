@@ -1,6 +1,7 @@
+import './addNewImageModal.scss';
 import * as React from 'react';
-import { uploadImage } from '../api/gallery';
-import { CloudinaryResponse } from '../../server/models/galleryImage';
+import { uploadImage } from '../../api/gallery';
+import { CloudinaryResponse } from '../../../server/models/galleryImage';
 
 interface Props {
 	onClose?: () => any;
@@ -36,7 +37,7 @@ export default class AddNewImageModal extends React.Component<Props> {
 		const form = new FormData();
 		form.append('image', this.state.addImageFile);
 		return uploadImage(form)
-			.then(result => this.props.onUploadSuccess(result))
+			.then(({result}) => this.props.onUploadSuccess(result))
 			.catch(err => this.props.onUploadFail(err));
 	}
 
@@ -46,7 +47,7 @@ export default class AddNewImageModal extends React.Component<Props> {
 
 	render() {
 		return (
-			<div className="add-new-image-modal uk-section uk-section-small uk-section-muted">
+			<div className="add-new-image-modal uk-section uk-section-small">
 				<div className="uk-clearfix">
 					{this.props.onClose && (
 						<i
@@ -61,15 +62,15 @@ export default class AddNewImageModal extends React.Component<Props> {
 				<div className="image-preview" onClick={this.simulateInputFileClick}>
 					{this.state.addImagePreview ?
 						<img src={this.state.addImagePreview} /> :
-						<div className="uk-placeholder">Click here to add a new image</div>
+						<div className="uk-placeholder uk-text-muted">Click here to add a new image</div>
 					}
-					<input ref={ref => this.fileInput = ref} type="file" onChange={this.onFileInputChange} />
 				</div>
+				<input ref={ref => this.fileInput = ref} type="file" onChange={this.onFileInputChange}/>
 				{this.state.addImageFile && (
 					<div className="uk-margin uk-text-center">
 						<button
 							onClick={this.upload}
-							className="uk-button uk-button-secondary"
+							className="uk-button uk-button-primary"
 						>
 							Save
 						</button>

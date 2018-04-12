@@ -1,6 +1,7 @@
+import './galleryListing.scss';
 import * as React from 'react';
-import { getAllImages } from '../api/gallery';
-import GalleryImage from '../../server/models/galleryImage';
+import { getAllImages } from '../../api/gallery';
+import GalleryImage from '../../../server/models/galleryImage';
 
 interface GalleryListingComponentProps {
 	galleryImages: GalleryImage[];
@@ -29,12 +30,16 @@ export default class GalleryListingDataConnect extends React.Component<GalleryLi
 		galleryImages: [],
 	};
 
-	componentDidMount = async () => {
+	setGalleryImages = async () => {
 		const galleryImages = (this.props.galleryImages ?
 			this.props.galleryImages :
 			await getAllImages()
 		);
 		this.setState({ galleryImages });
+	}
+
+	componentDidMount() {
+		this.setGalleryImages();
 	}
 
 	componentWillReceiveProps({ galleryImages: nextGalleryImages }: GalleryListingProps) {

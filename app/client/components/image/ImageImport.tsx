@@ -1,8 +1,8 @@
-import './imageImportComponent.scss';
+import './imageImport.scss';
 import React from 'react';
 import AddNewImageModal from './AddNewImageModal';
 import GalleryListing from './GalleryListing';
-import GalleryImage from '../../server/models/galleryImage';
+import GalleryImage from '../../../server/models/galleryImage';
 
 interface Props {
 	onSelect: (galleryImage: GalleryImage) => any;
@@ -13,7 +13,7 @@ interface State {
 	uploadMode: 'gallery' | 'upload';
 }
 
-export default class ImageImportComponent extends React.Component<Props, State> {
+export class ImageImportComponent extends React.Component<Props, State> {
 	state = {
 		uploadMode: null,
 	};
@@ -30,6 +30,7 @@ export default class ImageImportComponent extends React.Component<Props, State> 
 	}
 
 	select = (galleryImage) => {
+		console.log(galleryImage);
 		this.props.onSelect(galleryImage);
 	}
 
@@ -90,3 +91,9 @@ export default class ImageImportComponent extends React.Component<Props, State> 
 		);
 	}
 }
+
+export default (props) => (
+	<div className="modal-backdrop">
+		<ImageImportComponent {...props} />
+	</div>
+);
