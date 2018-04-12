@@ -9,7 +9,7 @@ import * as cloudinary from 'cloudinary';
 	});
 })();
 
-interface CloudinaryResponse {
+export interface CloudinaryResponse {
 	public_id: string;
 	version: number;
 	signature: string;
@@ -59,17 +59,6 @@ export default class GalleryImage extends Model {
 		});
 	}
 
-	static deleteImageFromCloudinary(publicId) {
-		return new Promise((resolve, reject) => {
-			cloudinary.v2.uploader.destroy(publicId, (err, result) => {
-				if (err) {
-					reject(err);
-				}
-				resolve(result);
-			});
-		});
-	}
-
 	static addNewImage(filepath) {
 		return this.addImageToCloudinary(filepath)
 			.then(cloudinaryResponse => {
@@ -85,6 +74,25 @@ export default class GalleryImage extends Model {
 			});
 	}
 
+	static associate(models) {
+		this.hasOne(models.Event, {
+			foreignKey: 'imageId',
+			onDelete: 'CASCADE',
+		});
+	}
+
+	static deleteImageFromCloudinary(publicId) {
+		return new Promise((resolve, reject) => {
+			cloudinary.v2.uploader.destroy(publicId, (err, result) => {
+				if (err) {
+					reject(err);
+				}
+				resolve(result);
+			});
+		});
+	}
+
+	id: string;
 	publicId: string;
 	width: number;
 	height: number;

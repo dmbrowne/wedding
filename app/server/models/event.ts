@@ -12,6 +12,7 @@ export default class Event extends Model {
 			entryTime: Sequelize.DATE,
 			startTime: Sequelize.DATE,
 			endTime: Sequelize.DATE,
+			imageId: Sequelize.UUID,
 		},
 		{
 			sequelize: sequelizeConnection,
@@ -24,6 +25,11 @@ export default class Event extends Model {
 			as: 'Guests',
 			through: models.EventAttendee,
 			foreignKey: 'eventId',
+			onDelete: 'CASCADE',
+		});
+		this.belongsTo(models.GalleryImage, {
+			as: 'featureImage',
+			foreignKey: 'imageId',
 			onDelete: 'CASCADE',
 		});
 	}
