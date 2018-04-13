@@ -20,7 +20,7 @@ module.exports = withTypescript(
       cssLoaderOptions: {
         includePaths: ["node_modules"]
       },
-      useFileSystemPublicRoutes: false,
+      useFileSystemPublicRoutes: process.env.NODE_ENV === 'development',
     })
   )
 )
