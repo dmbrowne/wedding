@@ -1,29 +1,36 @@
 import { QueryInterface } from 'sequelize';
 import models from '../app/server/models';
+import * as faker from 'faker';
+import * as fs from 'fs';
+import * as path from 'path';
 
 module.exports = {
 	up: () => {
+		const fakeUsers = [];
+		for (let i = 0; i < 30; i++) {
+			fakeUsers.push({
+				email: Math.round(Math.random()) ? faker.internet.email() : null,
+				firstName: faker.name.firstName(),
+				lastName: faker.name.lastName(),
+			});
+		}
+
+		fs.writeFileSync(path.join(__dirname, './seededUsers.json'), JSON.stringify({
+			fakeUsers,
+		}));
+
 		return models.Attendee.bulkCreate([
 			{
-				email: null,
-				firstName: 'Jane',
-				lastName: 'Doe',
+				email: 'daryl.browne@gmail.com',
+				firstName: 'Darly',
+				lastName: 'Browney',
 			},
 			{
-				email: 'sralph@test.com',
-				firstName: 'Sally',
-				lastName: 'Ralph',
+				email: 'yasminobosi@yahoo.com',
+				firstName: 'Yazzy',
+				lastName: 'Bee',
 			},
-			{
-				email: 'dd@test.com',
-				firstName: 'Danny',
-				lastName: 'Dyer',
-			},
-			{
-				email: 'john@test.com',
-				firstName: 'John',
-				lastName: 'Doe',
-			},
+			...fakeUsers,
 		]);
 	},
 
