@@ -1,4 +1,4 @@
-import Sequelize, { Model, BelongsToManyCreateAssociationMixin } from 'sequelize';
+import Sequelize, { Model, BelongsToManyCreateAssociationMixin, BelongsToManySetAssociationsMixin } from 'sequelize';
 import Attendee from './attendee';
 import SendGroup from './sendGroup';
 
@@ -61,6 +61,9 @@ export default class Campaign extends Model {
 	content?: string;
 	groupCampaign?: boolean;
 	Attendees: BelongsToManyCreateAssociationMixin<Attendee>;
+	setAttendees: BelongsToManySetAssociationsMixin<Attendee, Attendee['id']>;
+	SendGroups: BelongsToManyCreateAssociationMixin<SendGroup>;
+	setSendGroups: BelongsToManySetAssociationsMixin<SendGroup, SendGroup['id']>;
 
 	addAttendeesToCampaign(attendeeIds: Array<Attendee['id']>) {
 		return this.setAttendees(attendeeIds);
