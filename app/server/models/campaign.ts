@@ -33,7 +33,7 @@ export default class Campaign extends Model {
 
 	static associate(models) {
 		this.belongsToMany(models.Attendee, { through: models.CampaignAttendee, foreignKey: 'campaignId', onDelete: 'CASCADE' });
-		this.belongsToMany(models.SendGroup, { through: models.CampaignAttendeeGroup, foreignKey: 'sendGroupId', onDelete: 'CASCADE' });
+		this.belongsToMany(models.SendGroup, { through: models.CampaignSendGroup, foreignKey: 'campaignId', onDelete: 'CASCADE' });
 	}
 
 	static createCampaign(options: CreateCampaignOptions) {

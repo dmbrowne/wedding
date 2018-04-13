@@ -1,6 +1,6 @@
 import Sequelize, { Model } from 'sequelize';
 
-export default class CampaignAttendeeGroup extends Model {
+export default class CampaignSendGroup extends Model {
 	static init(sequelizeConnection) {
 		super.init({
 			campaignId: {
@@ -16,6 +16,6 @@ export default class CampaignAttendeeGroup extends Model {
 			sequelize: sequelizeConnection,
 			timestamps: false,
 		});
-		return CampaignAttendeeGroup;
+		return CampaignSendGroup;
 	}
 }

@@ -8,7 +8,7 @@ import SeatingTable from './seatingTable';
 import SendGroup from './sendGroup';
 import Campaign from './campaign';
 import CampaignAttendee from './campaignAttendee';
-import CampaignAttendeeGroup from './campaignAttendeeGroup';
+import CampaignSendGroup from './campaignAttendeeGroup';
 import GalleryImage from './galleryImage';
 import sequelizeConnection from './lib/connection';
 
@@ -23,7 +23,7 @@ interface IModels {
   SendGroup: typeof SendGroup;
   Campaign: typeof Campaign;
   CampaignAttendee: typeof CampaignAttendee;
-  CampaignAttendeeGroup: typeof CampaignAttendeeGroup;
+  CampaignSendGroup: typeof CampaignSendGroup;
   GalleryImage: typeof GalleryImage;
 }
 
@@ -38,7 +38,7 @@ const modelz = [
   SendGroup,
   Campaign,
   CampaignAttendee,
-  CampaignAttendeeGroup,
+  CampaignSendGroup,
   GalleryImage,
 ];
 
