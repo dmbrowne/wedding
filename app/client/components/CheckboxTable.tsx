@@ -100,6 +100,7 @@ class DataItemListing extends React.Component<InternalProps, State> {
 	bulkModeButtons() {
 		return (
 			<React.Fragment>
+				{!!this.props.bulkButtons && this.props.bulkButtons}
 				<button
 					onClick={this.exitBulkMode}
 					className="uk-button-small uk-button uk-button-default uk-margin-left"
@@ -123,7 +124,6 @@ class DataItemListing extends React.Component<InternalProps, State> {
 					{this.props.buttons}
 					{this.props.bulk && (
 						<div className="uk-float-right">
-							{!!this.props.bulkButtons && this.props.bulkButtons}
 							{this.state.bulkMode && this.bulkModeButtons()}
 							<button
 								onClick={this.selectAll}
