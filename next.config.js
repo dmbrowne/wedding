@@ -12,7 +12,7 @@ module.exports = withTypescript(
         }
         return config
       },
-      pageExtensions: ['js'],
+      pageExtensions: ['tsx'],
       cssModules: false,
       sassLoaderOptions: {
         includePaths: ["node_modules"]
