@@ -37,6 +37,23 @@ router.route('/')
 			});
 	});
 
+router.post('/send', xhrOnly, (req, res) => {
+	const { campaignIds }: {campaignIds: string[]} = req.body;
+	if (!campaignIds) {
+		res.status(400).json({ message: 'campaignIds required' });
+		return;
+	}
+	Campaign.bulkSendBothGroupAndSingleEmailCampaigns(campaignIds)
+		.then((result) => {
+			console.log(result);
+			res.send(result);
+		})
+		.catch(e => {
+			console.error(e)
+			res.status(500).json({ error: e });
+		});
+});
+
 router.route('/:campaignId')
 	.all(async (req: RequestWithCampaign, _, next: NextFunction) => {
 		const campaign = await Campaign.getCampaign(req.params.campaignId);
@@ -52,16 +69,19 @@ router.route('/:campaignId')
 		res.send(req.campaign);
 	})
 	.put(async (req: RequestWithCampaign, res: Response) => {
-		const { campaign, attendeeIds } = req.body;
+		const { campaign, attendeeIds, sendGroupIds } = req.body;
 		try {
-		const updatedCampaign = await req.campaign.update({
-			...campaign,
-			content: JSON.stringify(campaign.content),
-		});
-		if (attendeeIds) {
-			await updatedCampaign.addAttendeesToCampaign(attendeeIds);
-		}
-	} catch (e) {
+			const updatedCampaign = await req.campaign.update({
+				...campaign,
+				content: JSON.stringify(campaign.content),
+			});
+			if (attendeeIds) {
+				await updatedCampaign.addAttendeesToCampaign(attendeeIds);
+			}
+			if (sendGroupIds) {
+				await updatedCampaign.addSendGroupsToCampaign(sendGroupIds);
+			}
+		} catch (e) {
 			console.log(e);
 		}
 		res.send({ success: 'ok' });
@@ -71,27 +91,5 @@ router.route('/:campaignId')
 			res.send({ success: 'ok' });
 		});
 	});
-
-router.post('/send', xhrOnly, (req, res) => {
-	const { campaignIds }: {campaignIds: string[]} = req.body;
-	Campaign.findAll({
-		where: {
-			id: campaignIds,
-		},
-	})
-	.then(campaigns => {
-		const { sendGroupCampaigns, singleAttendeeCampaigns } = campaigns.reduce((accum, campaign) => {
-			const key = !!campaign.groupCampaign ? 'sendGroupCampaigns' : 'singleAttendeeCampaigns';
-			return {
-				...accum,
-				[key]: [
-					...accum[key],
-					campaign,
-				],
-			};
-		}, {sendGroupCampaigns: [], singleAttendeeCampaigns: []});
-	})
-	.catch(e => console.error(e));
-});
 
 export default router;
