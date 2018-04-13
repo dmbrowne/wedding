@@ -57,3 +57,11 @@ export function deleteCampaign(campaignId: string) {
 		method: 'DELETE',
 	});
 }
+
+export function sendCampaigns(campaignIds: string[]) {
+	return restfulRequest({
+		route: 'admin/campaigns/send',
+		method: 'POST',
+		body: JSON.stringify({campaignIds}),
+	});
+}

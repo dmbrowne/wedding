@@ -2,7 +2,7 @@ import * as React from 'react';
 import Link from 'next/link';
 import Router from 'next/router';
 import { withAdmin } from '../components/adminLayout';
-import { getAllCampaigns, deleteCampaigns, createCampaign } from '../api/campaign';
+import { getAllCampaigns, deleteCampaigns, createCampaign, sendCampaigns } from '../api/campaign';
 import Campaign from '../../server/models/campaign';
 import CheckboxTable from '../components/CheckboxTable';
 import ModalBackdrop from '../components/ModalBackdrop';
@@ -12,6 +12,9 @@ interface State {
 	createNewCampaign: boolean;
 	newCampaignType: 'group' | 'single';
 	newCampaignName: string;
+	selectedCampaignIds: {
+		[campaignId: string]: boolean,
+	};
 }
 
 class Campaigns extends React.Component<{ campaigns: Campaign[] }, State> {
@@ -29,6 +32,7 @@ class Campaigns extends React.Component<{ campaigns: Campaign[] }, State> {
 		createNewCampaign: false,
 		newCampaignType: null,
 		newCampaignName: '',
+		selectedCampaignIds: {},
 	};
 
 	closeCreateNewCampaignModal = () => {
@@ -122,7 +126,17 @@ class Campaigns extends React.Component<{ campaigns: Campaign[] }, State> {
 	}
 
 	onCheckboxSelect = (data) => {
-		console.log(data);
+		this.setState({
+			selectedCampaignIds: { ...data }
+		});
+	}
+
+	sendCampaigns = () => {
+		const campaignIds = Object.keys(this.state.selectedCampaignIds).filter(campaignId => this.state.selectedCampaignIds[campaignId]);
+		if (campaignIds.length > 0) {
+			console.log(campaignIds)
+			return sendCampaigns(campaignIds);
+		}
 	}
 
 	render() {
@@ -147,7 +161,7 @@ class Campaigns extends React.Component<{ campaigns: Campaign[] }, State> {
 					)}
 					bulkButtons={(
 						<button
-							onClick={this.openCreateNewCampaignModal}
+							onClick={this.sendCampaigns}
 							className="uk-button-small uk-float-left uk-button uk-button-primary"
 						>
 							Send invites

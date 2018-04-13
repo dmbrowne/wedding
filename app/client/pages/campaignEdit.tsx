@@ -9,6 +9,7 @@ import { convertToRaw } from 'draft-js';
 // import { sendAttendeeEmails } from '../api/email';
 import { getCampaign, editCampaign } from '../api/campaign';
 import { getAllAttendees } from '../api/attendee';
+import { getSendGroups } from '../api/sendGroup';
 import ModalBackdrop from '../components/ModalBackdrop';
 
 class SendInvites extends React.Component {
@@ -76,7 +77,8 @@ class SendInvites extends React.Component {
 			attendeeMap: {},
 		};
 
-		const { attendeeList, attendeeMap } = campaign.Attendees.reduce((accum, attendee) => ({
+		const attendees = campaign.groupCampaign ? campaign.SendGroups : campaign.Attendees;
+		const { attendeeList, attendeeMap } = attendees.reduce((accum, attendee) => ({
 			attendeeList: [
 				...accum.attendeeList,
 				attendee.id,
@@ -110,7 +112,7 @@ class SendInvites extends React.Component {
 
 	save = () => {
 		const { editorState, subject, campaignName, selectedAttendeeList } = this.state;
-		const recipientKey = this.props.campaign.groupedCampaign ? 'sendGroupIds' : 'attendeeIds';
+		const recipientKey = this.props.campaign.groupCampaign ? 'sendGroupIds' : 'attendeeIds';
 		editCampaign(this.props.campaign.id, {
 			content: convertToRaw(editorState.getCurrentContent()),
 			subject,
@@ -153,7 +155,9 @@ class SendInvites extends React.Component {
 
 	getAttendees = async () =>  {
 		const emailable = true;
-		const attendees = await getAllAttendees(emailable);
+		const attendees = this.props.campaign.groupCampaign ?
+			await getSendGroups() :
+			await getAllAttendees(emailable);
 		this.setState({ attendeesSearchList: attendees });
 	}
 
@@ -191,6 +195,48 @@ class SendInvites extends React.Component {
 			selectedAttendeeMap,
 			selectedAttendeeList,
 		});
+	}
+
+	renderAttendeeSearchListRow(attendeeOrGroup) {
+		const { groupCampaign } = this.props.campaign;
+		return (
+			<li
+				key={attendeeOrGroup.id}
+				className="uk-clearfix"
+				onClick={() => this.addAttendeeToSelectedList(attendeeOrGroup)}
+			>
+				<span>
+					{groupCampaign ?
+						attendeeOrGroup.name :
+						`${attendeeOrGroup.firstName} ${attendeeOrGroup.lastName}`
+					}
+				</span>
+				{this.state.selectedAttendeeList.indexOf(attendeeOrGroup.id) >= 0 && (
+					<i className="material-icons uk-float-right">check</i>
+				)}
+			</li>
+		);
+	}
+
+	renderSelectedAttendees() {
+		const { groupCampaign } = this.props.campaign;
+		return (
+			this.state.selectedAttendeeList.length > 0 && (
+				<ul className="uk-list uk-list-divider">
+					{this.state.selectedAttendeeList.map(attendeeId => {
+						const attendeeOrGroup = this.state.selectedAttendeeMap[attendeeId];
+						return (
+							<li key={attendeeOrGroup.id}>
+								{groupCampaign ?
+									attendeeOrGroup.name :
+									`${attendeeOrGroup.firstName} ${attendeeOrGroup.lastName}`
+								}
+							</li>
+						);
+					})}
+				</ul>
+			)
+		);
 	}
 
 	render() {
@@ -235,17 +281,13 @@ class SendInvites extends React.Component {
 					</React.Fragment>
 				)}
 				<div className="uk-margin-large">
-					<div>
-						<ul className="uk-list uk-list-divider">
-							{this.state.selectedAttendeeList.map(attendeeId => {
-								const attendee = this.state.selectedAttendeeMap[attendeeId];
-								return (
-									<li key={attendee.id}>{attendee.firstName} {attendee.lastName}</li>
-								)
-							})}
-						</ul>
-					</div>
-					<button onClick={this.openModal} className="uk-button uk-button-secondary uk-margin-right">Add / remove attendees</button>
+					{this.renderSelectedAttendees()}
+					<button
+						onClick={this.openModal}
+						className="uk-button uk-button-secondary uk-margin-right"
+					>
+						Add / remove attendees
+					</button>
 				</div>
 				<div className="uk-text-right uk-margin">
 					<button onClick={this.save} className="uk-button uk-button-primary uk-margin-right">Save</button>
@@ -259,14 +301,7 @@ class SendInvites extends React.Component {
 							</header>
 							<div className="uk-modal-body">
 								<ul className="uk-list uk-list-divider">
-									{this.state.attendeesSearchList.map(attendee => (
-										<li key={attendee.id} className="uk-clearfix" onClick={() => this.addAttendeeToSelectedList(attendee)}>
-											<span>{attendee.firstName} {attendee.lastName}</span>
-											{this.state.selectedAttendeeList.indexOf(attendee.id) >= 0 && (
-												<i className="material-icons uk-float-right">check</i>
-											)}
-										</li>
-									))}
+									{this.state.attendeesSearchList.map(attendee => this.renderAttendeeSearchListRow(attendee))}
 								</ul>
 							</div>
 							<footer className="uk-modal-footer uk-text-right">
