@@ -14,8 +14,12 @@ interface Rsvp {
 	};
 }
 
-export async function getAllAttendees(req: NextAppRequest, res: Response) {
-	const { search } = req.query;
+export async function getAllAttendees(req: NextAppRequest, res: Response, next) {
+	const { search, emailable } = req.query;
+
+	if (emailable) {
+		return getEmailableAttendees(req, res, next);
+	}
 
 	let attendees;
 
@@ -44,6 +48,20 @@ export async function getAllAttendees(req: NextAppRequest, res: Response) {
 	} else {
 		req.nextAppRenderer.render(req, res, '/attendees');
 	}
+}
+
+export function getEmailableAttendees(req, res, next) {
+	models.Attendee.findAll({
+		where: { email: {[Op.not]: null} },
+		include: [{
+			model: models.SendGroup,
+		}]
+	})
+	.then(attendees => res.send(attendees))
+	.catch(e => {
+		console.log(e);
+		next(e);
+	});
 }
 
 export async function getAttendee(req: NextAppRequest, res: Response) {

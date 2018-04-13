@@ -52,10 +52,17 @@ router.route('/:campaignId')
 		res.send(req.campaign);
 	})
 	.put(async (req: RequestWithCampaign, res: Response) => {
-		const { campaignInput, attendeeIds } = req.body;
-		const updatedCampaign = await req.campaign.update(campaignInput);
+		const { campaign, attendeeIds } = req.body;
+		try {
+		const updatedCampaign = await req.campaign.update({
+			...campaign,
+			content: JSON.stringify(campaign.content),
+		});
 		if (attendeeIds) {
 			await updatedCampaign.addAttendeesToCampaign(attendeeIds);
+		}
+	} catch (e) {
+			console.log(e);
 		}
 		res.send({ success: 'ok' });
 	})
@@ -64,5 +71,27 @@ router.route('/:campaignId')
 			res.send({ success: 'ok' });
 		});
 	});
+
+router.post('/send', xhrOnly, (req, res) => {
+	const { campaignIds }: {campaignIds: string[]} = req.body;
+	Campaign.findAll({
+		where: {
+			id: campaignIds,
+		},
+	})
+	.then(campaigns => {
+		const { sendGroupCampaigns, singleAttendeeCampaigns } = campaigns.reduce((accum, campaign) => {
+			const key = !!campaign.groupCampaign ? 'sendGroupCampaigns' : 'singleAttendeeCampaigns';
+			return {
+				...accum,
+				[key]: [
+					...accum[key],
+					campaign,
+				],
+			};
+		}, {sendGroupCampaigns: [], singleAttendeeCampaigns: []});
+	})
+	.catch(e => console.error(e));
+});
 
 export default router;

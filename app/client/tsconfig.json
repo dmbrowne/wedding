@@ -4,8 +4,7 @@
 		"module": "esnext",
 		"target": "esnext",
     "jsx": "react-native",
-    "outDir": "./dist"
-	},
+  },
 	"filesGlob": [
     "typings/*.d.ts",
     "**/*.ts",

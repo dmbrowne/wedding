@@ -1,4 +1,4 @@
-import Sequelize, { Model } from 'sequelize';
+import Sequelize, { Model, BelongsToManyCreateAssociationMixin } from 'sequelize';
 import Attendee from './attendee';
 import SendGroup from './sendGroup';
 
@@ -16,8 +16,10 @@ export default class Campaign extends Model {
 				type: Sequelize.STRING,
 				allowNull: false,
 			},
-			subjecr: Sequelize.STRING,
-			content: Sequelize.TEXT,
+			subject: Sequelize.STRING,
+			content: {
+				type: Sequelize.TEXT,
+			},
 			groupCampaign: {
 				type: Sequelize.BOOLEAN,
 				allowNull: false,
@@ -30,7 +32,7 @@ export default class Campaign extends Model {
 	}
 
 	static associate(models) {
-		this.belongsToMany(models.Attendee, { through: models.CampaignAttendee, foreignKey: 'attendeeId', onDelete: 'CASCADE' });
+		this.belongsToMany(models.Attendee, { through: models.CampaignAttendee, foreignKey: 'campaignId', onDelete: 'CASCADE' });
 		this.belongsToMany(models.SendGroup, { through: models.CampaignAttendeeGroup, foreignKey: 'sendGroupId', onDelete: 'CASCADE' });
 	}
 
@@ -53,6 +55,12 @@ export default class Campaign extends Model {
 			}],
 		});
 	}
+
+	name: string;
+	subject?: string;
+	content?: string;
+	groupCampaign?: boolean;
+	Attendees: BelongsToManyCreateAssociationMixin<Attendee>;
 
 	addAttendeesToCampaign(attendeeIds: Array<Attendee['id']>) {
 		return this.setAttendees(attendeeIds);

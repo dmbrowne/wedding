@@ -1,13 +1,13 @@
 import * as mailgun from 'mailgun-js';
-import mailGunConfig = require('../../../config/mailgun.json');
+import mailGunConfig from '../../../config/mailgun';
 import models from '../models';
 import * as path from 'path';
 
-const { apiKey, publicKey } = mailGunConfig;
+const { apiKey, publicKey, domain, from } = mailGunConfig[process.env.NODE_ENV || 'development'];
 const mg = mailgun({
 	apiKey,
 	publicKey,
-	domain: 'sandboxee77732dae204720b35b93c18fcff294.mailgun.org',
+	domain,
 });
 
 async function getAttendeesThatArentInAGroup() {
@@ -61,7 +61,7 @@ async function getSendGroups() {
 export async function sendMail(req, res) {
 	const { subject, sendgroups } = req.body;
 	let { content } = req.body;
-	const filename = path.join(__dirname, '../../client/dist/assets/y&d-logo.png');
+	const filename = path.join(__dirname, '../../client/assets/y&d-logo.png');
 	content = content.replace('%logo%', '<img width="150" src="cid:y&d-logo.png"/>');
 
 	const { sendAddresses, recipientVars } = sendgroups ?
@@ -71,7 +71,7 @@ export async function sendMail(req, res) {
 	const data = {
 		'inline': filename,
 		'to': sendAddresses,
-		'from': 'Dazza Youoo <brownes@sandboxee77732dae204720b35b93c18fcff294.mailgun.org>',
+		'from': `Dazza Youoo <${from}>`,
 		// 'from': 'The Brownes <y-and-d@thebrownes.info>',
 		'subject': subject,
 		'recipient-variables': recipientVars,

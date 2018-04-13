@@ -86,8 +86,8 @@ function configureRouteMiddleware(server) {
 		saveUninitialized: true,
 	}));
 
-	server.use('/static', express.static(path.join(__dirname, '../client/dist', '.next/static')));
-	server.use('/assets', express.static(path.join(__dirname, '../client/dist', 'assets')));
+	server.use('/static', express.static(path.join(__dirname, '../client', '.next/static')));
+	server.use('/assets', express.static(path.join(__dirname, '../client', 'assets')));
 
 	server.use((req, _, expressNext: express.NextFunction) => {
 		req.nextAppRenderer = app;

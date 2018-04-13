@@ -36,7 +36,7 @@ export default class Attendee extends Model {
 		this.belongsTo(models.SendGroup, { foreignKey: 'sendGroupId', onDelete: 'CASCADE' });
 		this.belongsToMany(models.Campaign, {
 			through: models.CampaignAttendee,
-			foreignKey: 'campaignId',
+			foreignKey: 'attendeeId',
 			onDelete: 'CASCADE',
 		});
 	}
