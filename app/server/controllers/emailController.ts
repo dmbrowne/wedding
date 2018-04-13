@@ -61,7 +61,7 @@ async function getSendGroups() {
 export async function sendMail(req, res) {
 	const { subject, sendgroups } = req.body;
 	let { content } = req.body;
-	const filename = path.join(__dirname, '../../client/assets/y&d-logo.png');
+	const filename = path.join(__dirname, '../../client/dist/assets/y&d-logo.png');
 	content = content.replace('%logo%', '<img width="150" src="cid:y&d-logo.png"/>');
 
 	const { sendAddresses, recipientVars } = sendgroups ?
