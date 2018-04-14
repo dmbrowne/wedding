@@ -14,6 +14,7 @@ import userRoutes from './routers/userRoutes';
 import invitationRoutes from './routers/invitationRoutes';
 import galleryRoutes from './routers/galleryRoutes';
 import campaignRoutes from './routers/campaignRoutes';
+import bridalPartyRoutes from './routers/bridalPartyRoutes';
 import { donate } from './routers/donateRouters';
 import { sendMail } from './controllers/emailController';
 import { NextAppRequest } from './types';
@@ -65,15 +66,15 @@ function configureRoutes(server) {
 	server.use('/admin/events', eventRoutes);
 	server.use('/admin/gallery', galleryRoutes);
 	server.use('/admin/campaigns', campaignRoutes);
+	server.use('/admin/bridalParty', bridalPartyRoutes);
 	server.use('/invitation', invitationRoutes);
-	server.get('/admin', verifyUser, (req: NextAppRequest, res) => {req.nextAppRenderer.render(req, res, '/dashboard')});
-	server.get('/admin/myaccount',
-		verifyUser,
-		(req: NextAppRequest, res) => {req.nextAppRenderer.render(req, res, '/account')}
-	);
-	server.post('/charge', donate);
+
+	server.get('/admin', verifyUser, (req, res) => req.nextAppRenderer.render(req, res, '/dashboard'));
+	server.get('/admin/myaccount', verifyUser, (req, res) => req.nextAppRenderer.render(req, res, '/account'));
 	server.get('/admin/sendInvites', verifyUser, (req, res) => req.nextAppRenderer.render(req, res, '/sendInvites'));
 	server.get('*', (req, res) => handler(req, res));
+
+	server.post('/charge', donate);
 }
 
 function configureRouteMiddleware(server) {

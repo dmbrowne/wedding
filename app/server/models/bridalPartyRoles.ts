@@ -24,6 +24,12 @@ export default class BridalPartyRole extends Model {
 		});
 	}
 
+	static deleteByIds(ids) {
+		return this.destroy({
+			where: { id: ids },
+		});
+	}
+
 	name: string;
 	value: string;
 	BridalParties: HasManyGetAssociationsMixin<BridalParty>;

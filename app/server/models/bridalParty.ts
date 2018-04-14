@@ -12,6 +12,14 @@ export default class BridalParty extends Model {
 		subRole: { type: Sequelize.STRING },
 	};
 
+	static defaultIncludeOptions = [{
+		model: GalleryImage,
+		as: 'Image',
+	}, {
+		model: BridalPartyRole,
+		as: 'WeddingRole',
+	}];
+
 	static init(sequelizeConnection) {
 		super.init(this.rawAttributes,
 		{
@@ -30,6 +38,20 @@ export default class BridalParty extends Model {
 			as: 'WeddingRole',
 			foreignKey: 'partyRoleId',
 			onDelete: 'CASCADE',
+		});
+	}
+
+	static getAllBridalParties() {
+		return this.findAll({ include: this.defaultIncludeOptions });
+	}
+
+	static getById(id) {
+		return this.findById(id, { include: this.defaultIncludeOptions });
+	}
+
+	static deleteBridalPartiesById(ids) {
+		return this.destroy({
+			where: { id: ids },
 		});
 	}
 
