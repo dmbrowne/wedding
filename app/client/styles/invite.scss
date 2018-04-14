@@ -7,18 +7,20 @@
 
 html, body {
 	height: 100%;
-	text-align: center;
-}
-
-body {
-	font-family: 'Roboto Condensed';
-	font-weight: 300;
 }
 
 .__next { min-height: 100%; }
 
-h1, h2, h3 { font-family: 'Great Vibes', cursive; }
-h1 { font: 52px/56px Great Vibes; }
+.wedding-invitation {
+	font-family: 'Roboto Condensed';
+	font-weight: 300;
+	text-align: center;
+	
+	h1, h2, h3 { font-family: 'Great Vibes', cursive; }
+	h1 { font: 52px/56px Great Vibes; }
+}
+
+.yd-container { margin: auto; max-width: 600px; }
 
 .fancy {
 	font: 1.5em/normal 'Great Vibes';

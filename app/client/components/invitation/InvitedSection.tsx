@@ -36,7 +36,7 @@ export default class InvitedSection extends React.Component<Props> {
 	render() {
 		return (
 			<div className="section section-invited">
-				<div className="container">
+				<div className="yd-container">
 					<h2 className="section-title"><span>You're</span>Invited</h2>
 					<p>With great pleasure</p>
 					<p><span className="fancy">Yasmin Obosi</span> and <span className="fancy">Daryl Browne</span></p>

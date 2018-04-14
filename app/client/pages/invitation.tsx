@@ -98,7 +98,7 @@ export default class Invitation extends React.Component {
 					<script src="/assets/globalFunctions.js" />
 					<script src="//cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.40/js/uikit.min.js" />
 				</Head>
-				<div id="wedding-invitation">
+				<div className="wedding-invitation">
 					<div style={{height: this.state.windowHeight}}>
 						<HeroSection />
 					</div>
