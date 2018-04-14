@@ -43,10 +43,14 @@ router.get('/new', async (req, res) => {
 });
 
 router.route('/roles')
-	.get(xhrOnly, (_, res) => {
-		BridalPartyRole.findAll()
-		.then(roles => res.send(roles))
-		.catch(e => res.status(400).send({ error: e }));
+	.get(xhrOnly, async (req, res) => {
+		const promise = (req.query.includeMembers ?
+			BridalPartyRole.getWithMembers() :
+			BridalPartyRole.findAll()
+		);
+		promise
+			.then(roles => res.send(roles))
+			.catch(err => res.status(400).send({ error: err }));
 	})
 	.post(xhrOnly, (req, res) => {
 		const { bridalPartyRoleInput } = req.body;
@@ -66,7 +70,7 @@ router.put('/roles/:roleId', [xhrOnly,
 		const role = await BridalPartyRole.findById(req.params.roleId);
 		const updatedRole = await role.update(req.body.bridalPartyRoleUpdateInput);
 		res.send(updatedRole);
-	}
+	},
 ]);
 
 router.route('/:bridalPartyId')

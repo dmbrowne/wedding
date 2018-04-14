@@ -30,6 +30,19 @@ export default class BridalPartyRole extends Model {
 		});
 	}
 
+	static getWithMembers(options?) {
+		options = options || {};
+		return this.findAll({
+			...options ? options : {},
+			include: [{
+				model: BridalParty,
+				as: 'BridalParties',
+			},
+			...options.include ? options.include : [],
+		],
+		});
+	}
+
 	id: number;
 	name: string;
 	value: string;
