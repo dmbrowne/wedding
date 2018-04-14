@@ -40,21 +40,29 @@ router.route('/')
 router.route('/roles')
 	.get(xhrOnly, (_, res) => {
 		BridalPartyRole.findAll()
-			.then(roles => res.send(roles))
-			.catch(e => res.status(400).send({ error: e }));
+		.then(roles => res.send(roles))
+		.catch(e => res.status(400).send({ error: e }));
 	})
 	.post(xhrOnly, (req, res) => {
-		const { newRoleInput } = req.body;
-		BridalPartyRole.create(newRoleInput)
-			.then(role => res.send(role))
-			.catch(e => res.status(400).send({ error: e }));
+		const { bridalPartyRoleInput } = req.body;
+		BridalPartyRole.create(bridalPartyRoleInput)
+		.then(role => res.send(role))
+		.catch(e => res.status(400).send({ error: e }));
 	})
 	.delete(xhrOnly, (req, res) => {
 		const { bridalRoleIds } = req.body;
 		BridalPartyRole.deleteByIds(bridalRoleIds)
-			.then(() => res.send({ success: 'ok' }))
-			.catch(e => res.status(400).send({ error: e }));
+		.then(() => res.send({ success: 'ok' }))
+		.catch(e => res.status(400).send({ error: e }));
 	});
+
+router.put('/roles/:roleId', [xhrOnly,
+	async (req, res) => {
+		const role = await BridalPartyRole.findById(req.params.roleId);
+		const updatedRole = await role.update(req.body.bridalPartyRoleUpdateInput);
+		res.send(updatedRole);
+	}
+]);
 
 router.route('/:bridalPartyId')
 	.all(async (req: RequestWithBridalParty) => {

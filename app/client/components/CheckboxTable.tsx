@@ -9,7 +9,7 @@ interface RowItem {
 interface Props {
 	data: RowItem[];
 	renderHeaderRow?: () => React.ReactNode;
-	renderRow: (I: RowItem, onCheckboxClick: (e) => any, itemIsChecked: boolean) => React.ReactNode;
+	renderRow: (I: RowItem, onCheckboxClick: (e) => any, itemIsChecked: boolean, ...arrayMapArguments) => React.ReactNode;
 	onDelete: (ids: string[]) => void;
 	buttons?: React.ReactNode;
 	bulkButtons?: React.ReactNode;
@@ -43,7 +43,9 @@ class DataItemListing extends React.Component<InternalProps, State> {
 			[itemId]: checked,
 		};
 
-		this.props.onSelect(newSelectedState);
+		if (this.props.onSelect) {
+			this.props.onSelect(newSelectedState);
+		}
 		this.setState({
 			selected: newSelectedState,
 		});
@@ -76,13 +78,15 @@ class DataItemListing extends React.Component<InternalProps, State> {
 		.catch(() => undefined);
 	}
 
-	renderRow = (item) => {
+	renderRow = (item, ...args) => {
 		const itemIsChecked = this.state.selected[item.id] || false;
-		return this.props.renderRow(item, this.onCheckboxClick.bind(this, item.id), itemIsChecked);
+		return this.props.renderRow(item, this.onCheckboxClick.bind(this, item.id), itemIsChecked, ...args);
 	}
 
 	exitBulkMode = () => {
-		this.props.onSelect(null);
+		if (this.props.onSelect) {
+			this.props.onSelect(null);
+		}
 		this.setState({ selected: {} });
 	}
 
@@ -93,7 +97,9 @@ class DataItemListing extends React.Component<InternalProps, State> {
 				[id]: true,
 			};
 		}, {});
-		this.props.onSelect(inputCheckedData);
+		if (this.props.onSelect) {
+			this.props.onSelect(inputCheckedData);
+		}
 		this.setState({ selected: inputCheckedData });
 	}
 
@@ -125,12 +131,14 @@ class DataItemListing extends React.Component<InternalProps, State> {
 					{this.props.bulk && (
 						<div className="uk-float-right">
 							{this.state.bulkMode && this.bulkModeButtons()}
-							<button
-								onClick={this.selectAll}
-								className="uk-button-small uk-button uk-button-text uk-margin-left"
-							>
-								Select all
-							</button>
+							{!!this.props.data.length && (
+								<button
+									onClick={this.selectAll}
+									className="uk-button-small uk-button uk-button-text uk-margin-left"
+								>
+									Select all
+								</button>
+							)}
 						</div>
 					)}
 				</div>

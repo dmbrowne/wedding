@@ -1,0 +1,8 @@
+.new-bridalparty-role-form {
+	display: flex;
+	> *:not(button) {
+		flex: 1;
+		margin: 0 15px;
+		&:first-child { margin-left: 0;}
+	}
+}

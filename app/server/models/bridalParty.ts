@@ -55,6 +55,7 @@ export default class BridalParty extends Model {
 		});
 	}
 
+	id: string;
 	firstName: string;
 	lastName: string;
 	comment: string;
