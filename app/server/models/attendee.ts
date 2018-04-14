@@ -8,6 +8,11 @@ interface EventWithDetailsJoin extends Event {
 	EventAttendee: EventAttendee;
 }
 
+interface GetApplicableAttendeeRecipientVars {
+	attendees?: Attendee[];
+	attendeeIds?: Attendee['id'] | string[];
+}
+
 export default class Attendee extends Model {
 	static init(sequelizeConnection) {
 		super.init({
@@ -39,6 +44,43 @@ export default class Attendee extends Model {
 			foreignKey: 'attendeeId',
 			onDelete: 'CASCADE',
 		});
+	}
+
+	static async getApplicableRecipientVars(options: GetApplicableAttendeeRecipientVars) {
+		if (!options.attendees && !options.attendeeIds) {
+			throw Error('attendees or attendeeIds required');
+		}
+
+		let { attendees } = options;
+		const { attendeeIds } = options;
+
+		if (attendeeIds) {
+			attendees = await this.findAll({
+				where: {
+					id: attendeeIds,
+					email: !null,
+				},
+			});
+		}
+
+		const applicableSendees = attendeeIds ? attendees : attendees.filter(group => group.getDataValue('email'));
+		const sendAddresses = applicableSendees.map(group => group.getDataValue('email'));
+		const recipientVars = applicableSendees.reduce((accum, attendee) => {
+			return {
+				...accum,
+				[attendee.getDataValue('email')]: {
+					first: attendee.firstName,
+					last: attendee.lastName,
+					invitationlink: `http://thebrownes.info/a/${attendee.id}`,
+				},
+			};
+		}, {});
+
+		return {
+			applicableSendees,
+			sendAddresses,
+			recipientVars,
+		};
 	}
 
 	id: string;

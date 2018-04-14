@@ -26,7 +26,7 @@ export default class SendGroup extends Model {
 		});
 	}
 
-	static async getApplicableSendGroupRecipientVars(options: GetApplicableSendGroupRecipientVars) {
+	static async getApplicableRecipientVars(options: GetApplicableSendGroupRecipientVars) {
 		if (!options.sendGroupIds && !options.sendGroups) {
 			throw Error('sendGroups or sendGroupsId required');
 		}

@@ -59,6 +59,8 @@ export default class Campaign extends Model {
 	static getAllCampaigns() {
 		return this.findAll({
 			include: [{
+				model: SendGroup,
+			}, {
 				model: Attendee,
 			}],
 		});
@@ -68,6 +70,8 @@ export default class Campaign extends Model {
 		return this.findById(id, {
 			include: [{
 				model: SendGroup,
+			}, {
+				model: Attendee,
 			}],
 		});
 	}
@@ -97,6 +101,7 @@ export default class Campaign extends Model {
 
 		const sendResult = [
 			...sendGroupCampaigns ? await Campaign.bulkSendGroupedCampaigns(sendGroupCampaigns) : [],
+			...singleAttendeeCampaigns ? await Campaign.bulkAttendeeCampaigns(singleAttendeeCampaigns) : [],
 		];
 		return sendResult;
 	}
@@ -110,7 +115,32 @@ export default class Campaign extends Model {
 			return getCampaignDao.then((campaign: Campaign) => {
 				return campaign.getSendGroups()
 					.then(sendGroups => {
-						return SendGroup.getApplicableSendGroupRecipientVars({sendGroups});
+						return SendGroup.getApplicableRecipientVars({sendGroups});
+					})
+					.then(recipientVars => ({
+						campaign,
+						recipientVars,
+					}));
+			});
+		}));
+
+		return allRecipientVarsPromise.then(allRecipientVars => {
+			return Promise.all(allRecipientVars.map(({ campaign, recipientVars }) => {
+				return this.sendMail(campaign, recipientVars);
+			}));
+		});
+	}
+
+	static bulkAttendeeCampaigns(singleCampaigns: Array<(Campaign | string)>) {
+		const allRecipientVarsPromise = Promise.all(singleCampaigns.map((campaignIdOrCampaign) => {
+			const getCampaignDao = (typeof campaignIdOrCampaign === 'string' ?
+				new Promise(resolve => {Campaign.findById(campaignIdOrCampaign).then(campaign => resolve(campaign)); }) :
+				Promise.resolve(campaignIdOrCampaign)
+			);
+			return getCampaignDao.then((campaign: Campaign) => {
+				return campaign.getAttendees()
+					.then(attendees => {
+						return Attendee.getApplicableRecipientVars({attendees});
 					})
 					.then(recipientVars => ({
 						campaign,
@@ -128,7 +158,7 @@ export default class Campaign extends Model {
 
 	static sendMail(campaign, recipientVariables) {
 		const filename = path.join(__dirname, '../../client/assets/y&d-logo.png');
-		const { applicableSendees, sendAddresses, recipientVars } = recipientVariables;
+		const { sendAddresses, recipientVars } = recipientVariables;
 		const { subject, content } = campaign;
 		let html = draftToHtml(JSON.parse(content));
 		html = html.replace('%logo%', '<img width="150" src="cid:y&d-logo.png"/>');

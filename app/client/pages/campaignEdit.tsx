@@ -72,22 +72,26 @@ class SendInvites extends React.Component {
 			createEditorState(JSON.parse(campaign.content)) :
 			createEditorState();
 
-		const initialReduce = {
-			attendeeList: [],
-			attendeeMap: {},
-		};
-
+		let attendeeList = [];
+		let attendeeMap = {};
 		const attendees = campaign.groupCampaign ? campaign.SendGroups : campaign.Attendees;
-		const { attendeeList, attendeeMap } = attendees.reduce((accum, attendee) => ({
-			attendeeList: [
-				...accum.attendeeList,
-				attendee.id,
-			],
-			attendeeMap: {
-				...accum.attendeeMap,
-				[attendee.id]: attendee,
-			},
-		}), initialReduce);
+		if (Array.isArray(attendees)) {
+			const initialReduce = {
+				attendeeList: [],
+				attendeeMap: {},
+			};
+			const { attendeeList: list, attendeeMap: map } = attendees.reduce((accum, attendee) => ({
+				attendeeList: [
+					...accum.attendeeList,
+					attendee.id,
+				],
+				attendeeMap: {
+					...accum.attendeeMap,
+					[attendee.id]: attendee,
+				},
+			}), initialReduce);
+			attendeeList = list; attendeeMap = map;
+		}
 
 		this.state = {
 			client: false,
@@ -240,6 +244,7 @@ class SendInvites extends React.Component {
 	}
 
 	render() {
+		console.log(this.props);
 		const { editorState } = this.state;
 		return (
 			<div className="uk-container">
