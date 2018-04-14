@@ -1,39 +1,39 @@
 import User from './user';
 import Attendee from './attendee';
-import Bridesmaid from './bridesmaid';
 import Event from './event';
 import EventAttendee from './eventAttendee';
-import Groomsmen from './groomsmen';
 import SeatingTable from './seatingTable';
 import SendGroup from './sendGroup';
 import Campaign from './campaign';
 import CampaignAttendee from './campaignAttendee';
 import CampaignSendGroup from './campaignAttendeeGroup';
 import GalleryImage from './galleryImage';
+import BridalParty from './bridalParty';
+import BridalPartyRoles from './bridalPartyRoles';
 import sequelizeConnection from './lib/connection';
 
 interface IModels {
   User: typeof User;
   Attendee: typeof Attendee;
-  Bridesmaid: typeof Bridesmaid;
   Event: typeof Event;
   EventAttendee: typeof EventAttendee;
-  Groomsmen: typeof Groomsmen;
   SeatingTable: typeof SeatingTable;
   SendGroup: typeof SendGroup;
   Campaign: typeof Campaign;
   CampaignAttendee: typeof CampaignAttendee;
   CampaignSendGroup: typeof CampaignSendGroup;
   GalleryImage: typeof GalleryImage;
+  BridalParty: typeof BridalParty;
+  BridalPartyRoles: typeof BridalPartyRoles;
 }
 
 const modelz = [
   User,
   Attendee,
-  Bridesmaid,
+  BridalParty,
   Event,
   EventAttendee,
-  Groomsmen,
+  BridalPartyRoles,
   SeatingTable,
   SendGroup,
   Campaign,
