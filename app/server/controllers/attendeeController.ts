@@ -3,7 +3,6 @@ import { Op } from 'sequelize';
 import { NextAppRequest } from '../types';
 import models from '../models';
 import { getDesiredValuesFromRequestBody } from '../utils';
-import AttendeeModel from '../models/attendee';
 import SendGroupModel from '../models/sendGroup';
 import GalleryImage from '../models/galleryImage';
 
