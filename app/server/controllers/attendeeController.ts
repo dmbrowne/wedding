@@ -5,6 +5,7 @@ import models from '../models';
 import { getDesiredValuesFromRequestBody } from '../utils';
 import AttendeeModel from '../models/attendee';
 import SendGroupModel from '../models/sendGroup';
+import GalleryImage from '../models/galleryImage';
 
 interface Rsvp {
 	attendeeId: string;
@@ -212,6 +213,10 @@ export function getSingleInvitation(req: NextAppRequest, res: Response, next: Ne
 		include: [{
 			model: models.Event,
 			as: 'Events',
+			include: [{
+				model: GalleryImage,
+				as: 'featureImage',
+			}],
 		}],
 	})
 	.then(attendee => {
