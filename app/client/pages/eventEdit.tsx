@@ -12,9 +12,12 @@ interface State {
 	name: string;
 	slug: string;
 	description: string;
+	venueName: string;
+	address: string;
+	mapsLink: string;
+	entryTime: Moment;
 	startTime: Moment;
 	endTime: Moment;
-	entryTime: Moment;
 	image: GalleryImage;
 }
 
@@ -35,6 +38,9 @@ class EditEventPage extends React.Component<Props, State> {
 		this.setState({
 			name: this.props.event.name,
 			slug: this.props.event.slug,
+			venueName: this.props.event.venueName,
+			address: this.props.event.address,
+			mapsLink: this.props.event.mapsLink,
 			description: this.props.event.description || '',
 			startTime: moment(this.props.event.startTime),
 			endTime: moment(this.props.event.endTime),
@@ -59,6 +65,9 @@ class EditEventPage extends React.Component<Props, State> {
 		const dataInput = {
 			name: this.state.name,
 			slug: this.state.slug,
+			venueName: this.state.venueName,
+			address: this.state.address,
+			mapsLink: this.state.mapsLink,
 			description: this.state.description || null,
 			entryTime: this.state.entryTime.toDate(),
 			startTime: this.state.startTime.toDate(),
@@ -97,6 +106,9 @@ class EditEventPage extends React.Component<Props, State> {
 					description={this.state.description}
 					startTime={this.state.startTime}
 					endTime={this.state.endTime}
+					venueName={this.state.venueName}
+					address={this.state.address}
+					mapsLink={this.state.mapsLink}
 					onDateTimeStartChange={time => this.editEventDate(time, 'start')}
 					onDateTimeEndChange={time => this.editEventDate(time, 'end')}
 					onNameChange={name => this.setState({ name })}
@@ -106,6 +118,9 @@ class EditEventPage extends React.Component<Props, State> {
 					image={this.state.image}
 					onDateTimeEntryChange={time => this.editEventDate(time, 'entry')}
 					onImageChange={(galleryImage) => this.setState({ image: galleryImage })}
+					onVenueChange={(venueName) => this.setState({ venueName })}
+					onAddressChange={(address) => this.setState({ address })}
+					onMapsLinkChange={(mapsLink) => this.setState({ mapsLink })}
 				/>
 				<div className="uk-clearfix">
 					<div

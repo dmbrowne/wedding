@@ -14,6 +14,9 @@ export default class Event extends Model {
 			startTime: Sequelize.DATE,
 			endTime: Sequelize.DATE,
 			imageId: Sequelize.UUID,
+			venueName: Sequelize.STRING,
+			address: Sequelize.TEXT,
+			mapsLink: Sequelize.STRING,
 		},
 		{
 			sequelize: sequelizeConnection,
@@ -42,5 +45,8 @@ export default class Event extends Model {
 	entryTime: string;
 	startTime: string;
 	endTime: string;
+	venueName: string;
+	address: string;
+	mapsLink: string;
 	Guests: Attendee[];
 }

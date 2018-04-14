@@ -47,6 +47,9 @@ export function createEvent(req: NextAppRequest, res: Response) {
 		'endTime',
 		'entryTime',
 		'imageId',
+		'venueName',
+		'address',
+		'mapsLink',
 	], req.body);
 
 	if (!eventDetails.name) {
@@ -76,6 +79,9 @@ export function editEvent(req: NextAppRequest, res: Response) {
 		'endTime',
 		'entryTime',
 		'imageId',
+		'venueName',
+		'address',
+		'mapsLink',
 	], req.body);
 
 	if (!eventDetails) {

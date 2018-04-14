@@ -6,10 +6,15 @@ import DateTimePicker from 'material-ui-pickers/DateTimePicker';
 import GalleryImage from '../../server/models/galleryImage';
 import AddOrReplaceImage from './image/AddOrReplaceImage';
 
-interface Props {
+export interface EditFormTextValues {
 	name: string;
 	slug: string;
 	description: string;
+	venueName: string;
+	address: string;
+	mapsLink: string;
+}
+interface Props extends EditFormTextValues {
 	startTime: Moment;
 	endTime: Moment;
 	entryTime: Moment;
@@ -21,6 +26,9 @@ interface Props {
 	onDateTimeStartChange: (time: Moment) => any;
 	onDateTimeEndChange: (time: Moment) => any;
 	onImageChange: (galleryImage: GalleryImage) => any;
+	onVenueChange: (value: string) => any;
+	onAddressChange: (value: string) => any;
+	onMapsLinkChange: (value: string) => any;
 }
 
 moment.locale('en');
@@ -47,11 +55,22 @@ class EventForm extends React.Component<Props> {
 		this.setState({ addImageMode: false });
 	}
 
+	changeVenueName = (e) => {
+		this.props.onVenueChange(e.target.value);
+	}
+	changeAddress = (e) => {
+		this.props.onAddressChange(e.target.value);
+	}
+	changeMapsLink = (e) => {
+		this.props.onMapsLinkChange(e.target.value);
+	}
+
 	render() {
 		const {
 			startTime, endTime, description, name, slug,
 			onDateTimeStartChange, onDateTimeEndChange,
 			entryTime, onDateTimeEntryChange, image,
+			venueName, address, mapsLink
 		} = this.props;
 		return (
 			<MuiPickersUtilsProvider
@@ -81,14 +100,14 @@ class EventForm extends React.Component<Props> {
 								onChange={this.eventSlug}
 							/>
 						</div>
-						<div className="uk-width-1-3@s uk-margin-top">
+						<div className="uk-width-1-2 uk-width-1-3@s uk-margin-top">
 							<label className="uk-form-label">Entry date / time</label>
 							<DateTimePicker
 								value={entryTime}
 								onChange={onDateTimeEntryChange}
 							/>
 						</div>
-						<div className="uk-width-1-3@s uk-margin-top">
+						<div className="uk-width-1-2 uk-width-1-3@s uk-margin-top">
 							<label className="uk-form-label">Start date / time</label>
 							<DateTimePicker
 								value={startTime}
@@ -109,6 +128,33 @@ class EventForm extends React.Component<Props> {
 								className="uk-textarea"
 								value={description}
 								onChange={this.eventDescription}
+							/>
+						</div>
+						<div className="uk-margin uk-width-1-1 ">
+							<label className="uk-form-label">Venue name</label>
+							<input
+								type="text"
+								className="uk-input"
+								value={venueName}
+								onChange={this.changeVenueName}
+							/>
+						</div>
+						<div className="uk-margin uk-width-1-1 ">
+							<label className="uk-form-label">Address</label>
+							<textarea
+								style={{minHeight: 100}}
+								className="uk-textarea"
+								value={address}
+								onChange={this.changeAddress}
+							/>
+						</div>
+						<div className="uk-margin uk-width-1-1 ">
+							<label className="uk-form-label">Google maps link:</label>
+							<input
+								type="text"
+								className="uk-input"
+								value={mapsLink}
+								onChange={this.changeMapsLink}
 							/>
 						</div>
 						<div className="uk-width-1-1 uk-margin-top uk-text-center">
