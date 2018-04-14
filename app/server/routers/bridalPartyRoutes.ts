@@ -37,6 +37,11 @@ router.route('/')
 		res.send({ success: 'ok' });
 	});
 
+router.get('/new', async (req, res) => {
+	res.locals.bridalPartyRoles = await BridalPartyRole.findAll();
+	req.nextAppRenderer.render(req, res, '/bridalPartyCreate');
+});
+
 router.route('/roles')
 	.get(xhrOnly, (_, res) => {
 		BridalPartyRole.findAll()
@@ -65,16 +70,18 @@ router.put('/roles/:roleId', [xhrOnly,
 ]);
 
 router.route('/:bridalPartyId')
-	.all(async (req: RequestWithBridalParty) => {
+	.all(async (req: RequestWithBridalParty, res, next) => {
 		const bridalPartyMember = await BridalParty.getById(req.params.bridalPartyId);
 		req.bridalPartyMember = bridalPartyMember;
+		next();
 	})
 	.get(async (req: RequestWithBridalParty, res: Response, next: NextFunction) => {
 		if (req.xhr) {
 			next();
 		}
 		res.locals.bridalParty = req.bridalPartyMember;
-		req.nextAppRenderer.render(req, res, '/bridalParties');
+		res.locals.bridalPartyRoles = await BridalPartyRole.findAll();
+		req.nextAppRenderer.render(req, res, '/bridalPartyCreate');
 	})
 	.get((req: RequestWithBridalParty, res) => {
 		res.send(req.bridalPartyMember);

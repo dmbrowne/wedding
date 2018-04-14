@@ -30,7 +30,7 @@ export default class BridalPartyRole extends Model {
 		});
 	}
 
-	id: string;
+	id: number;
 	name: string;
 	value: string;
 	BridalParties: HasManyGetAssociationsMixin<BridalParty>;

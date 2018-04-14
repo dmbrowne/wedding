@@ -51,7 +51,7 @@ class BridalParties extends React.Component<Props, State> {
 				<td>{!!bridalPartyMember.WeddingRole && bridalPartyMember.WeddingRole.name}</td>
 				<td>{bridalPartyMember.subRole}</td>
 				<td>
-					<Link href={`/admin/bridalParties/${bridalPartyMember.id}`}>
+					<Link prefetch={true} href={`/admin/bridalParties/${bridalPartyMember.id}`}>
 						<i className="material-icons">mode_edit</i>
 					</Link>
 				</td>
