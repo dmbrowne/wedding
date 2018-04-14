@@ -71,7 +71,7 @@ export default class Attendee extends Model {
 				[attendee.getDataValue('email')]: {
 					first: attendee.firstName,
 					last: attendee.lastName,
-					invitationlink: `http://thebrownes.info/a/${attendee.id}`,
+					invitationlink: `http://thebrownes.info/invitation/a/${attendee.id}`,
 				},
 			};
 		}, {});

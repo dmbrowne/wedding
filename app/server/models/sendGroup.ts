@@ -50,7 +50,7 @@ export default class SendGroup extends Model {
 				...accum,
 				[group.getDataValue('email')]: {
 					name: group.name,
-					invitationlink: `http://thebrownes.info/g/${group.id}`,
+					invitationlink: `http://thebrownes.info/invitation/g/${group.id}`,
 				},
 			};
 		}, {});
