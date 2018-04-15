@@ -151,7 +151,7 @@ export default class Invitation extends React.Component<any, State> {
 					<Services events={this.props.services} />
 					{this.props.bridalParty && this.props.bridalParty.bridesmaids && !!this.props.bridalParty.bridesmaids.BridalParties.length && (
 						<div className="section section-bridemaids">
-							<h2 className="section-title"><span>Meet the</span>Bridal Party</h2>
+							<h2 className="section-title"><span>Meet the</span>Bridesmaids</h2>
 							<div className="bridal-party bridemaids">
 								{this.props.bridalParty.bridesmaids.BridalParties.map(bridesmaid => {
 									return (
@@ -170,7 +170,7 @@ export default class Invitation extends React.Component<any, State> {
 					)}
 					{this.props.bridalParty && this.props.bridalParty.groomsmen && !!this.props.bridalParty.groomsmen.BridalParties.length && (
 						<div className="section section-groomsmen">
-							<h2 className="section-title"><span>Meet the</span>Bridal Party</h2>
+							<h2 className="section-title"><span>Meet the</span>Groomsmen</h2>
 							<div className="bridal-party groomsmen">
 								{this.props.bridalParty.groomsmen.BridalParties.map(groomsmen => {
 									return (
@@ -195,7 +195,7 @@ export default class Invitation extends React.Component<any, State> {
 							<p>If you would like to put in a penny or two - you can donate by clicking the piggy bank below,</p>
 							<p className="fancy">Thank You x</p>
 							<div className="uk-margin">
-								<a href="/donate" target="_blank">
+								<a href={`${this.props.url.asPath}/donate`} target="_blank">
 									<img src="/assets/pig-bank.png" style={{ width: 200 }} />
 								</a>
 							</div>

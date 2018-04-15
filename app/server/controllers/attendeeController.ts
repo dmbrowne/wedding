@@ -180,6 +180,10 @@ export function getGroupInvitation(req: NextAppRequest, res: Response, next: Nex
 				include: [{
 						model: models.Event,
 						as: 'Events',
+						include: [{
+							model: GalleryImage,
+							as: 'featureImage',
+						}],
 				}],
 			}],
 		}),

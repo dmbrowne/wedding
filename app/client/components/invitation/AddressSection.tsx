@@ -18,7 +18,7 @@ const LocationAddress = event => (
 );
 
 const CeremonySection = (event) => (
-	<div key={event.id} className="section section-where">
+	<div className="section section-where" style={event.featureImage ? {backgroundImage: event.featureImage} : {}}>
 		<h2 className="section-title"><span>where &</span>When</h2>
 		<div className="ornate-divider">
 			<OrnateDivider colour="#e0b278" />
@@ -34,10 +34,11 @@ const CeremonySection = (event) => (
 );
 
 const ReceptionSection = (event) => {
+	console.log(event.featureImage.url)
 	return (
 		<div className="section section-reception">
 			<h2 className="section-title"><span>where &</span>When</h2>
-			< div className="bg" />
+			<div className="bg" style={event.featureImage ? { backgroundImage: `url(${event.featureImage.url})` } : {}}/>
 			<div className="corner-ornament">
 				<CornerOrnamantSwirl colour={'#e0e0e0'} />
 			</div>
@@ -81,6 +82,7 @@ const getEventComponent = (eventSlug) => {
 };
 
 export default function AddressSection(props) {
+	console.log(props);
 	return (
 		<React.Fragment>
 			{props.events && props.events.length && props.events.map(event => {
