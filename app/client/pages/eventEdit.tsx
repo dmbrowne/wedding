@@ -19,6 +19,7 @@ interface State {
 	startTime: Moment;
 	endTime: Moment;
 	image: GalleryImage;
+	dietFeedback: boolean;
 }
 
 interface Props extends ChildProps {
@@ -46,6 +47,7 @@ class EditEventPage extends React.Component<Props, State> {
 			endTime: moment(this.props.event.endTime),
 			entryTime: moment(this.props.event.entryTime),
 			image: this.props.event.featureImage,
+			dietFeedback: this.props.event.dietFeedback,
 		});
 	}
 
@@ -73,6 +75,7 @@ class EditEventPage extends React.Component<Props, State> {
 			startTime: this.state.startTime.toDate(),
 			endTime: this.state.endTime.toDate(),
 			imageId: this.state.image.id,
+			dietFeedback: this.state.dietFeedback,
 		};
 		editEvent(this.props.event.id, dataInput).then(() => {
 			Router.push('/admin/events');
@@ -121,6 +124,8 @@ class EditEventPage extends React.Component<Props, State> {
 					onVenueChange={(venueName) => this.setState({ venueName })}
 					onAddressChange={(address) => this.setState({ address })}
 					onMapsLinkChange={(mapsLink) => this.setState({ mapsLink })}
+					onDietFeedBackSelect={required => this.setState({ dietFeedback: required })}
+					dietFeedback={this.state.dietFeedback}
 				/>
 				<div className="uk-clearfix">
 					<div

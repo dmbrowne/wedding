@@ -10,7 +10,21 @@ import Services from '../components/invitation/Services';
 import RsvpSection from '../components/invitation/RsvpSection';
 import { restfulRequest } from '../api/utils';
 
-export default class Invitation extends React.Component {
+interface State {
+	windowHeight: number;
+	selectedEvents: {
+		[attendeeId: string]: {
+			[eventId: string]: boolean;
+		},
+	};
+	dietryRequirements: {
+		[attendeeId: string]: {
+			starter: 'meat' | 'fish' | 'vegetarian',
+			main: 'meat' | 'fish' | 'vegetarian',
+		},
+	};
+}
+export default class Invitation extends React.Component<any, State> {
 	static getInitialProps = async ({ req, res, query }) => {
 		if (res && req) {
 			const { sendGroup, singleInvitation, attendee, services } = res.locals;
@@ -26,11 +40,13 @@ export default class Invitation extends React.Component {
 		return {};
 	}
 
+	isAnUpdate: boolean = false;
+	rsvpSection: HTMLElement = null;
+
 	constructor(props) {
 		super(props);
 		this.state = {
-			widowHeight: 0,
-			noBreakfast: false,
+			windowHeight: 0,
 			selectedEvents: props.attendees.reduce((accum, attendee) => ({
 				...accum,
 				[attendee.id]: attendee.Events.reduce((eventAccum, event) => {
@@ -40,6 +56,13 @@ export default class Invitation extends React.Component {
 						[event.id]: event.EventAttendee.attending,
 					};
 				}, {}),
+			}), {}),
+			dietryRequirements: props.attendees.reduce((accum, attendee) => ({
+				...accum,
+				[attendee.id]: {
+					starter: attendee.FoodChoice && attendee.FoodChoice.starter || null,
+					main: attendee.FoodChoice && attendee.FoodChoice.main || null,
+				},
 			}), {}),
 		};
 	}

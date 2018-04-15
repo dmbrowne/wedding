@@ -17,6 +17,7 @@ export default class Event extends Model {
 			venueName: Sequelize.STRING,
 			address: Sequelize.TEXT,
 			mapsLink: Sequelize.STRING,
+			dietFeedback: Sequelize.BOOLEAN,
 		},
 		{
 			sequelize: sequelizeConnection,
@@ -48,5 +49,6 @@ export default class Event extends Model {
 	venueName: string;
 	address: string;
 	mapsLink: string;
+	dietFeedback: boolean;
 	Guests: Attendee[];
 }

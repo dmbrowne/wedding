@@ -33,6 +33,7 @@ class NewEvent extends React.Component<any, State> {
 		endTime: moment(),
 		entryTime: moment(),
 		image: null,
+		dietFeedback: false,
 	};
 
 	editEventDate(time: Moment, timeType: 'start' | 'end' | 'entry') {
@@ -59,6 +60,7 @@ class NewEvent extends React.Component<any, State> {
 			startTime: this.state.startTime.toDate(),
 			endTime: this.state.endTime.toDate(),
 			imageId: this.state.image.id,
+			dietFeedback: this.state.dietFeedback,
 		};
 		createEvent(dataInput).then(result => {
 			Router.push('/admin/events');
@@ -92,6 +94,8 @@ class NewEvent extends React.Component<any, State> {
 						onVenueChange={(venueName) => this.setState({ venueName })}
 						onAddressChange={(address) => this.setState({ address })}
 						onMapsLinkChange={(mapsLink) => this.setState({ mapsLink })}
+						onDietFeedBackSelect={required => this.setState({ dietFeedback: required })}
+						dietFeedback={this.state.dietFeedback}
 					/>
 					<div className="uk-clearfix">
 						<div

@@ -97,6 +97,7 @@ export default class Attendee extends Model {
 	Events?: EventWithDetailsJoin[];
 	Campaigns: Campaign[];
 	SendGroup: SendGroup;
+	FoodChoice: FoodChoice;
 	getEvents: BelongsToManyGetAssociationsMixin<EventWithDetailsJoin>;
 	hasEvent: HasManyHasAssociationMixin<EventWithDetailsJoin, EventWithDetailsJoin['id']>;
 	getCampaigns: BelongsToManyGetAssociationsMixin<Campaign>;

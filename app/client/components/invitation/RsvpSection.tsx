@@ -16,6 +16,8 @@ interface Props {
 	isAnUpdate: boolean;
 	onSubmit: () => any;
 	onSelectEvent: (attendeeId: string, eventId: string, value: boolean) => any;
+	onSelectStarter: (choice: 'meat' | 'fish' | 'vegetarian') => any;
+	onSelectMains: (choice: 'meat' | 'fish' | 'vegetarian') => any;
 }
 
 const ReceptionCardContent = ({attendee, selectEvent, selectedEvents}) => {
@@ -126,7 +128,10 @@ export default class RsvpSection extends React.Component<Props> {
 										selectedEvents={this.props.selectedEvents[attendee.id]}
 										selectEvent={this.props.onSelectEvent}
 									/>
-									<WeddingBreakfastCardContent />
+									<WeddingBreakfastCardContent
+										starterSelect={this.props.onSelectStarter}
+										mainSelect={this.props.onSelectMains}
+									/>
 								</div>
 							</div>
 						);

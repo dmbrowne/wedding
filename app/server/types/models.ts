@@ -48,6 +48,7 @@ export interface IEvent {
 	entryTime: Date;
 	startTime: Date;
 	endTime: Date;
+	dietFeedback: boolean;
 	imageId: string;
 	Guests?: IAttendee[] | null;
 	featureImage?: IGalleryImage;

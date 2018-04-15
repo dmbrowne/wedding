@@ -19,6 +19,7 @@ interface Props extends EditFormTextValues {
 	endTime: Moment;
 	entryTime: Moment;
 	image: GalleryImage;
+	dietFeedback: boolean;
 	onNameChange: (name: string) => any;
 	onDescriptionChange: (description: string) => any;
 	onSlugChange: (slug: string) => any;
@@ -29,6 +30,7 @@ interface Props extends EditFormTextValues {
 	onVenueChange: (value: string) => any;
 	onAddressChange: (value: string) => any;
 	onMapsLinkChange: (value: string) => any;
+	onDietFeedBackSelect: (value: boolean) => any;
 }
 
 moment.locale('en');
@@ -120,6 +122,17 @@ class EventForm extends React.Component<Props> {
 								value={endTime}
 								onChange={onDateTimeEndChange}
 							/>
+						</div>
+						<div className="uk-width-1-1 uk-margin-top">
+							<label>
+								<input
+									type="checkbox"
+									className="uk-checkbox"
+									checked={this.props.dietFeedback}
+									onChange={e => this.props.onDietFeedBackSelect(e.target.checked)}
+								/>
+								{' '}Dietry requirement feedsback needed?
+							</label>
 						</div>
 						<div className="uk-width-1-1 uk-margin-top">
 							<label className="uk-form-label">Description</label>

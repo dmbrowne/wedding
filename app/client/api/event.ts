@@ -2,7 +2,7 @@ import { restfulRequest } from './utils';
 import { IEvent } from '../../server/types/models';
 
 type CreateEventInput = {name: IEvent['name']; slug: IEvent['slug']} & Pick<IEvent,
-	'entryTime' | 'startTime' | 'endTime' | 'description' | 'imageId'
+	'entryTime' | 'startTime' | 'endTime' | 'description' | 'imageId' | 'dietFeedback'
 >;
 
 export function getEvents() {

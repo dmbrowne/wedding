@@ -50,6 +50,7 @@ export function createEvent(req: NextAppRequest, res: Response) {
 		'venueName',
 		'address',
 		'mapsLink',
+		'dietFeedback',
 	], req.body);
 
 	if (!eventDetails.name) {
@@ -82,6 +83,7 @@ export function editEvent(req: NextAppRequest, res: Response) {
 		'venueName',
 		'address',
 		'mapsLink',
+		'dietFeedback',
 	], req.body);
 
 	if (!eventDetails) {
