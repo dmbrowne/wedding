@@ -9,7 +9,7 @@ export default class Event extends Model {
 				allowNull: false,
 			},
 			slug: Sequelize.STRING,
-			description: Sequelize.STRING,
+			description: Sequelize.TEXT,
 			entryTime: Sequelize.DATE,
 			startTime: Sequelize.DATE,
 			endTime: Sequelize.DATE,
