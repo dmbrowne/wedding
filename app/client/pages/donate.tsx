@@ -39,41 +39,43 @@ export default class StripeTestPage extends React.Component {
 	}
 
 	componentDidMount() {
-		this.UIkit = window.UIkit;
-		this.setState({
-			stripe: window.Stripe('pk_test_gbZv1zKSysff7KprihcWi6ms'),
-			windowHeight: document.body.clientHeight,
-		});
+		this.UIkit = require('uikit');
+		setTimeout(() => {
+			this.setState({
+				stripe: window.Stripe('pk_test_gbZv1zKSysff7KprihcWi6ms'),
+				windowHeight: document.body.clientHeight,
+			});
+		}, 500);
 	}
 
 	render() {
 		return (
 			<AppLayout>
+				<Head>
+					<script src="//js.stripe.com/v3/" key="stripe-elements-api" />
+					<link
+						key="material-icons"
+						rel="stylesheet"
+						href="//fonts.googleapis.com/icon?family=Material+Icons"
+					/>
+					<link
+						key="fancy-fonts"
+						rel="stylesheet"
+						href="//fonts.googleapis.com/icon?family=Great+Vibes"
+					/>
+					<link
+						key="stripe-payment-fonts"
+						rel="stylesheet"
+						href="//fonts.googleapis.com/icon?family=Source+Code+Pro|Source+Sans+Pro"
+					/>
+					<link
+						key="uikit-stylesheet"
+						rel="stylesheet"
+						href="//cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.40/css/uikit.min.css"
+					/>
+					<script src="//cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.40/js/uikit.min.js" />
+				</Head>
 				<div className="donation-page">
-					<Head>
-						<script src="//js.stripe.com/v3/" key="stripe-elements-api" />
-						<link
-							key="material-icons"
-							rel="stylesheet"
-							href="//fonts.googleapis.com/icon?family=Material+Icons"
-						/>
-						<link
-							key="fancy-fonts"
-							rel="stylesheet"
-							href="//fonts.googleapis.com/icon?family=Great+Vibes"
-						/>
-						<link
-							key="stripe-payment-fonts"
-							rel="stylesheet"
-							href="//fonts.googleapis.com/icon?family=Source+Code+Pro|Source+Sans+Pro"
-						/>
-						<link
-							key="uikit-stylesheet"
-							rel="stylesheet"
-							href="//cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.40/css/uikit.min.css"
-						/>
-						<script src="//cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.40/js/uikit.min.js" />
-					</Head>
 					{this.state.donationSuccessful ?
 					(
 						<div className="thank-you-screen" style={{height: this.state.windowHeight }}>
