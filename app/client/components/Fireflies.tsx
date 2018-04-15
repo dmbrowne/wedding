@@ -1,5 +1,13 @@
 import React from 'react';
 
+function onTransitionEnd(element, callback) {
+	if ('transition' in document.documentElement.style) {
+			element.addEventListener('transitionend', callback);
+	} else {
+		callback();
+	}
+}
+
 function Circle(canvasContext, width, height, rint) {
 	this.canvasContext = canvasContext;
 	this.componentWidth = width;
@@ -99,7 +107,7 @@ class FireFlies extends React.Component {
 
 	stopFlies() {
 		this.canvas.style.opacity = '0';
-		window.onTransitionEnd(this.canvas, () => {
+		onTransitionEnd(this.canvas, () => {
 			window.clearInterval(this.fliesInterval);
 			this.fliesInterval = null;
 			return (
