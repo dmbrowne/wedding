@@ -47,53 +47,61 @@ export const WeddingBreakfastCardContent = (props) => {
 	return (
 		<div className="dietry-requirements">
 			<p>Please choose your preferred dietry requirements</p>
-			<div className="non-vegetarian">
-				<div className="starters">
-					<header>Starters</header>
-					<small>Choose an option for your starter</small>
-					<div className="options">
-						<div className="meat active">
-							<figure>
-								<Cow />
-							</figure>
-							<header>Meat</header>
+			<div className="dietry-requirements-preferences">
+				<div className="non-vegetarian">
+					<div className="starters course">
+						<header>Starters</header>
+						<small>Choose an option for your starter</small>
+						<div className="course-options">
+							<div className="meat course-options-option active">
+								<figure>
+									<Cow />
+								</figure>
+								<header>Meat</header>
+							</div>
+							<div className="fish course-options-option">
+								<figure>
+									<Fish />
+								</figure>
+								<header>Fish</header>
+							</div>
 						</div>
-						<div className="fish">
-							<figure>
-								<Fish />
-							</figure>
-							<header>Fish</header>
+					</div>
+					<div className="main-courses course">
+						<header>Main Course</header>
+						<small>Choose an option for your mains</small>
+						<div className="course-options">
+							<div className="meat course-options-option active">
+								<figure>
+									<Cow />
+								</figure>
+								<header>Meat</header>
+							</div>
+							<div className="fish course-options-option">
+								<figure>
+									<Fish />
+								</figure>
+								<header>Fish</header>
+							</div>
 						</div>
 					</div>
 				</div>
-				<div className="main-courses">
-					<header>Main Course</header>
-					<small>Choose an option for your mains</small>
-					<div className="options">
-						<div className="meat active">
-							<figure>
-								<Cow />
-							</figure>
-							<header>Meat</header>
-						</div>
-						<div className="fish">
-							<figure>
-								<Fish />
-							</figure>
-							<header>Fish</header>
+				<div className="vegetarian">
+					<hr />
+					<div className="course">
+						<h3>OR</h3>
+						<small>Optionally, vegetarian meals are available for those who require them. Select vegetarian below if your dietry requirements suggest so.</small>
+						<div className="course-options">
+							<div className="course-options-option">
+								<div className="vegetarian-icon">
+									<figure>
+										<Vegetarian />
+									</figure>
+									<header>Vegetarian</header>
+								</div>
+							</div>
 						</div>
 					</div>
-				</div>
-			</div>
-			<div className="vegetarian">
-				<hr />
-				<h3>OR</h3>
-				<small>Optionally, vegetarian meals are available for those who require them. Select vegetarian below if your dietry requirements suggest so.</small>
-				<div className="vegetarian-icon">
-					<figure>
-						<Vegetarian />
-					</figure>
-					<header>Vegetarian</header>
 				</div>
 			</div>
 		</div>

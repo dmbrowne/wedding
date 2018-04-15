@@ -53,9 +53,19 @@
 			}
 			@media screen and (min-width: 1400px) {
 				.attendance { flex: 0.4; }
-				.dietry-requirements .non-vegetarian { float:left; width: 45%; }
-				.dietry-requirements .vegetarian { float:left; width: 45%; padding-left: 5%; border-left: 1px solid; }
 				.dietry-requirements .vegetarian hr { display: none; }
+				.dietry-requirements-preferences {
+					display: flex;
+					justify-content: stretch;
+					margin: 0 -7.5px;
+				}
+				.dietry-requirements-preferences > * {
+					flex: 0.9;
+					padding: 0 7.5px;
+				}
+				.dietry-requirements-preferences .vegetarian {
+					display: flex;
+				}
 			}
 		}
 	}
@@ -67,33 +77,51 @@
 	}
 	.dietry-requirements {
 		header { font-family: 'Roboto Condensed'; font-size: 1.2rem; }
-		.options {
-			> * {
-				display: inline-block;
-				margin-left: 30px;
-				width: 75px;
-				opacity: 0.5;
-				&:first-child { margin-left: 0; }
-				&:hover { opacity: 0.8; }
-				&.active { opacity: 1; }
+
+		.course {
+			background: #f1f1f1;
+			padding: 15px;
+			margin: 15px 0;
+		}
+
+		.course small { display: block; margin: 10px 0; }
+	
+		.course-options-option {
+			display: inline-block;
+			margin-left: 30px;
+			opacity: 0.5;
+			transition: opacity 330ms;
+			cursor: pointer;
+
+			&:first-child { margin-left: 0; }
+			&:hover { opacity: 0.8; }
+			&.active {
+				opacity: 1;
+
+				figure {
+					border-radius: 50%;
+					border: 1px solid;
+				}
 			}
-			header { font-size: 1rem; text-align: center; }
-			figure {
+		}
+
+		.course-options-option header {
+			font-size: 1rem;
+			text-align: center;
+		}
+
+		.course-options-option figure {
+			display: flex;
+			margin: 0;
+			width: 115px;
+			height: 115px;
+			align-items: center;
+			justify-content: center;
+
+			> svg {
+				width: 80px;
 				height: 80px;
-				display: flex;
-				margin: 0;
-				> svg { flex: 1 }
 			}
 		}
-		small + .vegetarian-icon { margin-top: 30px; }
-		.vegetarian-icon { width: 116px; text-align: center; }
-		.vegetarian figure {
-			height: 116px;
-			padding: 17px 20px 20px;
-			border-radius: 50%;
-			border: 1px solid;
-			width: 116px;
-		}
-		.vegetarian figure svg { height: 80px; }
 	}
 }
