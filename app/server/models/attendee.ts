@@ -1,8 +1,9 @@
-import Sequelize, { Model, HasManyHasAssociationMixin, BelongsToManyGetAssociationsMixin } from 'sequelize';
+import Sequelize, { Model, HasManyHasAssociationMixin, BelongsToManyGetAssociationsMixin, BelongsToSetAssociationMixin } from 'sequelize';
 import Event from './event';
 import SendGroup from './sendGroup';
 import EventAttendee from './eventAttendee';
 import Campaign from './campaign';
+import FoodChoice, { ChoiceTypes } from './foodChoice';
 
 interface EventWithDetailsJoin extends Event {
 	EventAttendee: EventAttendee;
@@ -44,6 +45,7 @@ export default class Attendee extends Model {
 			foreignKey: 'attendeeId',
 			onDelete: 'CASCADE',
 		});
+		this.hasOne(models.FoodChoice, { foreignKey: 'attendeeId', onDelete: 'CASCADE' });
 	}
 
 	static async getApplicableRecipientVars(options: GetApplicableAttendeeRecipientVars) {
@@ -98,6 +100,7 @@ export default class Attendee extends Model {
 	getEvents: BelongsToManyGetAssociationsMixin<EventWithDetailsJoin>;
 	hasEvent: HasManyHasAssociationMixin<EventWithDetailsJoin, EventWithDetailsJoin['id']>;
 	getCampaigns: BelongsToManyGetAssociationsMixin<Campaign>;
+	setFoodChoice: BelongsToSetAssociationMixin<FoodChoice, FoodChoice['id']>;
 
 	updateEventAttendance = (models, rsvps: {[eventId: string]: boolean }) => {
 		return Promise.all(
@@ -113,5 +116,12 @@ export default class Attendee extends Model {
 				});
 			}),
 		);
+	}
+
+	selectFood(input: {stater: ChoiceTypes, main: ChoiceTypes}) {
+		return FoodChoice.upsert({
+			attendeeId: this.id,
+			...input,
+		});
 	}
 }
