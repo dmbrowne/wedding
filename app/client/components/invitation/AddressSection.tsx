@@ -34,7 +34,6 @@ const CeremonySection = (event) => (
 );
 
 const ReceptionSection = (event) => {
-	console.log(event.featureImage.url)
 	return (
 		<div className="section section-reception">
 			<h2 className="section-title"><span>where &</span>When</h2>

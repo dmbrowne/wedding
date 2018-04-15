@@ -9,6 +9,12 @@ module.exports = {
 			firstName: 'Daryl',
 			lastName: 'Browne',
 			role: 'admin',
+		}, {
+			username: 'yazzybee',
+			password: 'yazzyqueenbee',
+			firstName: 'Yasmin',
+			lastName: 'Obosi',
+			role: 'admin',
 		}]);
 	},
 
