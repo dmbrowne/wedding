@@ -5,12 +5,17 @@ import models from '../models';
 import { getDesiredValuesFromRequestBody } from '../utils';
 import SendGroupModel from '../models/sendGroup';
 import GalleryImage from '../models/galleryImage';
+import { ChoiceTypes } from '../models/foodChoice';
 
 interface Rsvp {
 	attendeeId: string;
 	email: string;
 	events: {
 		[eventId: string]: boolean;
+	};
+	diet?: {
+		starter: ChoiceTypes;
+		main: ChoiceTypes;
 	};
 }
 
@@ -240,7 +245,13 @@ const updateSendGroupRsvps = (sendGroup: SendGroupModel, rsvps: Rsvp[]) => {
 			if (!attendeeRsvp) {
 				throw Error(`attendee ${attendee.id} is not part of the specified send group`);
 			}
-			return attendee.updateEventAttendance(models, attendeeRsvp.events);
+			const selectFoodPromise = (attendeeRsvp.diet ?
+				attendee.selectFood(attendeeRsvp.diet) :
+				Promise.resolve()
+			);
+
+			return selectFoodPromise
+				.then(() => attendee.updateEventAttendance(models, attendeeRsvp.events));
 		}),
 	));
 };
@@ -266,9 +277,13 @@ export function rsvpConfirm(req: Request, res: Response, next: NextFunction) {
 
 			const updateAttendance = rsvpIsForAGroup ?
 				updateSendGroupRsvps(result, attendeeRsvps as Rsvp[]) :
-				result.updateEventAttendance(models, attendeeRsvps.events);
+				Promise.all([
+					attendeeRsvps.diet ? result.selectFood(attendeeRsvps.diet) : Promise.resolve(),
+					result.updateEventAttendance(models, attendeeRsvps.events),
+				]);
 
-			return updateAttendance.then(() => {
+			return updateAttendance
+			.then(() => {
 				res.send({ success: 'ok' });
 				delete req.session.invitationId;
 			})
@@ -280,4 +295,9 @@ export function rsvpConfirm(req: Request, res: Response, next: NextFunction) {
 			res.status(500);
 			next(err);
 		});
+}
+
+export function makeFoodChoices(req, res) {
+	const { starter, main } = req.body;
+	models.Attendee.find()
 }
