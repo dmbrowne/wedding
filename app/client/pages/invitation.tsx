@@ -1,5 +1,6 @@
 import React from 'react';
 import Head from 'next/head';
+import cx from 'classnames';
 import '../styles/invite.scss';
 import AppLayout from '../components/AppLayout';
 import InvitedSection from '../components/invitation/InvitedSection';
@@ -109,57 +110,55 @@ export default class Invitation extends React.Component {
 					/>
 					<AddressSection />
 					<Services events={this.props.services} />
-					<div className="section section-bridemaids">
-						<h2 className="section-title"><span>Meet the</span>Bridal Party</h2>
-						<div className="bridal-party bridemaids">
-							<div className="bridal-party-member primary">
-								<div className="badge">Maid of honour</div>
-								<figure className="selfie">
-									<img src="/assets/bride2.jpeg" />
-								</figure>
-								<header>Sarah Jane</header>
-								<footer>Mf'ing M.O.H. in this b****!!</footer>
-							</div>
-							<div className="bridal-party-member">
-								<figure className="selfie">
-									<img src="/assets/bride1.jpeg" />
-								</figure>
-								<header>Karlene Sanders</header>
-								<footer>Insert witty commet here</footer>
-							</div>
-							<div className="bridal-party-member">
-								<figure className="selfie">
-									<img src="/assets/bride3.jpeg" />
-								</figure>
-								<header>Danni Whyte</header>
-								<footer>Insert witty commet here</footer>
-							</div>
-							<div className="bridal-party-member">
-								<figure className="selfie">
-									<img src="/assets/bride4.jpeg" />
-								</figure>
-								<header>Nikki Black</header>
-								<footer>Insert witty commet here</footer>
+					{this.props.bridalParty && this.props.bridalParty.bridesmaids && (
+						<div className="section section-bridemaids">
+							<h2 className="section-title"><span>Meet the</span>Bridal Party</h2>
+							<div className="bridal-party bridemaids">
+								{this.props.bridalParty.bridesmaids.BridalParties.map(bridesmaid => {
+									return (
+										<div key={bridesmaid.id} className={cx('bridal-party-member', {primary: bridesmaid.vip})}>
+											{bridesmaid.subRole && <div className="badge">{bridesmaid.subRole}</div>}
+											<figure className="selfie">
+												<img src={bridesmaid.Image.squareImage} />
+											</figure>
+											<header>{bridesmaid.firstName} {bridesmaid.lastName}</header>
+											{bridesmaid.comment && <footer>{bridesmaid.comment}</footer>}
+										</div>
+									);
+								})}
 							</div>
 						</div>
-					</div>
-					<div className="section section-groomsmen">
-						<h2 className="section-title"><span>Meet the</span>Groomsmen</h2>
-						<div className="bridal-party groomsmen">
-							<div className="bridal-party-member primary">
-								<div className="badge">Bestman</div>
-								<figure className="selfie">
-									<img src="/assets/groom2.jpeg" />
-								</figure>
-								<header>Jack Beastley</header>
-								<footer>insert witty commet here</footer>
+					)}
+					{this.props.bridalParty && this.props.bridalParty.groomsmen && (
+						<div className="section section-groomsmen">
+							<h2 className="section-title"><span>Meet the</span>Bridal Party</h2>
+							<div className="bridal-party groomsmen">
+								{this.props.bridalParty.groomsmen.BridalParties.map(groomsmen => {
+									return (
+										<div key={groomsmen.id} className={cx('bridal-party-member', {primary: groomsmen.vip})}>
+											{groomsmen.subRole && <div className="badge">{groomsmen.subRole}</div>}
+											<figure className="selfie">
+												<img src={groomsmen.Image.squareImage} />
+											</figure>
+											<header>{groomsmen.firstName} {groomsmen.lastName}</header>
+											{groomsmen.comment && <footer>{groomsmen.comment}</footer>}
+										</div>
+									);
+								})}
 							</div>
-							<div className="bridal-party-member">
-								<figure className="selfie">
-									<img src="/assets/groom1.jpeg" />
-								</figure>
-								<header>Daniel Barsnoble</header>
-								<footer>insert witty commet here</footer>
+						</div>
+					)}
+					<div className="section section-donate">
+						<h2 className="section-title"><span>wishing us</span>Well xx</h2>
+						<div className="yd-container">
+							<p><span className="fancy">T</span>he most important gift to us is having you share in our special day</p>
+							<p><span className="fancy">B</span>ut if you wish to contribute in some other way, we would love a few pennies to put in our pot, for our honeymoon trip afteer tying the knot!</p>
+							<p>If you would like to put in a penny or two - you can donate by clicking the piggy bank below,</p>
+							<p className="fancy">Thank You x</p>
+							<div className="uk-margin">
+								<a href="/donate" target="_blank">
+									<img src="/assets/pig-bank.png" style={{ width: 200 }} />
+								</a>
 							</div>
 						</div>
 					</div>
