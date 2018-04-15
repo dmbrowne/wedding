@@ -5,7 +5,7 @@ import models from '../models';
 import { getDesiredValuesFromRequestBody } from '../utils';
 import SendGroupModel from '../models/sendGroup';
 import GalleryImage from '../models/galleryImage';
-import { ChoiceTypes } from '../models/foodChoice';
+import FoodChoice, { ChoiceTypes } from '../models/foodChoice';
 
 interface Rsvp {
 	attendeeId: string;
@@ -71,7 +71,7 @@ export function getEmailableAttendees(req, res, next) {
 
 export async function getAttendee(req: NextAppRequest, res: Response) {
 	const { attendeeId } = req.params;
-	const attendee = await models.Attendee.findById(attendeeId);
+	const attendee = await models.Attendee.findById(attendeeId, { include: [{ model: FoodChoice }]});
 	res.locals.attendee = attendee;
 	if (req.xhr) {
 		res.send(attendee);
@@ -200,8 +200,13 @@ export function getGroupInvitation(req: NextAppRequest, res: Response, next: Nex
 			};
 		}, {});
 
+		const sendGroupAttendees = sendGroup.Attendees.map(attendee => ({
+			...attendee.toJSON(),
+			dietFeedbackRequired: attendee.Events.some(event => event.dietFeedback),
+		}));
+
 		req.session.invitationId = sendGroupId;
-		res.locals.sendGroup = sendGroup;
+		res.locals.sendGroup = {...sendGroup.toJSON(), Attendees: sendGroupAttendees };
 		res.locals.singleInvitation = false;
 		res.locals.services = Object.keys(mergedEvents).map(eventId => mergedEvents[eventId]);
 		return req.nextAppRenderer.render(req, res, '/invitation');
@@ -221,6 +226,8 @@ export function getSingleInvitation(req: NextAppRequest, res: Response, next: Ne
 				model: GalleryImage,
 				as: 'featureImage',
 			}],
+		}, {
+			model: FoodChoice,
 		}],
 	})
 	.then(attendee => {
@@ -228,7 +235,10 @@ export function getSingleInvitation(req: NextAppRequest, res: Response, next: Ne
 			throw Error(`attendee cannot be found with id ${attendeeId}`);
 		}
 		req.session.invitationId = attendeeId;
-		res.locals.attendee = attendee;
+		res.locals.attendee = {
+			...attendee.toJSON(),
+			dietFeedbackRequired: attendee.Events.some(event => event.dietFeedback),
+		};
 		res.locals.services = attendee.Events;
 		res.locals.singleInvitation = true;
 		return req.nextAppRenderer.render(req, res, '/invitation');

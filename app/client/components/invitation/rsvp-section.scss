@@ -95,7 +95,7 @@
 
 			&:first-child { margin-left: 0; }
 			&:hover { opacity: 0.8; }
-			&.active {
+			&.selected {
 				opacity: 1;
 
 				figure {

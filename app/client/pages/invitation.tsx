@@ -87,12 +87,29 @@ export default class Invitation extends React.Component<any, State> {
 		});
 	}
 
+	selectFoodChoice = (attendeeId: string, courseType: 'starter' | 'main', preference: 'meat' | 'fish' | 'vegetarian') => {
+		return new Promise(resolve => {
+			this.setState({
+				dietryRequirements: {
+					...this.state.dietryRequirements,
+					[attendeeId]: {
+						...this.state.dietryRequirements[attendeeId],
+						[courseType]: preference,
+					},
+				},
+			}, () => resolve());
+		});
+	}
+
 	onSubmit = () => {
 		let body;
 		body = this.props.attendees.map(attendee => ({
 			attendeeId: attendee.id,
 			events: {
 				...this.state.selectedEvents[attendee.id],
+			},
+			diet: {
+				...this.state.dietryRequirements[attendee.id],
 			},
 		}));
 		body = this.props.singleInvitation ? body[0] : body;
@@ -119,7 +136,6 @@ export default class Invitation extends React.Component<any, State> {
 						rel="stylesheet"
 					/>
 					<link key="material-icons" rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons" />
-					<script src="/assets/globalFunctions.js" />
 					<script src="//cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.40/js/uikit.min.js" />
 				</Head>
 				<div className="wedding-invitation">
@@ -192,6 +208,9 @@ export default class Invitation extends React.Component<any, State> {
 							selectedEvents={this.state.selectedEvents}
 							onSubmit={this.onSubmit}
 							isAnUpdate={this.isAnUpdate}
+							foodSelections={this.state.dietryRequirements}
+							onSelectStarter={(aId, food) => this.selectFoodChoice(aId, 'starter', food)}
+							onSelectMains={(aId, food) => this.selectFoodChoice(aId, 'main', food)}
 						/>
 					</div>
 				</div>
