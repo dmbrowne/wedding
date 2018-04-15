@@ -49,7 +49,7 @@ module.exports = {
 			venueName: 'Vanilla London',
 			address: `${faker.address.streetName()}\n${faker.address.streetAddress()}\n${faker.address.zipCode()}\n`,
 			mapsLink: 'https://goo.gl/maps/PVTYd9dHqzP2',
-			dietFeedback: true,
+			dietFeedback: false,
 		}]);
 	},
 

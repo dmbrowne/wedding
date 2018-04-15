@@ -74,7 +74,7 @@ class EditEventPage extends React.Component<Props, State> {
 			entryTime: this.state.entryTime.toDate(),
 			startTime: this.state.startTime.toDate(),
 			endTime: this.state.endTime.toDate(),
-			imageId: this.state.image.id,
+			imageId: this.state.image && this.state.image.id || null,
 			dietFeedback: this.state.dietFeedback,
 		};
 		editEvent(this.props.event.id, dataInput).then(() => {

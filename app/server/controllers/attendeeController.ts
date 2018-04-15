@@ -209,7 +209,7 @@ export function getGroupInvitation(req: NextAppRequest, res: Response, next: Nex
 			};
 		}, {});
 
-		const sendGroupAttendees = sendGroup.Attendees.map(attendee => ({
+		const sendGroupAttendees = sendGroup.Attendees.map(attendee => (console.log(attendee.Events.length === 1 && attendee.Events), {
 			...attendee.toJSON(),
 			dietFeedbackRequired: attendee.Events.some(event => event.dietFeedback),
 		}));

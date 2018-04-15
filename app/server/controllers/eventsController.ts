@@ -72,21 +72,21 @@ export function createEvent(req: NextAppRequest, res: Response) {
 
 export function editEvent(req: NextAppRequest, res: Response) {
 	const { eventId } = req.params;
-	const eventDetails = getDesiredValuesFromRequestBody([
-		'name',
-		'slug',
-		'description',
-		'startTime',
-		'endTime',
-		'entryTime',
-		'imageId',
-		'venueName',
-		'address',
-		'mapsLink',
-		'dietFeedback',
-	], req.body);
+	// const eventDetails = getDesiredValuesFromRequestBody([
+	// 	'name',
+	// 	'slug',
+	// 	'description',
+	// 	'startTime',
+	// 	'endTime',
+	// 	'entryTime',
+	// 	'imageId',
+	// 	'venueName',
+	// 	'address',
+	// 	'mapsLink',
+	// 	'dietFeedback',
+	// ], req.body);
 
-	if (!eventDetails) {
+	if (!req.body) {
 		(req.xhr ?
 			res.send({}) :
 			res.redirect('/admin/events'));
@@ -97,7 +97,7 @@ export function editEvent(req: NextAppRequest, res: Response) {
 				res.status(400).json({ message: 'event does not exist' }) :
 				res.redirect(`/admin/events/${eventId}`));
 		}
-		event.update(eventDetails).then(evnt => {
+		event.update(req.body).then(evnt => {
 			(req.xhr ?
 				res.send(evnt) :
 				res.redirect('/admin/events'));

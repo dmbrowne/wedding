@@ -68,7 +68,7 @@ export default class Invitation extends React.Component<any, State> {
 	}
 
 	componentDidMount() {
-		this.setState({ windowHeight: window.innerHeight });
+		this.setState({ windowHeight: window.outerHeight });
 	}
 
 	scrollToRsvp = (btnElement) => {
@@ -137,6 +137,7 @@ export default class Invitation extends React.Component<any, State> {
 					/>
 					<link key="material-icons" rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons" />
 					<script src="//cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.40/js/uikit.min.js" />
+					<meta key="metatag-viewport" name="viewport" content="width=device-width, initial-scale=1" />
 				</Head>
 				<div className="wedding-invitation">
 					<div style={{height: this.state.windowHeight}}>

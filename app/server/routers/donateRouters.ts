@@ -12,7 +12,7 @@ export function donate(req, res, next) {
 		description,
 		currency: 'gbp',
 		source: token,
-		receipt_email: 'yasmin.obosi@gmail.com',
+		receipt_email: req.body.email,
 	})
 	.then(charge => {
 		res.send(charge);

@@ -5,9 +5,9 @@ export function getDesiredValuesFromRequestBody(
 	requestBody: Request['body'],
 ): {[key: string]: any} | null {
 	const foundValues = desiredValues.reduce((values, keyValue: string) => {
-		const value = requestBody[keyValue];
-		return (value ?
-			{ ...values, [keyValue]: value } :
+		const exists = keyValue in requestBody;
+		return (exists ?
+			{ ...values, [keyValue]: requestBody[keyValue] } :
 			values
 		);
 	}, {});
