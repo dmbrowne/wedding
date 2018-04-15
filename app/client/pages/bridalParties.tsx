@@ -45,7 +45,6 @@ class BridalParties extends React.Component<Props, State> {
 	}
 
 	renderRow(bridalPartyMember: BridalParty, onCheckboxTick, itemIsChecked) {
-		console.log(bridalPartyMember);
 		return (
 			<tr key={bridalPartyMember.id}>
 				<td>{bridalPartyMember.firstName}</td>
