@@ -14,10 +14,10 @@ interface Props {
 
 class BridalPartyCreate extends React.Component<Props> {
 	static getInitialProps = async ({ res, query }) => {
-		const bridalParty = res && res.locals.bridalParty ?
+		const bridalParty = res ?
 			res.locals.bridalParty :
 			await getBridalParty(query.bridalPartyId);
-		const bridalPartyRoleOptions = res && res.locals.bridalPartyRoles ?
+		const bridalPartyRoleOptions = res ?
 			res.locals.bridalPartyRoles :
 			await getBridalPartyRoles();
 
@@ -35,10 +35,10 @@ class BridalPartyCreate extends React.Component<Props> {
 	}
 
 	save = () => {
-		const { firstName, lastName, comment, partyRoleId, imageId } = this.state.input.bridalParty;
+		const { firstName, lastName, comment, partyRoleId, imageId, subRole, vip } = this.state.input.bridalParty;
 		const promise = this.props.bridalPartyMemberExists ?
-			updateBridalParty(this.props.bridalParty.id, { firstName, lastName, comment, partyRoleId, imageId }) :
-			createBridalParty({ firstName, lastName, comment, partyRoleId, imageId });
+			updateBridalParty(this.props.bridalParty.id, { firstName, lastName, comment, partyRoleId, imageId, subRole, vip }) :
+			createBridalParty({ firstName, lastName, comment, partyRoleId, imageId, subRole, vip });
 
 		promise
 			.then(() => Router.push('/admin/bridalParties'))

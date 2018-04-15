@@ -66,7 +66,7 @@ function configureRoutes(server) {
 	server.use('/admin/events', eventRoutes);
 	server.use('/admin/gallery', galleryRoutes);
 	server.use('/admin/campaigns', campaignRoutes);
-	server.use('/admin/bridalParties', bridalPartyRoutes);
+	server.use('/admin/bridalparties', bridalPartyRoutes);
 	server.use('/invitation', invitationRoutes);
 
 	server.get('/admin', verifyUser, (req, res) => req.nextAppRenderer.render(req, res, '/dashboard'));

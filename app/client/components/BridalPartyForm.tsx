@@ -15,9 +15,11 @@ interface WrapperStateTextFields {
 	lastName: string;
 	comment: string;
 	subRole: string;
+	vip: boolean;
 }
 
 interface NewBridalParty extends WrapperStateTextFields {
+	vip: boolean;
 	partyRoleId: number;
 	imageId: string;
 	Image?: GalleryImage;
@@ -34,7 +36,7 @@ interface WrapperState {
 interface BridalFormProps {
 	bridalParty: NewBridalParty;
 	roleOptions: BridalPartyRole[];
-	onTextChange: (key: keyof WrapperStateTextFields, value: string) => any;
+	onTextChange: (key: keyof WrapperStateTextFields, value: any) => any;
 	onImageChange: (image: GalleryImage) => any;
 	onRoleChange: (imageId: number) => any;
 }
@@ -82,6 +84,25 @@ const BridalPartyForm = (props: BridalFormProps) => {
 				</select>
 			</div>
 			<div className="uk-margin">
+				<label>
+					<input
+						type="checkbox"
+						className="uk-checkbox"
+						checked={bridalParty.vip || false}
+						onChange={e => onTextChange('vip', e.target.checked)}
+					/> V.I.P.
+				</label>
+			</div>
+			<div className="uk-margin">
+				<input
+					type="text"
+					className="uk-input"
+					placeholder="Sub role"
+					value={bridalParty.subRole}
+					onChange={e => onTextChange('subRole', e.target.value)}
+				/>
+			</div>
+			<div className="uk-margin">
 				<AddOrReplaceImage
 					image={bridalParty.Image}
 					onImageChange={(galleryImage: GalleryImage) => onImageChange(galleryImage)}
@@ -101,6 +122,7 @@ export default class BridalPartyFormDataWrapper extends React.Component<WrapperP
 				subRole: '',
 				partyRoleId: 0,
 				imageId: '',
+				vip: false,
 			},
 			roleOptions: this.props.roleOptions || [],
 		});
@@ -113,8 +135,7 @@ export default class BridalPartyFormDataWrapper extends React.Component<WrapperP
 				...this.state.bridalParty,
 				[key]: value,
 			},
-		});
-		this.props.onChange(this.state);
+		}, () => this.props.onChange(this.state));
 	}
 
 	updateImage = (image: GalleryImage) => {
@@ -136,8 +157,7 @@ export default class BridalPartyFormDataWrapper extends React.Component<WrapperP
 				...this.state.bridalParty,
 				partyRoleId: roleId,
 			},
-		});
-		this.props.onChange(this.state);
+		}, () => this.props.onChange(this.state));
 	}
 
 	render() {

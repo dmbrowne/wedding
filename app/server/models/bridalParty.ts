@@ -10,6 +10,7 @@ export default class BridalParty extends Model {
 		imageId: { type: Sequelize.UUID },
 		partyRoleId: { type: Sequelize.INTEGER },
 		subRole: { type: Sequelize.STRING },
+		vip: { type: Sequelize.BOOLEAN },
 	};
 
 	static defaultIncludeOptions = [{
@@ -62,6 +63,7 @@ export default class BridalParty extends Model {
 	subRole: string;
 	imageId: number;
 	partyRoleId: number;
+	vip: boolean;
 	WeddingRole: BelongsToCreateAssociationMixin<BridalPartyRole>;
 	Image: BelongsToCreateAssociationMixin<GalleryImage>;
 }

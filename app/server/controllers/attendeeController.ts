@@ -6,6 +6,7 @@ import { getDesiredValuesFromRequestBody } from '../utils';
 import SendGroupModel from '../models/sendGroup';
 import GalleryImage from '../models/galleryImage';
 import FoodChoice, { ChoiceTypes } from '../models/foodChoice';
+import BridalPartyRoles from '../models/bridalPartyRoles';
 
 interface Rsvp {
 	attendeeId: string;
@@ -171,20 +172,24 @@ export function deleteAttendee(req: NextAppRequest, res: Response, next: NextFun
 
 export function getGroupInvitation(req: NextAppRequest, res: Response, next: NextFunction) {
 	const { sendGroupId } = req.params;
-	models.SendGroup.findById(sendGroupId, {
-		include: [{
-			model: models.Attendee,
+	Promise.all([
+		BridalPartyRoles.getWithMembers(),
+		models.SendGroup.findById(sendGroupId, {
 			include: [{
-					model: models.Event,
-					as: 'Events',
+				model: models.Attendee,
+				include: [{
+						model: models.Event,
+						as: 'Events',
+				}],
 			}],
-		}],
-	})
-	.then(sendGroup => {
+		}),
+	])
+	.then(([bridalParties, sendGroup]) => {
 		if (!sendGroup) {
 			res.status(404);
 			throw Error(`sendGroup cannot be found with id ${sendGroupId}`);
 		}
+
 		const mergedEvents = sendGroup.Attendees.reduce((sendGroupsOtherAttendeesEvents, attendee) => {
 			const attendeeEvents = attendee.Events.reduce((events, event) => {
 				delete event.Attendees;
@@ -205,6 +210,10 @@ export function getGroupInvitation(req: NextAppRequest, res: Response, next: Nex
 			dietFeedbackRequired: attendee.Events.some(event => event.dietFeedback),
 		}));
 
+		res.locals.bridalParties = bridalParties.reduce((parties, party) => ({
+			...parties,
+			[party.value]: party,
+		}), {});
 		req.session.invitationId = sendGroupId;
 		res.locals.sendGroup = {...sendGroup.toJSON(), Attendees: sendGroupAttendees };
 		res.locals.singleInvitation = false;
@@ -218,19 +227,22 @@ export function getGroupInvitation(req: NextAppRequest, res: Response, next: Nex
 
 export function getSingleInvitation(req: NextAppRequest, res: Response, next: NextFunction) {
 	const { attendeeId } = req.params;
-	models.Attendee.findById(attendeeId, {
-		include: [{
-			model: models.Event,
-			as: 'Events',
+	Promise.all([
+		BridalPartyRoles.getWithMembers(),
+		models.Attendee.findById(attendeeId, {
 			include: [{
-				model: GalleryImage,
-				as: 'featureImage',
+				model: models.Event,
+				as: 'Events',
+				include: [{
+					model: GalleryImage,
+					as: 'featureImage',
+				}],
+			}, {
+				model: FoodChoice,
 			}],
-		}, {
-			model: FoodChoice,
-		}],
-	})
-	.then(attendee => {
+		}),
+	])
+	.then(([bridalParties, attendee]) => {
 		if (!attendee) {
 			throw Error(`attendee cannot be found with id ${attendeeId}`);
 		}
@@ -239,6 +251,10 @@ export function getSingleInvitation(req: NextAppRequest, res: Response, next: Ne
 			...attendee.toJSON(),
 			dietFeedbackRequired: attendee.Events.some(event => event.dietFeedback),
 		};
+		res.locals.bridalParties = bridalParties.reduce((parties, party) => ({
+			...parties,
+			[party.value]: party,
+		}), {});
 		res.locals.services = attendee.Events;
 		res.locals.singleInvitation = true;
 		return req.nextAppRenderer.render(req, res, '/invitation');

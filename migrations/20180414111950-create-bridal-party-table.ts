@@ -1,5 +1,4 @@
 import Sequelize, { QueryInterface } from 'sequelize';
-import BridalParty from '../app/server/models/bridalParty';
 
 module.exports = {
 	up: (queryInterface: QueryInterface) => {

@@ -27,10 +27,10 @@ interface State {
 export default class Invitation extends React.Component<any, State> {
 	static getInitialProps = async ({ req, res, query }) => {
 		if (res && req) {
-			const { sendGroup, singleInvitation, attendee, services } = res.locals;
+			const { sendGroup, singleInvitation, attendee, services, bridalParties } = res.locals;
 			const { invitationId } = req.session;
 
-			const props = { invitationId, singleInvitation, services };
+			const props = { invitationId, singleInvitation, services, bridalParty: bridalParties };
 			if (singleInvitation) {
 				return { ...props, attendees: [attendee] };
 			} else {
@@ -126,7 +126,7 @@ export default class Invitation extends React.Component<any, State> {
 		if (this.state.windowHeight === 0) {
 			return null;
 		}
-
+		console.log(this.props);
 		return (
 			<AppLayout>
 				<Head>
@@ -147,9 +147,9 @@ export default class Invitation extends React.Component<any, State> {
 						singleInvitation={this.props.singleInvitation}
 						onGoToRsvp={btnElement => this.scrollToRsvp(btnElement)}
 					/>
-					<AddressSection />
+					<AddressSection events={Object.keys(this.props.services).map(eventId => this.props.services[eventId])} />
 					<Services events={this.props.services} />
-					{this.props.bridalParty && this.props.bridalParty.bridesmaids && (
+					{this.props.bridalParty && this.props.bridalParty.bridesmaids && !!this.props.bridalParty.bridesmaids.BridalParties.length && (
 						<div className="section section-bridemaids">
 							<h2 className="section-title"><span>Meet the</span>Bridal Party</h2>
 							<div className="bridal-party bridemaids">
@@ -168,7 +168,7 @@ export default class Invitation extends React.Component<any, State> {
 							</div>
 						</div>
 					)}
-					{this.props.bridalParty && this.props.bridalParty.groomsmen && (
+					{this.props.bridalParty && this.props.bridalParty.groomsmen && !!this.props.bridalParty.groomsmen.BridalParties.length && (
 						<div className="section section-groomsmen">
 							<h2 className="section-title"><span>Meet the</span>Bridal Party</h2>
 							<div className="bridal-party groomsmen">

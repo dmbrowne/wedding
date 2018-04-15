@@ -1,5 +1,6 @@
 import Sequelize, { Model, HasManyGetAssociationsMixin } from 'sequelize';
 import BridalParty from './bridalParty';
+import GalleryImage from './galleryImage';
 
 export default class BridalPartyRole extends Model {
 	static rawAttributes = {
@@ -37,6 +38,10 @@ export default class BridalPartyRole extends Model {
 			include: [{
 				model: BridalParty,
 				as: 'BridalParties',
+				include: [{
+					model: GalleryImage,
+					as: 'Image',
+				}],
 			},
 			...options.include ? options.include : [],
 		],

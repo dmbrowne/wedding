@@ -184,32 +184,34 @@ html, body {
 	justify-content: flex-end;
 	display: flex;
 	flex-direction: column;
-	
+
+	.badge {
+		font-size: 0.8rem;
+		height: 30px;
+		padding: 0 10px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		text-transform: uppercase;
+		margin: 0 auto 15px;
+		background: black;
+		border-radius: 6px;
+		color: #e9e9e9;
+	}
+
+	header { font-family: 'Great Vibes'; font-size: 2rem; }
+	footer { font-style: italic; color: #969696; }
+
 	&.primary {
 		background: #80705e;
 		color: #e9e9e9;
 		footer { color: lighten(#80705e, 20%); }
-		.badge {
-			font-size: 0.8rem;
-			height: 30px;
-			padding: 0 10px;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			text-transform: uppercase;
-			margin: 0 auto 15px;
-			background: black;
-			border-radius: 6px;
-		}
-
+		
 		@media (min-width: 1400px) {
 			margin: 30px; 
 			padding: 30px; 
 		}
 	}
-
-	header { font-family: 'Great Vibes'; font-size: 2rem; }
-	footer { font-style: italic; color: #969696; }
 }
 
 .section-bridal-party {

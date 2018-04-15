@@ -62,12 +62,12 @@ function Circle(canvasContext, width, height, rint) {
 
 		const cr = this.r * newo;
 		const g = this.canvasContext.createRadialGradient(this.x, this.y, 0, this.x, this.y, (cr <= 0 ? 1 : cr));
-		g.addColorStop(0.0, 'rgba(255,255,255,' + newo + ')');
-		g.addColorStop(this.stop, 'rgba(255,255,255,' + (newo * 0.4) + ')');
-		g.addColorStop(1.0, 'rgba(255,255,255,0.1)');
-		// g.addColorStop(0.0, 'rgba(238,180,28,'+newo+')');
-		// g.addColorStop(this.stop, 'rgba(238,180,28,'+(newo*.3)+')');
-		// g.addColorStop(1.0, 'rgba(238,180,28,0.1)');
+		// g.addColorStop(0.0, 'rgba(255,255,255,' + newo + ')');
+		// g.addColorStop(this.stop, 'rgba(255,255,255,' + (newo * 0.4) + ')');
+		// g.addColorStop(1.0, 'rgba(255,255,255,0.1)');
+		g.addColorStop(0.0, 'rgba(238,180,28,'+newo+')');
+		g.addColorStop(this.stop, 'rgba(238,180,28,'+(newo*.3)+')');
+		g.addColorStop(1.0, 'rgba(238,180,28,0.1)');
 
 		this.canvasContext.fillStyle = g;
 		this.canvasContext.fill();

@@ -37,6 +37,7 @@ class BridalParties extends React.Component<Props, State> {
 				<th>Last name</th>
 				<th>Role</th>
 				<th>Sub-role</th>
+				<th className="uk-table-shrink">VIP</th>
 				<th style={{width: 50, boxSizing: 'border-box' }} />
 				<th style={{width: 50, boxSizing: 'border-box' }} />
 			</tr>
@@ -44,12 +45,14 @@ class BridalParties extends React.Component<Props, State> {
 	}
 
 	renderRow(bridalPartyMember: BridalParty, onCheckboxTick, itemIsChecked) {
+		console.log(bridalPartyMember);
 		return (
 			<tr key={bridalPartyMember.id}>
 				<td>{bridalPartyMember.firstName}</td>
 				<td>{bridalPartyMember.lastName}</td>
 				<td>{!!bridalPartyMember.WeddingRole && bridalPartyMember.WeddingRole.name}</td>
 				<td>{bridalPartyMember.subRole}</td>
+				<td>{bridalPartyMember.vip.toString()}</td>
 				<td>
 					<Link prefetch={true} href={`/admin/bridalParties/${bridalPartyMember.id}`}>
 						<i className="material-icons">mode_edit</i>
