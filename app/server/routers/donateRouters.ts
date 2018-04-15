@@ -1,5 +1,7 @@
 import * as stripeApi from 'stripe';
-import { secretKey } from '../../../config/stripeKeys';
+import stripeApiKeys from '../../../config/stripeKeys';
+
+const { secretKey } = stripeApiKeys[process.env.NODE_ENV || 'development'];
 
 const stripe = new stripeApi(secretKey);
 
