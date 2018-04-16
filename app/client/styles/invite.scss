@@ -28,14 +28,6 @@ html, body {
 	padding: 0 5px;
 }
 
-.tile {
-	max-width: 450px;
-	text-align: left;
-	padding: 40px;
-	background: #f1f1F1;
-	color: #111;
-}
-
 .row {
 	display: flex;
 	flex-wrap: wrap;
@@ -89,50 +81,6 @@ html, body {
 		border-radius: 100%;
 	}
 	img { height:100%; }
-}
-
-.checkbox-group {
-	display: flex;
-	align-items: center;
-	border-radius: 40px;
-	padding: 5px;
-	margin: 10px 0;
-	cursor: pointer;
-	border: 1px solid transparent;
-
-	&:hover {
-		border-color: #ccc;
-		background: #efefef;
-	}
-	&.active {
-		border-color: #32d296;
-		background: #edfbf6;
-		color: #32d296;
-		font-weight: 400;
-	}
-}
-
-.checkbox-group.active .custom-checkbox {
-	background: #32d296;
-	color: #fff;
-	text-indent: 0px;
-}
-
-.custom-checkbox {
-	text-indent: -1000px;
-	display: inline-block;
-	width: 30px;
-	height: 30px;
-	background: #fff;
-	border-radius: 50%;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	transition: all 300ms;
-}
-
-.custom-checkbox + label {
-	margin-left: 15px;
 }
 
 .section-title {

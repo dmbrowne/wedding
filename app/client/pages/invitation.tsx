@@ -9,6 +9,7 @@ import AddressSection from '../components/invitation/AddressSection';
 import Services from '../components/invitation/Services';
 import RsvpSection from '../components/invitation/RsvpSection';
 import { restfulRequest } from '../api/utils';
+import Modal from '../components/Modal';
 
 interface State {
 	windowHeight: number;
@@ -214,6 +215,7 @@ export default class Invitation extends React.Component<any, State> {
 							onSelectMains={(aId, food) => this.selectFoodChoice(aId, 'main', food)}
 						/>
 					</div>
+					{/* <Modal>Test</Modal> */}
 				</div>
 			</AppLayout>
 		);
