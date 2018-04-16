@@ -51,7 +51,7 @@
 				.attendance { flex: 0.8; }
 				.dietry-requirements { flex: 1; margin: 0 0 0 15px; }
 			}
-			@media screen and (min-width: 1400px) {
+			@media screen and (min-width: 1200px) {
 				.attendance { flex: 0.4; }
 				.dietry-requirements .vegetarian hr { display: none; }
 				.dietry-requirements-preferences {
