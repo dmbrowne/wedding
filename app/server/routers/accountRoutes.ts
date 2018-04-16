@@ -24,6 +24,8 @@ const dashboardRedirect = (req: NextAppRequest, res: Response, next: NextFunctio
 	next();
 };
 
+router.get('/', (req, res) => res.redirect('https://savethedate.thebrownes.info'));
+
 router
 	.route('/login')
 	.get(dashboardRedirect, signIn)
