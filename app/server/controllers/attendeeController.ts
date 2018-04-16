@@ -209,7 +209,7 @@ export function getGroupInvitation(req: NextAppRequest, res: Response, next: Nex
 			};
 		}, {});
 
-		const sendGroupAttendees = sendGroup.Attendees.map(attendee => (console.log(attendee.Events.length === 1 && attendee.Events), {
+		const sendGroupAttendees = sendGroup.Attendees.map(attendee => ({
 			...attendee.toJSON(),
 			dietFeedbackRequired: attendee.Events.some(event => event.dietFeedback),
 		}));
@@ -221,7 +221,9 @@ export function getGroupInvitation(req: NextAppRequest, res: Response, next: Nex
 		req.session.invitationId = sendGroupId;
 		res.locals.sendGroup = {...sendGroup.toJSON(), Attendees: sendGroupAttendees };
 		res.locals.singleInvitation = false;
-		res.locals.services = Object.keys(mergedEvents).map(eventId => mergedEvents[eventId]);
+		res.locals.services = Object.keys(mergedEvents)
+			.map(eventId => mergedEvents[eventId])
+			.sort((a, b) => new Date(a.startTime) > new Date(b.startTime) ? 1 : 0);
 		return req.nextAppRenderer.render(req, res, '/invitation');
 	})
 	.catch(err => {
@@ -249,8 +251,8 @@ export function getSingleInvitation(req: NextAppRequest, res: Response, next: Ne
 	.then(([bridalParties, attendee]) => {
 		if (!attendee) {
 			throw Error(`attendee cannot be found with id ${attendeeId}`);
+			req.session.invitationId = attendeeId;
 		}
-		req.session.invitationId = attendeeId;
 		res.locals.attendee = {
 			...attendee.toJSON(),
 			dietFeedbackRequired: attendee.Events.some(event => event.dietFeedback),
@@ -259,7 +261,7 @@ export function getSingleInvitation(req: NextAppRequest, res: Response, next: Ne
 			...parties,
 			[party.value]: party,
 		}), {});
-		res.locals.services = attendee.Events;
+		res.locals.services = attendee.Events.sort((a, b) => new Date(a.startTime) > new Date(b.startTime) ? 1 : 0);
 		res.locals.singleInvitation = true;
 		return req.nextAppRenderer.render(req, res, '/invitation');
 	})
