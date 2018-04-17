@@ -1,44 +1,46 @@
 html, body, .__next { height: 100%; }
-.donation-page { min-height: 100%; background: url('/assets/crossword.png'); padding-top: 40px;}
-
-.donation-header {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	h1 { font-family: 'Great Vibes' }
-	img { width: 100px }
-}
-
-.message {
-	font-family: Great Vibes;
-	font-size: 1.3rem;
-	text-align: center;
-}
-
-label {
-	font-family: 'Source Sans Pro';
-	color: navy;
-}
-
-.thank-you-screen {
-	background: #8ec49a;
-	color: #3ba453;
-	min-height: 100%;
-	overflow: hidden;
-
-	header {
+.donation-page {
+	min-height: 100%; background: url('/assets/crossword.png'); padding-top: 40px;
+	
+	.donation-header {
 		display: flex;
 		align-items: center;
-		i {
-			font-size: 5rem;
-			border-radius: 100%;
-			background: #fff;
-		}
-		h1 { color: #fff; margin: 0; margin-left: 15px }
+		justify-content: center;
+		h1 { font-family: 'Great Vibes' }
+		img { width: 100px }
 	}
-
-	main {
-		padding: 0 15px;
-		margin: 60px auto 0;
+	
+	.message {
+		font-family: Great Vibes;
+		font-size: 1.3rem;
+		text-align: center;
+	}
+	
+	label {
+		font-family: 'Source Sans Pro';
+		color: navy;
+	}
+	
+	.thank-you-screen {
+		background: #8ec49a;
+		color: #3ba453;
+		min-height: 100%;
+		overflow: hidden;
+	
+		header {
+			display: flex;
+			align-items: center;
+			i {
+				font-size: 5rem;
+				border-radius: 100%;
+				background: #fff;
+			}
+			h1 { color: #fff; margin: 0; margin-left: 15px }
+		}
+	
+		main {
+			padding: 0 15px;
+			margin: 60px auto 0;
+		}
 	}
 }
