@@ -51,7 +51,8 @@ html, body {
 
 .section {
 	padding: 40px 20px;
-	min-height: 400px;
+	// min-height: 400px;
+	min-height: 30vw;
 	@media screen and (min-width: 1200px) {
 		padding: 60px 30px;
 	}

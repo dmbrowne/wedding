@@ -1,5 +1,10 @@
 import Sequelize, { Model } from 'sequelize';
 import Attendee from './attendee';
+import EventAttendee from './eventAttendee';
+
+interface JoinedAttendee extends Attendee {
+	EventAttendee: EventAttendee;
+}
 
 export default class Event extends Model {
 	static init(sequelizeConnection) {
@@ -50,5 +55,5 @@ export default class Event extends Model {
 	address: string;
 	mapsLink: string;
 	dietFeedback: boolean;
-	Guests: Attendee[];
+	Guests: JoinedAttendee[];
 }

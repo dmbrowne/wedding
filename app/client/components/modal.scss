@@ -1,0 +1,72 @@
+@import "uikit/src/scss/variables-theme.scss";
+// @import "uikit/src/scss/components/variables.scss";
+// @import "uikit/src/scss/components/mixin.scss";
+// @import "uikit/src/scss/components/base.scss";
+@import "uikit/src/scss/components/modal.scss";
+@import "uikit/src/scss/components/button.scss";
+
+.yd-custom-modal {
+	position: relative;
+	box-sizing: border-box;
+	margin: 0 auto;
+	background: #fff;
+	width: 90%;
+	max-width: 800px;
+	box-shadow: 0 1px 50px 3px rgba(0,0,0,0.1);
+	opacity: 1;
+	transform: none;
+	padding: 15px 40px;
+	.close { float: right; }
+	> header {
+		display: flex;
+		align-items: center;
+		justify-content: flex-start;
+		padding: 10px 0;
+		width: 100%;
+		i { margin-right: 10px; }
+	}
+	.uk-modal-title { margin: 0; }
+	.uk-modal-body {
+		height: 50vh;
+		overflow-y: auto;
+	}
+}
+
+.success-modal .yd-custom-modal > header {
+	display: block;
+}
+
+.success-modal .uk-modal-title {
+	font-size: 4rem;
+	text-align: center;
+	display: block;
+}
+
+.success-modal .yd-custom-modal {
+	padding-top: 55px;
+	font-size: 1.3rem;
+
+	button {
+		background: #39a70b;
+		color: #fff;
+		font-weight: 400;
+    font-size: 1.3rem;
+	}
+}
+
+.success-modal .success-modal-check-icon {
+	width: 80px;
+	height: 80px;
+	background: #39a70b;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 50px;
+	color: #fff;
+	border-radius: 50%;
+	box-shadow: 3px 3px 13px 0 rgba(0,0,0,0.5);
+	overflow: visible;
+	position: absolute;
+	top: -40px;
+	left: calc(50% - 40px);
+}

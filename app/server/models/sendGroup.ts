@@ -1,4 +1,8 @@
-import Sequelize, { Model } from 'sequelize';
+import Sequelize, { Model, HasManyCreateAssociationMixin, HasManyGetAssociationsMixin } from 'sequelize';
+import Attendee from './attendee';
+import GalleryImage from './galleryImage';
+import EventModel from './event';
+import FoodChoice from './foodChoice';
 
 interface GetApplicableSendGroupRecipientVars {
 	sendGroups?: SendGroup[];
@@ -62,7 +66,50 @@ export default class SendGroup extends Model {
 		};
 	}
 
+	static getWithAttendeesAndEvents(id) {
+		return this.findById(id, {
+			include: [{
+				model: Attendee,
+				include: [{
+					model: EventModel,
+					as: 'Events',
+					include: [{
+						model: GalleryImage,
+						as: 'featureImage',
+					}],
+				}, {
+					model: FoodChoice,
+				}],
+			}],
+		});
+	}
+
 	id: string;
 	name: string;
 	email: string;
+	Attendees: Attendee[];
+	getAttendees: HasManyGetAssociationsMixin<Attendee>;
+
+	mergeEventsForSendGroupAttendees() {
+		interface MergedEvents {
+			[eventId: string]: EventModel;
+		}
+
+		const mergedEventsKeyedByEventId: MergedEvents = this.Attendees.reduce((sendGroupsOtherAttendeesEvents, attendee) => {
+			const attendeeEvents = attendee.Events.reduce((events, event) => {
+				return {
+					...events,
+					[event.id]: event,
+				};
+			}, {});
+
+			return {
+				...sendGroupsOtherAttendeesEvents,
+				...attendeeEvents,
+			};
+		}, {});
+		return Object.keys(mergedEventsKeyedByEventId).map(eventId => mergedEventsKeyedByEventId[eventId]).sort((a, b) => {
+			return new Date(a.startTime) > new Date(b.startTime) ? 1 : 0;
+		});
+	}
 }
