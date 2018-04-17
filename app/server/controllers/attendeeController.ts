@@ -2,11 +2,14 @@ import { Request, Response, NextFunction } from 'express';
 import { Op } from 'sequelize';
 import { NextAppRequest } from '../types';
 import models from '../models';
-import { getDesiredValuesFromRequestBody } from '../utils';
-import SendGroupModel from '../models/sendGroup';
-import GalleryImage from '../models/galleryImage';
+import { getDesiredValuesFromRequestBody, objectToArray } from '../utils';
+import SendGroup from '../models/sendGroup';
+import EventModel from '../models/event';
+// import GalleryImage from '../models/galleryImage';
 import FoodChoice, { ChoiceTypes } from '../models/foodChoice';
 import BridalPartyRoles from '../models/bridalPartyRoles';
+import Attendee from '../models/attendee';
+import BridalParty from '../models/bridalParty';
 
 interface Rsvp {
 	attendeeId: string;
@@ -14,10 +17,29 @@ interface Rsvp {
 	events: {
 		[eventId: string]: boolean;
 	};
-	diet?: {
+	foodChoices?: {
 		starter: ChoiceTypes;
 		main: ChoiceTypes;
+		allergies: string;
 	};
+}
+
+// type ResponseLocals = Response['locals'];
+interface IniviteResponseLocals {
+	bridalParties: { [bridalId: string]: BridalParty };
+	allInvitedEvents: EventModel[];
+}
+
+interface SingleInvitationResponseLocals extends IniviteResponseLocals {
+	invitationId: Attendee['id'];
+	attendee: Attendee;
+	singleInvitation: true;
+}
+
+interface GroupInvitationResponseLocals extends IniviteResponseLocals {
+	invitationId: SendGroup['id'];
+	sendGroup: SendGroup;
+	singleInvitation: false;
 }
 
 export async function getAllAttendees(req: NextAppRequest, res: Response, next) {
@@ -174,95 +196,49 @@ export function getGroupInvitation(req: NextAppRequest, res: Response, next: Nex
 	const { sendGroupId } = req.params;
 	Promise.all([
 		BridalPartyRoles.getWithMembers(),
-		models.SendGroup.findById(sendGroupId, {
-			include: [{
-				model: models.Attendee,
-				include: [{
-						model: models.Event,
-						as: 'Events',
-						include: [{
-							model: GalleryImage,
-							as: 'featureImage',
-						}],
-				}],
-			}],
-		}),
+		SendGroup.getWithAttendeesAndEvents(sendGroupId),
 	])
 	.then(([bridalParties, sendGroup]) => {
 		if (!sendGroup) {
-			res.status(404);
+			res.status(400);
 			throw Error(`sendGroup cannot be found with id ${sendGroupId}`);
 		}
 
-		const mergedEvents = sendGroup.Attendees.reduce((sendGroupsOtherAttendeesEvents, attendee) => {
-			const attendeeEvents = attendee.Events.reduce((events, event) => {
-				delete event.Attendees;
-				return {
-					...events,
-					[event.id]: event,
-				};
-			}, {});
+		const mergedEvents = sendGroup.mergeEventsForSendGroupAttendees().sort((a, b) => {
+			return new Date(a.startTime) > new Date(b.startTime) ? 1 : 0;
+		});
+		const locals: GroupInvitationResponseLocals = {
+			invitationId: sendGroupId,
+			sendGroup,
+			bridalParties: objectToArray(bridalParties, 'value'),
+			allInvitedEvents: mergedEvents.sort((a, b) => new Date(a.startTime) > new Date(b.startTime) ? 1 : 0),
+			singleInvitation: false,
+		};
 
-			return {
-				...sendGroupsOtherAttendeesEvents,
-				...attendeeEvents,
-			};
-		}, {});
-
-		const sendGroupAttendees = sendGroup.Attendees.map(attendee => ({
-			...attendee.toJSON(),
-			dietFeedbackRequired: attendee.Events.some(event => event.dietFeedback),
-		}));
-
-		res.locals.bridalParties = bridalParties.reduce((parties, party) => ({
-			...parties,
-			[party.value]: party,
-		}), {});
-		res.locals.invitationId = sendGroupId;
-		res.locals.sendGroup = {...sendGroup.toJSON(), Attendees: sendGroupAttendees };
-		res.locals.singleInvitation = false;
-		res.locals.services = Object.keys(mergedEvents)
-			.map(eventId => mergedEvents[eventId])
-			.sort((a, b) => new Date(a.startTime) > new Date(b.startTime) ? 1 : 0);
+		res.locals = { ...res.locals, ...locals };
 		return req.nextAppRenderer.render(req, res, '/invitation');
 	})
-	.catch(err => {
-		next(err);
-	});
+	.catch(err => next(err));
 }
 
 export function getSingleInvitation(req: NextAppRequest, res: Response, next: NextFunction) {
 	const { attendeeId } = req.params;
 	Promise.all([
 		BridalPartyRoles.getWithMembers(),
-		models.Attendee.findById(attendeeId, {
-			include: [{
-				model: models.Event,
-				as: 'Events',
-				include: [{
-					model: GalleryImage,
-					as: 'featureImage',
-				}],
-			}, {
-				model: FoodChoice,
-			}],
-		}),
+		Attendee.getAttendeeWtihInvitedEvents(attendeeId),
 	])
 	.then(([bridalParties, attendee]) => {
 		if (!attendee) {
 			throw Error(`attendee cannot be found with id ${attendeeId}`);
 		}
-		res.locals.invitationId = attendeeId;
-		res.locals.attendee = {
-			...attendee.toJSON(),
-			dietFeedbackRequired: attendee.Events.some(event => event.dietFeedback),
+		const locals: SingleInvitationResponseLocals = {
+			invitationId: attendeeId,
+			attendee,
+			bridalParties: objectToArray(bridalParties, 'value'),
+			allInvitedEvents: attendee.Events,
+			singleInvitation: true,
 		};
-		res.locals.bridalParties = bridalParties.reduce((parties, party) => ({
-			...parties,
-			[party.value]: party,
-		}), {});
-		res.locals.services = attendee.Events.sort((a, b) => new Date(a.startTime) > new Date(b.startTime) ? 1 : 0);
-		res.locals.singleInvitation = true;
+		res.locals = { ...res.locals, ...locals };
 		return req.nextAppRenderer.render(req, res, '/invitation');
 	})
 	.catch(err => {
@@ -270,59 +246,42 @@ export function getSingleInvitation(req: NextAppRequest, res: Response, next: Ne
 	});
 }
 
-const updateSendGroupRsvps = (sendGroup: SendGroupModel, rsvps: Rsvp[]) => {
-	return sendGroup.getAttendees().then(attendees => Promise.all(
+export async function singleInvitationRsvpConfirm(req, res) {
+	const { rsvp }: { rsvp: Rsvp } = req.body;
+	const { attendeeId } = req.params;
+	const attendee = await Attendee.findById(attendeeId).catch(e => res.status(400).send({ error: e }));
+	if (!attendee) {
+		return res.status(400).send({ message: `Attendee with id ${attendeeId} does not exist`});
+	}
+	await Promise.all([
+		rsvp.foodChoices ? attendee.selectFood(rsvp.foodChoices) : Promise.resolve(),
+		attendee.updateEventAttendance(models, rsvp.events),
+	])
+	.catch(e => res.status(400).send({ error: e }));
+	res.send({ success: 'ok' });
+}
+
+export async function groupInvitationRsvpConfirm(req, res) {
+	const { rsvp }: { rsvp: Rsvp[] } = req.body;
+	const { sendGroupId } = req.params;
+	const sendGroup = await SendGroup.findById(sendGroupId).catch(e => res.status(400).send({ error: e }));
+
+	if (!sendGroup) {
+		return res.status(400).send({ message: `Sendgroup with id ${sendGroupId} does not exist`});
+	}
+
+	await sendGroup.getAttendees().then(attendees => Promise.all(
 		attendees.map(attendee => {
-			const attendeeRsvp = rsvps.filter(rsvp => rsvp.attendeeId === attendee.id)[0];
+			const attendeeRsvp = rsvp.filter(singleRsvp => singleRsvp.attendeeId === attendee.id)[0];
 			if (!attendeeRsvp) {
 				throw Error(`attendee ${attendee.id} is not part of the specified send group`);
 			}
-			const selectFoodPromise = (attendeeRsvp.diet ?
-				attendee.selectFood(attendeeRsvp.diet) :
-				Promise.resolve()
-			);
-
-			return selectFoodPromise
-				.then(() => attendee.updateEventAttendance(models, attendeeRsvp.events));
-		}),
-	));
-};
-
-export function rsvpConfirm(req: Request, res: Response, next: NextFunction) {
-	const attendeeRsvps: Rsvp[] | Rsvp = req.body.attendeeRsvps;
-	const { invitationId } = req.params;
-	// const { invitationId: sessionInvitationId } = req.session;
-
-	// if (invitationId !== sessionInvitationId) {
-	// 	return res.status(401).json({ message: 'This user doesn\'t have permission to modify this RSVP' });
-	// }
-
-	const rsvpIsForAGroup = Array.isArray(attendeeRsvps);
-	const dbModel = rsvpIsForAGroup ? models.SendGroup : models.Attendee;
-	const entityType = rsvpIsForAGroup ? 'SendGroup' : 'Attendee';
-
-	dbModel.findById(invitationId).then((result) => {
-		if (!result) {
-			return res.status(400).send({ message: `A ${entityType} with the invitationId provided does not exist`});
-		}
-		const updateAttendance = rsvpIsForAGroup ?
-			updateSendGroupRsvps(result, attendeeRsvps as Rsvp[]) :
-			Promise.all([
-				attendeeRsvps.diet ? result.selectFood(attendeeRsvps.diet) : Promise.resolve(),
-				result.updateEventAttendance(models, attendeeRsvps.events),
+			return Promise.all([
+				(attendeeRsvp.foodChoices ? attendee.selectFood(attendeeRsvp.foodChoices) : Promise.resolve()),
+				attendee.updateEventAttendance(models, attendeeRsvp.events),
 			]);
-
-		return updateAttendance
-		.then(() => {
-			res.send({ success: 'ok' });
-			delete req.session.invitationId;
-		})
-		.catch(err => {
-			res.status(400).json({ message: err.message });
-		});
-	})
-	.catch(err => {
-		res.status(500);
-		next(err);
-	});
+		}),
+	))
+	.catch(e => res.status(400).send({ error: e }));
+	res.send({ success: 'ok' });
 }

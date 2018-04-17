@@ -1,11 +1,12 @@
 import Sequelize, { Model, HasManyHasAssociationMixin, BelongsToManyGetAssociationsMixin, BelongsToSetAssociationMixin } from 'sequelize';
-import Event from './event';
+import EventModel from './event';
 import SendGroup from './sendGroup';
 import EventAttendee from './eventAttendee';
 import Campaign from './campaign';
 import FoodChoice, { ChoiceTypes } from './foodChoice';
+import GalleryImage from './galleryImage';
 
-interface EventWithDetailsJoin extends Event {
+interface EventWithDetailsJoin extends EventModel {
 	EventAttendee: EventAttendee;
 }
 
@@ -85,6 +86,24 @@ export default class Attendee extends Model {
 		};
 	}
 
+	static getAttendeeWtihInvitedEvents(id) {
+		return this.findById(id, {
+			order: [
+				[{ model: EventModel, as: 'Events' }, 'startTime', 'ASC'],
+			],
+			include: [{
+				model: EventModel,
+				as: 'Events',
+				include: [{
+					model: GalleryImage,
+					as: 'featureImage',
+				}],
+			}, {
+				model: FoodChoice,
+			}],
+		});
+	}
+
 	id: string;
 	email: string;
 	firstName: string;
@@ -101,7 +120,7 @@ export default class Attendee extends Model {
 	getEvents: BelongsToManyGetAssociationsMixin<EventWithDetailsJoin>;
 	hasEvent: HasManyHasAssociationMixin<EventWithDetailsJoin, EventWithDetailsJoin['id']>;
 	getCampaigns: BelongsToManyGetAssociationsMixin<Campaign>;
-	setFoodChoice: BelongsToSetAssociationMixin<FoodChoice, FoodChoice['id']>;
+	setFoodChoice: BelongsToSetAssociationMixin<FoodChoice, FoodChoice['attendeeId']>;
 
 	updateEventAttendance = (models, rsvps: {[eventId: string]: boolean }) => {
 		return Promise.all(
@@ -119,7 +138,7 @@ export default class Attendee extends Model {
 		);
 	}
 
-	selectFood(input: {stater: ChoiceTypes, main: ChoiceTypes, allergies?: string}) {
+	selectFood(input: {starter: ChoiceTypes, main: ChoiceTypes, allergies?: string | null}): PromiseLike<any> {
 		return FoodChoice.upsert({
 			attendeeId: this.id,
 			...input,

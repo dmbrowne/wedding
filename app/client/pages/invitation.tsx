@@ -29,9 +29,9 @@ interface State {
 export default class Invitation extends React.Component<any, State> {
 	static getInitialProps = async ({ req, res, query }) => {
 		if (res && req) {
-			const { invitationId, sendGroup, singleInvitation, attendee, services, bridalParties } = res.locals;
+			const { invitationId, sendGroup, singleInvitation, attendee, allInvitedEvents, bridalParties } = res.locals;
+			const props = { invitationId, singleInvitation, allInvitedEvents, bridalParty: bridalParties };
 
-			const props = { invitationId, singleInvitation, services, bridalParty: bridalParties };
 			if (singleInvitation) {
 				return { ...props, attendees: [attendee] };
 			} else {
@@ -66,7 +66,7 @@ export default class Invitation extends React.Component<any, State> {
 					allergies: attendee.FoodChoice && attendee.FoodChoice.allergies || '',
 				},
 			}), {}),
-			dietEvents: props.services.filter(service => service.dietFeedback).map(event => event.id),
+			dietEvents: props.allInvitedEvents.filter(service => service.dietFeedback).map(event => event.id),
 		};
 	}
 
@@ -75,17 +75,10 @@ export default class Invitation extends React.Component<any, State> {
 	}
 
 	scrollToRsvp = (btnElement) => {
-		window.UIkit.scroll(btnElement).scrollTo(this.rsvpSection)
+		window.UIkit.scroll(btnElement).scrollTo(this.rsvpSection);
 	}
 
 	selectEventForRsvp = (attendeeId, eventId, isSelected) => {
-		// let dietfeedbackRequired = this.state.dietfeedbackRequired;
-		// if (this.props.services[eventId].dietFeedback) {
-		// 	dietfeedbackRequired = {
-		// 		...this.state.dietfeedbackRequired,
-		// 		[attendeeId]: isSelected,
-		// 	};
-		// }
 		this.setState({
 			selectedEvents: {
 				...this.state.selectedEvents,
@@ -94,7 +87,6 @@ export default class Invitation extends React.Component<any, State> {
 					[eventId]: isSelected,
 				},
 			},
-			// dietfeedbackRequired,
 		});
 	}
 
@@ -131,16 +123,17 @@ export default class Invitation extends React.Component<any, State> {
 			events: {
 				...this.state.selectedEvents[attendee.id],
 			},
-			diet: {
+			foodChoices: {
 				...this.state.dietryRequirements[attendee.id],
 			},
 		}));
 		body = this.props.singleInvitation ? body[0] : body;
+		const path = this.props.singleInvitation ? 'a' : 'g';
 		return restfulRequest({
-			route: `invitation/rsvp/${this.props.invitationId}`,
+			route: `invitation/${path}/${this.props.invitationId}/rsvp`,
 			method: 'POST',
 			body: JSON.stringify({
-				attendeeRsvps: body,
+				rsvp: body,
 			}),
 		});
 	}
@@ -171,8 +164,8 @@ export default class Invitation extends React.Component<any, State> {
 						singleInvitation={this.props.singleInvitation}
 						onGoToRsvp={btnElement => this.scrollToRsvp(btnElement)}
 					/>
-					<AddressSection events={Object.keys(this.props.services).map(eventId => this.props.services[eventId])} />
-					<Services events={this.props.services} />
+					<AddressSection events={this.props.allInvitedEvents} />
+					<Services events={this.props.allInvitedEvents} />
 					{this.props.bridalParty && this.props.bridalParty.bridesmaids && !!this.props.bridalParty.bridesmaids.BridalParties.length && (
 						<div className="section section-bridemaids">
 							<h2 className="section-title"><span>Meet the</span>Bridesmaids</h2>
