@@ -22,6 +22,7 @@ interface State {
 		[attendeeId: string]: {
 			starter: 'meat' | 'fish' | 'vegetarian',
 			main: 'meat' | 'fish' | 'vegetarian',
+			allergies: string;
 		},
 	};
 }
@@ -65,6 +66,7 @@ export default class Invitation extends React.Component<any, State> {
 					main: attendee.FoodChoice && attendee.FoodChoice.main || null,
 				},
 			}), {}),
+			dietEvents: props.services.filter(service => service.dietFeedback).map(event => event.id),
 		};
 	}
 
@@ -77,6 +79,13 @@ export default class Invitation extends React.Component<any, State> {
 	}
 
 	selectEventForRsvp = (attendeeId, eventId, isSelected) => {
+		// let dietfeedbackRequired = this.state.dietfeedbackRequired;
+		// if (this.props.services[eventId].dietFeedback) {
+		// 	dietfeedbackRequired = {
+		// 		...this.state.dietfeedbackRequired,
+		// 		[attendeeId]: isSelected,
+		// 	};
+		// }
 		this.setState({
 			selectedEvents: {
 				...this.state.selectedEvents,
@@ -85,6 +94,7 @@ export default class Invitation extends React.Component<any, State> {
 					[eventId]: isSelected,
 				},
 			},
+			// dietfeedbackRequired,
 		});
 	}
 
@@ -99,6 +109,18 @@ export default class Invitation extends React.Component<any, State> {
 					},
 				},
 			}, () => resolve());
+		});
+	}
+
+	updateAllergies = (attendeeId: string, value: string) => {
+		this.setState({
+			dietryRequirements: {
+				...this.state.dietryRequirements,
+				[attendeeId]: {
+					...this.state.dietryRequirements[attendeeId],
+					allergies: value,
+				},
+			},
 		});
 	}
 
@@ -127,7 +149,7 @@ export default class Invitation extends React.Component<any, State> {
 		if (this.state.windowHeight === 0) {
 			return null;
 		}
-		console.log(this.props);
+		console.log(this.state)
 		return (
 			<AppLayout>
 				<Head>
@@ -213,6 +235,8 @@ export default class Invitation extends React.Component<any, State> {
 							foodSelections={this.state.dietryRequirements}
 							onSelectStarter={(aId, food) => this.selectFoodChoice(aId, 'starter', food)}
 							onSelectMains={(aId, food) => this.selectFoodChoice(aId, 'main', food)}
+							onAllergiesChange={(aId, value) => this.updateAllergies(aId, value)}
+							dietryRequiredEvents={this.state.dietEvents}
 						/>
 					</div>
 					{/* <Modal>Test</Modal> */}

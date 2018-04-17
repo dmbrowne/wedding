@@ -6,6 +6,20 @@
 	color: #111;
 }
 
+.input-material {
+	border: 0;
+	border-bottom: 1px solid #111;
+	background: none;
+	width: 100%;
+	font-weight: 300;
+	transition: border-color 300ms, color 300ms ;
+	&:focus, &:active {
+		outline: none;
+		border-color: #7676a2;
+		color: #7676a2;
+	}
+}
+
 .checkbox-group {
 	display: flex;
 	align-items: center;
@@ -14,27 +28,26 @@
 	margin: 10px -10px;
 	cursor: pointer;
 	border: 1px solid transparent;
+	overflow: hidden;
 
 	&:hover {
 		border-color: #ccc;
-		background: #efefef;
+		background: #d8d8d8;
 	}
 	&.selected {
 		border-color: #32d296;
+		border-color: #ffeb7d;
 		background: #edfbf6;
+		background: rgba(183, 175, 130, 0.7);
 		color: #32d296;
+		color: #ffeb7d;
 		font-weight: 400;
 	}
-}
-
-.checkbox-group.selected .custom-checkbox {
-	background: #32d296;
-	color: #fff;
-	text-indent: 0px;
+	* { cursor: pointer; }
 }
 
 .custom-checkbox {
-	text-indent: -1000px;
+	text-indent: -100px;
 	display: inline-block;
 	width: 30px;
 	height: 30px;
@@ -43,7 +56,15 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	transition: all 300ms;
+	overflow: hidden;
+	transition: background-color 300ms, color 300ms, text-indent linear 400ms;
+}
+
+.checkbox-group.selected .custom-checkbox {
+	background: #32d296;
+	background: #dcc33b;
+	color: #fff;
+	text-indent: 0px;
 }
 
 .custom-checkbox + label {
@@ -51,6 +72,7 @@
 }
 
 .section-rsvp {
+	overflow: hidden;
 	position: relative;
 	background: #010101 url('/assets/723B3933.jpg') no-repeat center center;
 	background-size: cover;
@@ -63,6 +85,8 @@
 		width: 100%; height: 100%;
 		background-color: rgba(0,0,0,0.7);
 		z-index: 0;
+		filter: brightness(50%) blur(7px);
+		background: center center / cover no-repeat url('/assets/723B3933.jpg')
 	}
 	> * { position: relative; z-index: 1;}
 	.section-title {
@@ -86,6 +110,7 @@
 		min-width: 300px;
 		margin: 30px;
 		flex: 1;
+		background: rgba(255,255,255,0.6)
 	}
 	.dietry-feedback .rsvp {
 		min-width: 0;
@@ -102,10 +127,12 @@
 	.dietry-requirements {
 		padding: 15px;
 		margin: 15px -15px 0;
-		background: #dadada;
+		background: rgba(218, 218, 218, 0.6);
+
 		header { font-family: 'Roboto Condensed'; font-size: 1rem; }
 
-		.dietry-requirements-preferences { display: flex; margin: 0 -5px; }
+		.food-choices { display: flex; margin: 0 -5px; }
+
 		.course {
 			background: #f1f1f1;
 			padding: 15px;
@@ -137,28 +164,18 @@
 				height: 35px;
 				align-items: center;
 				justify-content: center;
-				background: #fff;
 				border-radius: 50%;
 				padding: 5px;
 				display: flex;
 				margin-right: 10px;
-
-				> svg {
-					width: 25px;
-					height: 25px;
-					flex: 1;
-				}
 			}
 			
-			
-			&.selected figure {
-				border-color: #32d296;
-				background: #32d296;
-
-				> svg g {
-					fill: #edfbf6;
-				}
+			figure svg { flex: 1; }
+			&.selected figure svg g {
+				fill: #edfbf6;
 			}
 		}
+
+		.allergies label { font-weight: 400; }
 	}
 }

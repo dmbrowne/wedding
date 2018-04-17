@@ -25,6 +25,7 @@ interface Props {
 	onSelectEvent: (attendeeId: string, eventId: string, value: boolean) => any;
 	onSelectStarter?: (attendeeId: string, choice: 'meat' | 'fish' | 'vegetarian') => Promise<any>;
 	onSelectMains?: (attendeeId: string, choice: 'meat' | 'fish' | 'vegetarian') => Promise<any>;
+	onAllergiesChange?: (attendeeId: string, value: string) => any;
 }
 
 const ReceptionCardContent = ({attendee, selectEvent, selectedEvents}) => {
@@ -56,13 +57,14 @@ interface WeddingBreakfastCardContentProps {
 	selected: Pick<FoodChoice, 'starter' | 'main'>;
 	starterSelect: (choice: 'meat' | 'fish' | 'vegetarian') => any;
 	mainSelect: (choice: 'meat' | 'fish' | 'vegetarian') => any;
+	onAllergiesChange: (value: string) => any;
 }
 
-export const WeddingBreakfastCardContent = ({ selected, starterSelect, mainSelect }: WeddingBreakfastCardContentProps) => {
+export const WeddingBreakfastCardContent = ({ selected, starterSelect, mainSelect, allergiesChange }: WeddingBreakfastCardContentProps) => {
 	return (
 		<div className="dietry-requirements">
 			<header>Choose your food options:</header>
-			<div className="dietry-requirements-preferences">
+			<div className="food-choices">
 				<div className="starters course">
 					<header>Starter</header>
 					<div className="course-options">
@@ -75,7 +77,7 @@ export const WeddingBreakfastCardContent = ({ selected, starterSelect, mainSelec
 								},
 							)}
 						>
-							<figure>
+							<figure className="custom-checkbox">
 								<Cow />
 							</figure>
 							<p>Meat</p>
@@ -89,7 +91,7 @@ export const WeddingBreakfastCardContent = ({ selected, starterSelect, mainSelec
 								},
 							)}
 						>
-							<figure >
+							<figure className="custom-checkbox">
 								<Fish />
 							</figure>
 							<p>Fish</p>
@@ -103,7 +105,7 @@ export const WeddingBreakfastCardContent = ({ selected, starterSelect, mainSelec
 							onClick={() => mainSelect('meat')}
 							className={cx('course-options-option', 'checkbox-group', { selected: selected && selected.main === 'meat' })}
 						>
-							<figure>
+							<figure className="custom-checkbox">
 								<Cow />
 							</figure>
 							<p>Meat</p>
@@ -112,13 +114,17 @@ export const WeddingBreakfastCardContent = ({ selected, starterSelect, mainSelec
 							onClick={() => mainSelect('fish')}
 							className={cx('course-options-option', 'checkbox-group', { selected: selected && selected.main === 'fish' })}
 						>
-							<figure>
+							<figure className="custom-checkbox">
 								<Fish />
 							</figure>
 							<p>Fish</p>
 						</div>
 					</div>
 				</div>
+			</div>
+			<div className="allergies">
+				<label>Allergies and special requirements:</label>
+				<textarea className="input-material" onChange={e => allergiesChange(e.target.value)}/>
 			</div>
 		</div>
 	);
@@ -147,7 +153,9 @@ export default class RsvpSection extends React.Component<Props> {
 				</div>
 				<div className="row dietry-feedback">
 					{this.props.attendees.map(attendee => {
-						const { dietFeedbackRequired } = attendee;
+						const dietFeedbackRequired = this.props.dietryRequiredEvents.some(eventId => {
+							return this.props.selectedEvents[attendee.id][eventId];
+						});
 						return (
 							dietFeedbackRequired ?
 								<div key={attendee.id} className={cx('rsvp')}>
@@ -157,6 +165,7 @@ export default class RsvpSection extends React.Component<Props> {
 											selected={this.props.foodSelections[attendee.id]}
 											starterSelect={(choice) => this.props.onSelectStarter(attendee.id, choice)}
 											mainSelect={(choice) => this.props.onSelectMains(attendee.id, choice)}
+											onAllergiesChange={(value) => this.props.onAllergiesChange(attendee.id, value)}
 										/>
 									}
 								</div> :
