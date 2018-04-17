@@ -1,6 +1,78 @@
-@import '../../styles/invite.scss';
+.tile {
+	max-width: 450px;
+	text-align: left;
+	padding: 40px;
+	background: #f1f1F1;
+	color: #111;
+}
+
+.input-material {
+	border: 0;
+	border-bottom: 1px solid #111;
+	background: none;
+	width: 100%;
+	font-weight: 300;
+	transition: border-color 300ms, color 300ms ;
+	&:focus, &:active {
+		outline: none;
+		border-color: #7676a2;
+		color: #7676a2;
+	}
+}
+
+.checkbox-group {
+	display: flex;
+	align-items: center;
+	border-radius: 40px;
+	padding: 5px;
+	margin: 10px -10px;
+	cursor: pointer;
+	border: 1px solid transparent;
+	overflow: hidden;
+
+	&:hover {
+		border-color: #ccc;
+		background: #d8d8d8;
+	}
+	&.selected {
+		border-color: #32d296;
+		border-color: #ffeb7d;
+		background: #edfbf6;
+		background: rgba(183, 175, 130, 0.7);
+		color: #32d296;
+		color: #ffeb7d;
+		font-weight: 400;
+	}
+	* { cursor: pointer; }
+}
+
+.custom-checkbox {
+	text-indent: -100px;
+	display: inline-block;
+	width: 30px;
+	height: 30px;
+	background: #fff;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	overflow: hidden;
+	transition: background-color 300ms, color 300ms, text-indent linear 400ms;
+}
+
+.checkbox-group.selected .custom-checkbox {
+	background: #32d296;
+	background: #dcc33b;
+	color: #fff;
+	text-indent: 0px;
+}
+
+.custom-checkbox + label {
+	margin: 0 0 0 15px;
+}
 
 .section-rsvp {
+	overflow: hidden;
 	position: relative;
 	background: #010101 url('/assets/723B3933.jpg') no-repeat center center;
 	background-size: cover;
@@ -13,8 +85,9 @@
 		width: 100%; height: 100%;
 		background-color: rgba(0,0,0,0.7);
 		z-index: 0;
+		filter: brightness(50%) blur(7px);
+		background: center center / cover no-repeat url('/assets/723B3933.jpg')
 	}
-
 	> * { position: relative; z-index: 1;}
 	.section-title {
 		width: auto;
@@ -29,7 +102,7 @@
 		font-size: 1.7rem;
 		color: #ffeb7d;
 	}
-	.rsvps {
+	.rsvps, .dietry-feedback {
 		justify-content: center;
 	}
 	.rsvp {
@@ -37,37 +110,11 @@
 		min-width: 300px;
 		margin: 30px;
 		flex: 1;
-		&.full-card {
-			min-width: 100%;
-			max-width: none;
-			.dietry-requirements {
-				padding: 15px;
-				margin: 15px -15px 0;
-				background: #dadada;
-			}
-
-			@media screen and (min-width: map-get($grid-breakpoints, md)) {
-				.content { display: flex; }
-				.attendance { flex: 0.8; }
-				.dietry-requirements { flex: 1; margin: 0 0 0 15px; }
-			}
-			@media screen and (min-width: 1400px) {
-				.attendance { flex: 0.4; }
-				.dietry-requirements .vegetarian hr { display: none; }
-				.dietry-requirements-preferences {
-					display: flex;
-					justify-content: stretch;
-					margin: 0 -7.5px;
-				}
-				.dietry-requirements-preferences > * {
-					flex: 0.9;
-					padding: 0 7.5px;
-				}
-				.dietry-requirements-preferences .vegetarian {
-					display: flex;
-				}
-			}
-		}
+		background: rgba(255,255,255,0.6)
+	}
+	.dietry-feedback .rsvp {
+		min-width: 0;
+		max-width: 960px;
 	}
 	button {
 		margin: 40px 0;
@@ -75,34 +122,33 @@
 		border: 1px solid lighten(#80705e, 20%);
 		color: #fff;
 	}
+	.attendance { margin-top: 15px; }
+	.attendance + .dietry-requirements { margin-top: 30px }
 	.dietry-requirements {
-		header { font-family: 'Roboto Condensed'; font-size: 1.2rem; }
+		padding: 15px;
+		margin: 15px -15px 0;
+		background: rgba(218, 218, 218, 0.6);
+
+		header { font-family: 'Roboto Condensed'; font-size: 1rem; }
+
+		.food-choices { display: flex; margin: 0 -5px; }
 
 		.course {
 			background: #f1f1f1;
 			padding: 15px;
-			margin: 15px 0;
+			margin: 15px 5px;
+			flex: 1;
+			small { display: block; margin: 10px 0; }
 		}
-
-		.course small { display: block; margin: 10px 0; }
 	
 		.course-options-option {
-			display: inline-block;
-			margin-left: 30px;
+			display: flex;
 			opacity: 0.5;
 			transition: opacity 330ms;
 			cursor: pointer;
 
-			&:first-child { margin-left: 0; }
 			&:hover { opacity: 0.8; }
-			&.selected {
-				opacity: 1;
-
-				figure {
-					border-radius: 50%;
-					border: 1px solid;
-				}
-			}
+			&.selected { opacity: 1; }
 		}
 
 		.course-options-option header {
@@ -110,18 +156,26 @@
 			text-align: center;
 		}
 
-		.course-options-option figure {
-			display: flex;
-			margin: 0;
-			width: 115px;
-			height: 115px;
-			align-items: center;
-			justify-content: center;
-
-			> svg {
-				width: 80px;
-				height: 80px;
+		.course-options-option {
+			p { margin: 0; }
+			figure {
+				margin-bottom: 0;
+				width: 35px;
+				height: 35px;
+				align-items: center;
+				justify-content: center;
+				border-radius: 50%;
+				padding: 5px;
+				display: flex;
+				margin-right: 10px;
+			}
+			
+			figure svg { flex: 1; }
+			&.selected figure svg g {
+				fill: #edfbf6;
 			}
 		}
+
+		.allergies label { font-weight: 400; }
 	}
 }

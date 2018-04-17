@@ -10,7 +10,7 @@ import { restfulRequest } from '../api/utils';
 export default class StripeTestPage extends React.Component {
 	state = {
 		stripe: null,
-		donateAmount: 50,
+		donateAmount: 30,
 		donationSuccessful: false,
 	};
 
@@ -73,7 +73,6 @@ export default class StripeTestPage extends React.Component {
 						rel="stylesheet"
 						href="//cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.40/css/uikit.min.css"
 					/>
-					<script src="//cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.40/js/uikit.min.js" />
 				</Head>
 				<div className="donation-page">
 					{this.state.donationSuccessful ?
@@ -109,7 +108,7 @@ export default class StripeTestPage extends React.Component {
 									<div className="uk-margin uk-text-center">
 										<label>Donation amont</label>
 										<TopUp
-											minValue={50}
+											minValue={20}
 											value={this.state.donateAmount}
 											onChange={value => this.setState({ donateAmount: value })}
 										/>

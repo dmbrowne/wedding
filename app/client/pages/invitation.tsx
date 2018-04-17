@@ -9,6 +9,7 @@ import AddressSection from '../components/invitation/AddressSection';
 import Services from '../components/invitation/Services';
 import RsvpSection from '../components/invitation/RsvpSection';
 import { restfulRequest } from '../api/utils';
+import Modal from '../components/Modal';
 
 interface State {
 	windowHeight: number;
@@ -21,14 +22,14 @@ interface State {
 		[attendeeId: string]: {
 			starter: 'meat' | 'fish' | 'vegetarian',
 			main: 'meat' | 'fish' | 'vegetarian',
+			allergies: string;
 		},
 	};
 }
 export default class Invitation extends React.Component<any, State> {
 	static getInitialProps = async ({ req, res, query }) => {
 		if (res && req) {
-			const { sendGroup, singleInvitation, attendee, services, bridalParties } = res.locals;
-			const { invitationId } = req.session;
+			const { invitationId, sendGroup, singleInvitation, attendee, services, bridalParties } = res.locals;
 
 			const props = { invitationId, singleInvitation, services, bridalParty: bridalParties };
 			if (singleInvitation) {
@@ -62,8 +63,10 @@ export default class Invitation extends React.Component<any, State> {
 				[attendee.id]: {
 					starter: attendee.FoodChoice && attendee.FoodChoice.starter || null,
 					main: attendee.FoodChoice && attendee.FoodChoice.main || null,
+					allergies: attendee.FoodChoice && attendee.FoodChoice.allergies || '',
 				},
 			}), {}),
+			dietEvents: props.services.filter(service => service.dietFeedback).map(event => event.id),
 		};
 	}
 
@@ -76,6 +79,13 @@ export default class Invitation extends React.Component<any, State> {
 	}
 
 	selectEventForRsvp = (attendeeId, eventId, isSelected) => {
+		// let dietfeedbackRequired = this.state.dietfeedbackRequired;
+		// if (this.props.services[eventId].dietFeedback) {
+		// 	dietfeedbackRequired = {
+		// 		...this.state.dietfeedbackRequired,
+		// 		[attendeeId]: isSelected,
+		// 	};
+		// }
 		this.setState({
 			selectedEvents: {
 				...this.state.selectedEvents,
@@ -84,6 +94,7 @@ export default class Invitation extends React.Component<any, State> {
 					[eventId]: isSelected,
 				},
 			},
+			// dietfeedbackRequired,
 		});
 	}
 
@@ -98,6 +109,18 @@ export default class Invitation extends React.Component<any, State> {
 					},
 				},
 			}, () => resolve());
+		});
+	}
+
+	updateAllergies = (attendeeId: string, value: string) => {
+		this.setState({
+			dietryRequirements: {
+				...this.state.dietryRequirements,
+				[attendeeId]: {
+					...this.state.dietryRequirements[attendeeId],
+					allergies: value,
+				},
+			},
 		});
 	}
 
@@ -126,7 +149,7 @@ export default class Invitation extends React.Component<any, State> {
 		if (this.state.windowHeight === 0) {
 			return null;
 		}
-		console.log(this.props);
+
 		return (
 			<AppLayout>
 				<Head>
@@ -212,8 +235,11 @@ export default class Invitation extends React.Component<any, State> {
 							foodSelections={this.state.dietryRequirements}
 							onSelectStarter={(aId, food) => this.selectFoodChoice(aId, 'starter', food)}
 							onSelectMains={(aId, food) => this.selectFoodChoice(aId, 'main', food)}
+							onAllergiesChange={(aId, value) => this.updateAllergies(aId, value)}
+							dietryRequiredEvents={this.state.dietEvents}
 						/>
 					</div>
+					{/* <Modal>Test</Modal> */}
 				</div>
 			</AppLayout>
 		);

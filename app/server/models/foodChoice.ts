@@ -12,6 +12,7 @@ export default class FoodChoice extends Model {
 		attendeeId: { primaryKey: true, allowNull: false, type: Sequelize.UUID },
 		starter: { type: Sequelize.ENUM('meat', 'fish', 'vegetarian') },
 		main: { type: Sequelize.ENUM('meat', 'fish', 'vegetarian') },
+		allergies: { type: Sequelize.TEXT },
 	};
 
 	static init(sequelizeConnection) {
@@ -30,6 +31,7 @@ export default class FoodChoice extends Model {
 
 	starter: string;
 	main: string;
+	allergies: string;
 	attendeeId: string;
 	attendee: BelongsToCreateAssociationMixin<Attendee>;
 }
