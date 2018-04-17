@@ -60,7 +60,7 @@ interface WeddingBreakfastCardContentProps {
 	onAllergiesChange: (value: string) => any;
 }
 
-export const WeddingBreakfastCardContent = ({ selected, starterSelect, mainSelect, allergiesChange }: WeddingBreakfastCardContentProps) => {
+export const WeddingBreakfastCardContent = ({ selected, starterSelect, mainSelect, onAllergiesChange }: WeddingBreakfastCardContentProps) => {
 	return (
 		<div className="dietry-requirements">
 			<header>Choose your food options:</header>
@@ -124,7 +124,11 @@ export const WeddingBreakfastCardContent = ({ selected, starterSelect, mainSelec
 			</div>
 			<div className="allergies">
 				<label>Allergies and special requirements:</label>
-				<textarea className="input-material" onChange={e => allergiesChange(e.target.value)}/>
+				<textarea
+					className="input-material"
+					value={selected.allergies}
+					onChange={e => onAllergiesChange(e.target.value)}
+				/>
 			</div>
 		</div>
 	);

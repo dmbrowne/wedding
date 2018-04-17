@@ -119,7 +119,7 @@ export default class Attendee extends Model {
 		);
 	}
 
-	selectFood(input: {stater: ChoiceTypes, main: ChoiceTypes}) {
+	selectFood(input: {stater: ChoiceTypes, main: ChoiceTypes, allergies?: string}) {
 		return FoodChoice.upsert({
 			attendeeId: this.id,
 			...input,

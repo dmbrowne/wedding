@@ -218,7 +218,7 @@ export function getGroupInvitation(req: NextAppRequest, res: Response, next: Nex
 			...parties,
 			[party.value]: party,
 		}), {});
-		req.session.invitationId = sendGroupId;
+		res.locals.invitationId = sendGroupId;
 		res.locals.sendGroup = {...sendGroup.toJSON(), Attendees: sendGroupAttendees };
 		res.locals.singleInvitation = false;
 		res.locals.services = Object.keys(mergedEvents)
@@ -251,8 +251,8 @@ export function getSingleInvitation(req: NextAppRequest, res: Response, next: Ne
 	.then(([bridalParties, attendee]) => {
 		if (!attendee) {
 			throw Error(`attendee cannot be found with id ${attendeeId}`);
-			req.session.invitationId = attendeeId;
 		}
+		res.locals.invitationId = attendeeId;
 		res.locals.attendee = {
 			...attendee.toJSON(),
 			dietFeedbackRequired: attendee.Events.some(event => event.dietFeedback),
@@ -301,35 +301,28 @@ export function rsvpConfirm(req: Request, res: Response, next: NextFunction) {
 	const dbModel = rsvpIsForAGroup ? models.SendGroup : models.Attendee;
 	const entityType = rsvpIsForAGroup ? 'SendGroup' : 'Attendee';
 
-	dbModel.findById(invitationId)
-		.then((result) => {
-			if (!result) {
-				return res.status(404).json({ message: `A ${entityType} with the invitationId provided does not exist`});
-			}
+	dbModel.findById(invitationId).then((result) => {
+		if (!result) {
+			return res.status(400).send({ message: `A ${entityType} with the invitationId provided does not exist`});
+		}
+		const updateAttendance = rsvpIsForAGroup ?
+			updateSendGroupRsvps(result, attendeeRsvps as Rsvp[]) :
+			Promise.all([
+				attendeeRsvps.diet ? result.selectFood(attendeeRsvps.diet) : Promise.resolve(),
+				result.updateEventAttendance(models, attendeeRsvps.events),
+			]);
 
-			const updateAttendance = rsvpIsForAGroup ?
-				updateSendGroupRsvps(result, attendeeRsvps as Rsvp[]) :
-				Promise.all([
-					attendeeRsvps.diet ? result.selectFood(attendeeRsvps.diet) : Promise.resolve(),
-					result.updateEventAttendance(models, attendeeRsvps.events),
-				]);
-
-			return updateAttendance
-			.then(() => {
-				res.send({ success: 'ok' });
-				delete req.session.invitationId;
-			})
-			.catch(err => {
-				res.status(400).json({ message: err.message });
-			});
+		return updateAttendance
+		.then(() => {
+			res.send({ success: 'ok' });
+			delete req.session.invitationId;
 		})
 		.catch(err => {
-			res.status(500);
-			next(err);
+			res.status(400).json({ message: err.message });
 		});
-}
-
-export function makeFoodChoices(req, res) {
-	const { starter, main } = req.body;
-	models.Attendee.find()
+	})
+	.catch(err => {
+		res.status(500);
+		next(err);
+	});
 }

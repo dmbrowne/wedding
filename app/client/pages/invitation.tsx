@@ -29,8 +29,7 @@ interface State {
 export default class Invitation extends React.Component<any, State> {
 	static getInitialProps = async ({ req, res, query }) => {
 		if (res && req) {
-			const { sendGroup, singleInvitation, attendee, services, bridalParties } = res.locals;
-			const { invitationId } = req.session;
+			const { invitationId, sendGroup, singleInvitation, attendee, services, bridalParties } = res.locals;
 
 			const props = { invitationId, singleInvitation, services, bridalParty: bridalParties };
 			if (singleInvitation) {
@@ -64,6 +63,7 @@ export default class Invitation extends React.Component<any, State> {
 				[attendee.id]: {
 					starter: attendee.FoodChoice && attendee.FoodChoice.starter || null,
 					main: attendee.FoodChoice && attendee.FoodChoice.main || null,
+					allergies: attendee.FoodChoice && attendee.FoodChoice.allergies || '',
 				},
 			}), {}),
 			dietEvents: props.services.filter(service => service.dietFeedback).map(event => event.id),
@@ -149,7 +149,7 @@ export default class Invitation extends React.Component<any, State> {
 		if (this.state.windowHeight === 0) {
 			return null;
 		}
-		console.log(this.state)
+
 		return (
 			<AppLayout>
 				<Head>
