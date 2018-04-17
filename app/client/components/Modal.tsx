@@ -1,3 +1,4 @@
+import './modal.scss';
 import * as React from 'react';
 import ModalBackdrop from './ModalBackdrop';
 
@@ -13,7 +14,7 @@ export default class Modal extends React.Component<Props> {
 		const { onClose, goBack, title, children, footer } = this.props;
 		return (
 			<ModalBackdrop>
-				<div className="uk-custom-modal">
+				<div className="yd-custom-modal">
 					{!!onClose && <i onClick={onClose} className="close material-icons">close</i>}
 					<header className="uk-modal-header">
 						{!!goBack && <i onClick={goBack} className="material-icons">arrow_back</i>}

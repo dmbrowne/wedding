@@ -138,48 +138,57 @@ export default class RsvpSection extends React.Component<Props> {
 	render() {
 		return (
 			<div className="section section-rsvp">
-				<h2 className="section-title"><span>Please reply</span> Répondez s'il vous plaît</h2>
-				<p>Please send your response by<br/><strong>May 31st</strong><br/>Responses after this date has passed will not be counted and your place will not be guaranteed.</p>
-				<p>Tap on an event to select/unselect it and indicate your attendance.</p>
-				<div className="row rsvps">
-					{this.props.attendees.map(attendee =>  (
-						<div key={attendee.id} className={cx('rsvp')}>
-							<header>{attendee.firstName} {attendee.lastName}</header>
-							<div className="content">
-								<ReceptionCardContent
-									attendee={attendee}
-									selectedEvents={this.props.selectedEvents[attendee.id]}
-									selectEvent={this.props.onSelectEvent}
-								/>
-							</div>
-						</div>
-						))}
-				</div>
-				<div className="row dietry-feedback">
-					{this.props.attendees.map(attendee => {
-						const dietFeedbackRequired = this.props.dietryRequiredEvents.some(eventId => {
-							return this.props.selectedEvents[attendee.id][eventId];
-						});
-						return (
-							dietFeedbackRequired ?
+				{this.props.disabled ?
+					<div className="rvsp">
+						<p>Your reply has been saved and sent.</p>
+						<p>However, should anything change, you can edit your response by clicking the edit response button below</p>
+						<button className="uk-button" onClick={this.props.onEnable}>Edit response</button>
+					</div> :
+					<React.Fragment>
+						<h2 className="section-title"><span>Please reply</span> Répondez s'il vous plaît</h2>
+						<p>Please send your response by<br/><strong>May 31st</strong><br/>Responses after this date has passed will not be counted and your place will not be guaranteed.</p>
+						<p>Tap on an event to select/unselect it and indicate your attendance.</p>
+						<div className="row rsvps">
+							{this.props.attendees.map(attendee =>  (
 								<div key={attendee.id} className={cx('rsvp')}>
 									<header>{attendee.firstName} {attendee.lastName}</header>
-									{dietFeedbackRequired &&
-										<WeddingBreakfastCardContent
-											selected={this.props.foodSelections[attendee.id]}
-											starterSelect={(choice) => this.props.onSelectStarter(attendee.id, choice)}
-											mainSelect={(choice) => this.props.onSelectMains(attendee.id, choice)}
-											onAllergiesChange={(value) => this.props.onAllergiesChange(attendee.id, value)}
+									<div className="content">
+										<ReceptionCardContent
+											attendee={attendee}
+											selectedEvents={this.props.selectedEvents[attendee.id]}
+											selectEvent={this.props.onSelectEvent}
 										/>
-									}
-								</div> :
-								null
-						);
-					})}
-				</div>
-				<button className="btn btn-lg" onClick={this.props.onSubmit}>
-					{this.props.isAnUpdate ?  'Update' : 'Send'} Response
-				</button>
+									</div>
+								</div>
+								))}
+						</div>
+						<div className="row dietry-feedback">
+							{this.props.attendees.map(attendee => {
+								const dietFeedbackRequired = this.props.dietryRequiredEvents.some(eventId => {
+									return this.props.selectedEvents[attendee.id][eventId];
+								});
+								return (
+									dietFeedbackRequired ?
+										<div key={attendee.id} className={cx('rsvp')}>
+											<header>{attendee.firstName} {attendee.lastName}</header>
+											{dietFeedbackRequired &&
+												<WeddingBreakfastCardContent
+													selected={this.props.foodSelections[attendee.id]}
+													starterSelect={(choice) => this.props.onSelectStarter(attendee.id, choice)}
+													mainSelect={(choice) => this.props.onSelectMains(attendee.id, choice)}
+													onAllergiesChange={(value) => this.props.onAllergiesChange(attendee.id, value)}
+												/>
+											}
+										</div> :
+										null
+								);
+							})}
+						</div>
+						<button className="btn btn-lg" onClick={this.props.onSubmit}>
+							{this.props.isAnUpdate ?  'Update' : 'Send'} Response
+						</button>
+					</React.Fragment>
+				}
 			</div>
 		);
 	}

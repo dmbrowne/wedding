@@ -41,17 +41,17 @@ export default class Invitation extends React.Component<any, State> {
 		return {};
 	}
 
-	isAnUpdate: boolean = false;
 	rsvpSection: HTMLElement = null;
 
 	constructor(props) {
 		super(props);
+		let previouslyConfirmed = false;
 		this.state = {
 			windowHeight: 0,
 			selectedEvents: props.attendees.reduce((accum, attendee) => ({
 				...accum,
 				[attendee.id]: attendee.Events.reduce((eventAccum, event) => {
-					if (!this.isAnUpdate && event.EventAttendee.confirmed) { this.isAnUpdate = true; }
+					if (!previouslyConfirmed && event.EventAttendee.confirmed) { previouslyConfirmed = true; }
 					return {
 						...eventAccum,
 						[event.id]: event.EventAttendee.attending,
@@ -68,6 +68,9 @@ export default class Invitation extends React.Component<any, State> {
 			}), {}),
 			dietEvents: props.allInvitedEvents.filter(service => service.dietFeedback).map(event => event.id),
 		};
+
+		this.state.previouslyConfirmed = previouslyConfirmed;
+		this.state.rsvpDisabled = previouslyConfirmed;
 	}
 
 	componentDidMount() {
@@ -135,6 +138,12 @@ export default class Invitation extends React.Component<any, State> {
 			body: JSON.stringify({
 				rsvp: body,
 			}),
+		})
+		.then(() => {
+			this.setState({
+				showRsvpConfirmModal: true,
+				rsvpDisabled: true,
+			});
 		});
 	}
 
@@ -224,15 +233,32 @@ export default class Invitation extends React.Component<any, State> {
 							onSelectEvent={(evId, attenId, value) => this.selectEventForRsvp(evId, attenId, value)}
 							selectedEvents={this.state.selectedEvents}
 							onSubmit={this.onSubmit}
-							isAnUpdate={this.isAnUpdate}
+							isAnUpdate={this.state.previouslyConfirmed}
 							foodSelections={this.state.dietryRequirements}
 							onSelectStarter={(aId, food) => this.selectFoodChoice(aId, 'starter', food)}
 							onSelectMains={(aId, food) => this.selectFoodChoice(aId, 'main', food)}
 							onAllergiesChange={(aId, value) => this.updateAllergies(aId, value)}
 							dietryRequiredEvents={this.state.dietEvents}
+							disabled={this.state.rsvpDisabled}
+							onEnable={() => this.setState({ rsvpDisabled: false })}
 						/>
 					</div>
-					{/* <Modal>Test</Modal> */}
+					{this.state.showRsvpConfirmModal && (
+						<div className="success-modal">
+							<Modal
+								onClose={() => this.setState({ showRsvpConfirmModal: false })}
+								title="Thank you!"
+							>
+								<i className="material-icons success-modal-check-icon">check</i>
+								<p>Your Response has been logged and saved</p>
+								<p>And We'll see you sson!</p>
+								<p className="fancy">xx</p>
+								<div>
+									<button onClick={() => this.setState({ showRsvpConfirmModal: false })} className="uk-button uk-button-large">Ok</button>
+								</div>
+							</Modal>
+						</div>
+					)}
 				</div>
 			</AppLayout>
 		);
