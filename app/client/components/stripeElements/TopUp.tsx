@@ -1,6 +1,6 @@
 import './topUp.scss';
 import * as React from 'react';
-
+import cx from 'classnames';
 interface Props {
 	onChange: (donateAmount: number) => any;
 	minValue: number;
@@ -16,7 +16,7 @@ export default class TopUp extends React.Component<Props> {
 		} else if (value === 100 && decrease) {
 			return 10;
 		}
-		return 50;
+		return 25;
 	}
 
 	increase = () => {
@@ -36,7 +36,12 @@ export default class TopUp extends React.Component<Props> {
 	render() {
 		return (
 			<div className="topup-buttons-container">
-				<button onClick={this.decrease} className="uk-button uk-button-primary uk-button-small topup-button">
+				<button
+					onClick={this.decrease}
+					className={cx('uk-button', 'uk-button-primary', 'uk-button-small', 'topup-button', {
+						disabled: this.props.value === this.props.minValue,
+					})}
+				>
 					<i className="material-icons">remove</i>
 				</button>
 				<div className="topup-amount-value">£{this.props.value}</div>

@@ -10,6 +10,7 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	&.disabled { opacity: 0.5; background-color: #ccc; }
 }
 
 .topup-amount-value {

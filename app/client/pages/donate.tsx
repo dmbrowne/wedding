@@ -10,7 +10,7 @@ import { restfulRequest } from '../api/utils';
 export default class StripeTestPage extends React.Component {
 	state = {
 		stripe: null,
-		donateAmount: 50,
+		donateAmount: 30,
 		donationSuccessful: false,
 	};
 
@@ -108,7 +108,7 @@ export default class StripeTestPage extends React.Component {
 									<div className="uk-margin uk-text-center">
 										<label>Donation amont</label>
 										<TopUp
-											minValue={50}
+											minValue={20}
 											value={this.state.donateAmount}
 											onChange={value => this.setState({ donateAmount: value })}
 										/>
