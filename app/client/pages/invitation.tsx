@@ -2,6 +2,11 @@ import React from 'react';
 import Head from 'next/head';
 import cx from 'classnames';
 import '../styles/invite.scss';
+import AttendeeModel from '../../server/models/attendee';
+import SendGroupModel from '../../server/models/sendGroup';
+import BridalPartyRoleModel from '../../server/models/bridalPartyRoles';
+import EventModel from '../../server/models/event';
+import { SingleInvitationResponseLocals, GroupInvitationResponseLocals } from '../../server/controllers/attendeeController';
 import AppLayout from '../components/AppLayout';
 import InvitedSection from '../components/invitation/InvitedSection';
 import HeroSection from '../components/invitation/HeroSection';
@@ -25,18 +30,52 @@ interface State {
 			allergies: string;
 		},
 	};
+	dietEvents: {
+		[attendeeId: string]: {
+			[eventId: string]: boolean;
+		},
+	};
+	rsvpDisabled: boolean;
+	showRsvpConfirmModal: boolean;
 }
-export default class Invitation extends React.Component<any, State> {
+
+interface Props {
+	invitationId: string;
+	singleInvitation: boolean;
+	allInvitedEvents: EventModel[];
+	bridalParty: {
+		[bridalPartyRole: string]: BridalPartyRoleModel,
+	};
+	previouslyConfirmed: boolean;
+	attendees?: AttendeeModel[];
+	sendGroup?: SendGroupModel;
+}
+
+export default class Invitation extends React.Component<Props, State> {
 	static getInitialProps = async ({ req, res, query }) => {
 		if (res && req) {
-			const { invitationId, sendGroup, singleInvitation, attendee, allInvitedEvents, bridalParties } = res.locals;
-			const props = { invitationId, singleInvitation, allInvitedEvents, bridalParty: bridalParties };
+			const responseLocals: SingleInvitationResponseLocals | GroupInvitationResponseLocals = res.locals;
+			const { invitationId, singleInvitation, allInvitedEvents, bridalParties } = responseLocals;
+			const props: Props = {
+				invitationId,
+				singleInvitation,
+				allInvitedEvents,
+				bridalParty: bridalParties,
+				previouslyConfirmed: false,
+			};
 
-			if (singleInvitation) {
-				return { ...props, attendees: [attendee] };
-			} else {
-				return { ...props, attendees: sendGroup.Attendees, sendGroup };
+			if (responseLocals.singleInvitation) {
+				const attendee: AttendeeModel = responseLocals.attendee;
+				props.attendees = [attendee];
+				props.previouslyConfirmed = attendee.Events.some((event) => event.EventAttendee.confirmed);
+			} else if (responseLocals.singleInvitation === false) {
+				const sendGroup: SendGroupModel = responseLocals.sendGroup;
+				props.sendGroup = sendGroup;
+				props.attendees = sendGroup.Attendees;
+				props.previouslyConfirmed = sendGroup.Attendees.some(attendee => attendee.Events.some((event) => event.EventAttendee.confirmed));
 			}
+
+			return props;
 		}
 		return {};
 	}
@@ -45,32 +84,30 @@ export default class Invitation extends React.Component<any, State> {
 
 	constructor(props) {
 		super(props);
-		let previouslyConfirmed = false;
+		const selectedEvents = props.attendees.reduce((accum, attendee) => ({
+			...accum,
+			[attendee.id]: attendee.Events.reduce((eventAccum, event) => ({
+				...eventAccum,
+				[event.id]: event.EventAttendee.attending,
+			}), {}),
+		}), {});
+		const dietryRequirements = props.attendees.reduce((accum, attendee) => ({
+			...accum,
+			[attendee.id]: {
+				starter: attendee.FoodChoice && attendee.FoodChoice.starter || null,
+				main: attendee.FoodChoice && attendee.FoodChoice.main || null,
+				allergies: attendee.FoodChoice && attendee.FoodChoice.allergies || '',
+			},
+		}), {});
+
 		this.state = {
 			windowHeight: 0,
-			selectedEvents: props.attendees.reduce((accum, attendee) => ({
-				...accum,
-				[attendee.id]: attendee.Events.reduce((eventAccum, event) => {
-					if (!previouslyConfirmed && event.EventAttendee.confirmed) { previouslyConfirmed = true; }
-					return {
-						...eventAccum,
-						[event.id]: event.EventAttendee.attending,
-					};
-				}, {}),
-			}), {}),
-			dietryRequirements: props.attendees.reduce((accum, attendee) => ({
-				...accum,
-				[attendee.id]: {
-					starter: attendee.FoodChoice && attendee.FoodChoice.starter || null,
-					main: attendee.FoodChoice && attendee.FoodChoice.main || null,
-					allergies: attendee.FoodChoice && attendee.FoodChoice.allergies || '',
-				},
-			}), {}),
+			selectedEvents,
+			dietryRequirements,
 			dietEvents: props.allInvitedEvents.filter(service => service.dietFeedback).map(event => event.id),
+			rsvpDisabled: props.previouslyConfirmed,
+			showRsvpConfirmModal: false,
 		};
-
-		this.state.previouslyConfirmed = previouslyConfirmed;
-		this.state.rsvpDisabled = previouslyConfirmed;
 	}
 
 	componentDidMount() {
@@ -168,6 +205,7 @@ export default class Invitation extends React.Component<any, State> {
 							attendees={this.props.attendees}
 							singleInvitation={this.props.singleInvitation}
 							onGoToRsvp={btnElement => this.scrollToRsvp(btnElement)}
+							confirmed={this.props.previouslyConfirmed}
 						/>
 						<AddressSection events={this.props.allInvitedEvents} />
 						<Services events={this.props.allInvitedEvents} />
@@ -229,7 +267,7 @@ export default class Invitation extends React.Component<any, State> {
 								onSelectEvent={(evId, attenId, value) => this.selectEventForRsvp(evId, attenId, value)}
 								selectedEvents={this.state.selectedEvents}
 								onSubmit={this.onSubmit}
-								isAnUpdate={this.state.previouslyConfirmed}
+								isAnUpdate={this.props.previouslyConfirmed}
 								foodSelections={this.state.dietryRequirements}
 								onSelectStarter={(aId, food) => this.selectFoodChoice(aId, 'starter', food)}
 								onSelectMains={(aId, food) => this.selectFoodChoice(aId, 'main', food)}
@@ -241,10 +279,7 @@ export default class Invitation extends React.Component<any, State> {
 						</div>
 						{this.state.showRsvpConfirmModal && (
 							<div className="success-modal">
-								<Modal
-									onClose={() => this.setState({ showRsvpConfirmModal: false })}
-									title="Thank you!"
-								>
+								<Modal title="Thank you!">
 									<i className="material-icons success-modal-check-icon">check</i>
 									<p>Your Response has been logged and saved</p>
 									<p>And We'll see you sson!</p>

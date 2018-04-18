@@ -30,16 +30,16 @@ interface IniviteResponseLocals {
 	allInvitedEvents: EventModel[];
 }
 
-interface SingleInvitationResponseLocals extends IniviteResponseLocals {
+export interface SingleInvitationResponseLocals extends IniviteResponseLocals {
 	invitationId: Attendee['id'];
 	attendee: Attendee;
 	singleInvitation: true;
 }
 
-interface GroupInvitationResponseLocals extends IniviteResponseLocals {
+export interface GroupInvitationResponseLocals extends IniviteResponseLocals {
 	invitationId: SendGroup['id'];
 	sendGroup: SendGroup;
-	singleInvitation: false;
+	singleInvitation?: false;
 }
 
 export async function getAllAttendees(req: NextAppRequest, res: Response, next) {

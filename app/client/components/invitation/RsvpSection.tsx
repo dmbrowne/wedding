@@ -17,11 +17,18 @@ interface Props {
 			[eventId: string]: boolean;
 		};
 	};
+	dietryRequiredEvents: {
+		[attendeeId: string]: {
+			[eventId: string]: boolean;
+		};
+	};
 	isAnUpdate: boolean;
 	foodSelections: {
 		[attendeeId: string]: Pick<FoodChoice, 'starter' | 'main'>,
 	};
+	disabled: boolean;
 	onSubmit: () => any;
+	onEnable: () => any;
 	onSelectEvent: (attendeeId: string, eventId: string, value: boolean) => any;
 	onSelectStarter?: (attendeeId: string, choice: 'meat' | 'fish' | 'vegetarian') => Promise<any>;
 	onSelectMains?: (attendeeId: string, choice: 'meat' | 'fish' | 'vegetarian') => Promise<any>;
@@ -80,7 +87,7 @@ export const WeddingBreakfastCardContent = ({ selected, starterSelect, mainSelec
 							<figure className="custom-checkbox">
 								<Cow />
 							</figure>
-							<p>Meat</p>
+							<p>Corn fed chicken terrine, with apple puree, red chicory and onion rings</p>
 						</div>
 						<div
 							onClick={() => starterSelect('fish')}
@@ -94,7 +101,7 @@ export const WeddingBreakfastCardContent = ({ selected, starterSelect, mainSelec
 							<figure className="custom-checkbox">
 								<Fish />
 							</figure>
-							<p>Fish</p>
+							<p>Smoked salmon with pickled beetroot, horseradish abd seaweed cracker</p>
 						</div>
 					</div>
 				</div>
@@ -108,7 +115,7 @@ export const WeddingBreakfastCardContent = ({ selected, starterSelect, mainSelec
 							<figure className="custom-checkbox">
 								<Cow />
 							</figure>
-							<p>Meat</p>
+							<p>Corn feed chicken with mushrooms, sweet potato puree and tarragon suce</p>
 						</div>
 						<div
 							onClick={() => mainSelect('fish')}
@@ -117,7 +124,7 @@ export const WeddingBreakfastCardContent = ({ selected, starterSelect, mainSelec
 							<figure className="custom-checkbox">
 								<Fish />
 							</figure>
-							<p>Fish</p>
+							<p>Roast salmon with red pepper compote and pomegranate vinaigrette</p>
 						</div>
 					</div>
 				</div>

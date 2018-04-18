@@ -3,7 +3,7 @@ import * as React from 'react';
 import ModalBackdrop from './ModalBackdrop';
 
 interface Props {
-	onClose: () => any;
+	onClose?: () => any;
 	goBack?: () => any;
 	title: string;
 	footer?: React.ReactNode;

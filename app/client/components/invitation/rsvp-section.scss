@@ -1,3 +1,6 @@
+@import "bootstrap/scss/functions.scss";
+@import "bootstrap/scss/variables.scss";
+
 .tile {
 	max-width: 450px;
 	text-align: left;
@@ -78,11 +81,14 @@
 	background-size: cover;
 	color: #ccc;
 	font-size: 1.1rem;
+	min-height: 100vh;
 	&:before {
 		content: '';
 		position: absolute;
-		top: 0; left: 0;
-		width: 100%; height: 100%;
+		top: -5%;
+    left: -5%;
+    width: 110%;
+    height: 110%;
 		background-color: rgba(0,0,0,0.7);
 		z-index: 0;
 		filter: brightness(50%) blur(7px);
@@ -108,9 +114,14 @@
 	.rsvp {
 		@extend .tile;
 		min-width: 300px;
-		margin: 30px;
+		margin: 15px 0;
 		flex: 1;
-		background: rgba(255,255,255,0.6)
+		background: rgba(255,255,255,0.6);
+		
+		@media screen and (min-width: map-get($grid-breakpoints, sm)) {
+			margin-left: 15px;
+			margin-right: 15px;
+		}
 	}
 	.dietry-feedback .rsvp {
 		min-width: 0;
@@ -131,18 +142,26 @@
 
 		header { font-family: 'Roboto Condensed'; font-size: 1rem; }
 
-		.food-choices { display: flex; margin: 0 -5px; }
+		.food-choices { 
+			@media screen and (min-width: map-get($grid-breakpoints, md)) {
+				display: flex; margin: 0 -5px; 
+			}
+		}
 
 		.course {
 			background: #f1f1f1;
 			padding: 15px;
-			margin: 15px 5px;
+			margin: 15px 0;
 			flex: 1;
 			small { display: block; margin: 10px 0; }
+			@media screen and (min-width: map-get($grid-breakpoints, md)) {
+				margin-left: 5px;
+				margin-right: 5px;
+			}
 		}
 	
 		.course-options-option {
-			display: flex;
+			display: block;
 			opacity: 0.5;
 			transition: opacity 330ms;
 			cursor: pointer;
@@ -157,8 +176,15 @@
 		}
 
 		.course-options-option {
-			p { margin: 0; }
+			p {
+				vertical-align: middle;
+				margin: 0;
+				display: inline-block;
+				width: calc(100% - 70px);
+				font-weight: 300;
+			}
 			figure {
+				vertical-align: middle;
 				margin-bottom: 0;
 				width: 35px;
 				height: 35px;
@@ -166,11 +192,11 @@
 				justify-content: center;
 				border-radius: 50%;
 				padding: 5px;
-				display: flex;
 				margin-right: 10px;
+				display: inline-block;
 			}
 			
-			figure svg { flex: 1; }
+			figure svg { width: 25px; height: 25px; }
 			&.selected figure svg g {
 				fill: #edfbf6;
 			}
