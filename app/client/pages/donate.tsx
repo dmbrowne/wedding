@@ -5,13 +5,28 @@ import Head from 'next/head';
 import { StripeProvider, Elements } from 'react-stripe-elements';
 import PaymentForm from '../components/stripeElements/Form';
 import TopUp from '../components/stripeElements/TopUp';
+import SendGroup from '../../server/models/sendGroup';
+import Attendee from '../../server/models/attendee';
 import { restfulRequest } from '../api/utils';
 
-export default class StripeTestPage extends React.Component {
+interface Props {
+	attendee?: Attendee;
+	sendGroup?: SendGroup;
+}
+
+export default class StripeTestPage extends React.Component<Props> {
+	static getInitialProps = async ({ res }) => {
+		return {
+			attendee: res ? res.locals.attendee : null,
+			sendGroup: res ? res.locals.sendGroup : null,
+		};
+	}
+
 	state = {
 		stripe: null,
 		donateAmount: 30,
 		donationSuccessful: false,
+		personalMessage: '',
 	};
 
 	submit(token) {
@@ -22,15 +37,21 @@ export default class StripeTestPage extends React.Component {
 				amount: this.state.donateAmount * 100,
 				token: token.id,
 				description: 'Test Charge!!',
+				message: this.state.personalMessage,
 			}),
 		})
 		.then(() => this.setState({ donationSuccessful : true }))
-		.catch(() => this.setState({ donationSuccessful : false }));
+		.catch(res => {
+			res.json().then(error => {
+				alert(error.message);
+				this.setState({ donationSuccessful : false });
+			});
+		});
 	}
 
 	confirmOrder = (token) => {
 		this.UIkit.modal.confirm(
-			`A donation of £${this.state.donateAmount} will be charged to the card provided. press confirm to confirm.`,
+			`A donation of £${this.state.donateAmount} will be charged to the card provided. press ok to confirm.`,
 		)
 		.then(
 			() => this.submit(token),
@@ -114,7 +135,11 @@ export default class StripeTestPage extends React.Component {
 										/>
 									</div>
 									<Elements>
-										<PaymentForm onSubmit={this.confirmOrder} />
+										<PaymentForm
+											onSubmit={this.confirmOrder}
+											personalMessage={this.state.personalMessage}
+											onMessageChange={personalMessage => this.setState({ personalMessage })}
+										/>
 									</Elements>
 								</div>
 							</StripeProvider>
