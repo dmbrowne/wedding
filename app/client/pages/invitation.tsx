@@ -74,7 +74,7 @@ export default class Invitation extends React.Component<any, State> {
 	}
 
 	componentDidMount() {
-		this.setState({ windowHeight: window.outerHeight });
+		this.setState({ windowHeight: window.innerHeight });
 	}
 
 	scrollToRsvp = (btnElement) => {
@@ -148,10 +148,6 @@ export default class Invitation extends React.Component<any, State> {
 	}
 
 	render() {
-		if (this.state.windowHeight === 0) {
-			return null;
-		}
-
 		return (
 			<AppLayout>
 				<Head>
@@ -162,104 +158,105 @@ export default class Invitation extends React.Component<any, State> {
 					/>
 					<link key="material-icons" rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons" />
 					<script src="//cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.40/js/uikit.min.js" />
-					<meta key="metatag-viewport" name="viewport" content="width=device-width, initial-scale=1" />
+					<meta key="metatag-viewport" name="viewport" content="width=device-width, initial-scale=1.0" />
 				</Head>
-				<div className="wedding-invitation">
-					<div style={{height: this.state.windowHeight}}>
+				{this.state.windowHeight === 0 ?
+					null :
+					<div className="wedding-invitation">
 						<HeroSection />
-					</div>
-					<InvitedSection
-						attendees={this.props.attendees}
-						singleInvitation={this.props.singleInvitation}
-						onGoToRsvp={btnElement => this.scrollToRsvp(btnElement)}
-					/>
-					<AddressSection events={this.props.allInvitedEvents} />
-					<Services events={this.props.allInvitedEvents} />
-					{this.props.bridalParty && this.props.bridalParty.bridesmaids && !!this.props.bridalParty.bridesmaids.BridalParties.length && (
-						<div className="section section-bridemaids">
-							<h2 className="section-title"><span>Meet the</span>Bridesmaids</h2>
-							<div className="bridal-party bridemaids">
-								{this.props.bridalParty.bridesmaids.BridalParties.map(bridesmaid => {
-									return (
-										<div key={bridesmaid.id} className={cx('bridal-party-member', {primary: bridesmaid.vip})}>
-											{bridesmaid.subRole && <div className="badge">{bridesmaid.subRole}</div>}
-											<figure className="selfie">
-												<img src={bridesmaid.Image.squareImage} />
-											</figure>
-											<header>{bridesmaid.firstName} {bridesmaid.lastName}</header>
-											{bridesmaid.comment && <footer>{bridesmaid.comment}</footer>}
-										</div>
-									);
-								})}
-							</div>
-						</div>
-					)}
-					{this.props.bridalParty && this.props.bridalParty.groomsmen && !!this.props.bridalParty.groomsmen.BridalParties.length && (
-						<div className="section section-groomsmen">
-							<h2 className="section-title"><span>Meet the</span>Groomsmen</h2>
-							<div className="bridal-party groomsmen">
-								{this.props.bridalParty.groomsmen.BridalParties.map(groomsmen => {
-									return (
-										<div key={groomsmen.id} className={cx('bridal-party-member', {primary: groomsmen.vip})}>
-											{groomsmen.subRole && <div className="badge">{groomsmen.subRole}</div>}
-											<figure className="selfie">
-												<img src={groomsmen.Image.squareImage} />
-											</figure>
-											<header>{groomsmen.firstName} {groomsmen.lastName}</header>
-											{groomsmen.comment && <footer>{groomsmen.comment}</footer>}
-										</div>
-									);
-								})}
-							</div>
-						</div>
-					)}
-					<div className="section section-donate">
-						<h2 className="section-title"><span>wishing us</span>Well xx</h2>
-						<div className="yd-container">
-							<p><span className="fancy">T</span>he most important gift to us is having you share in our special day</p>
-							<p><span className="fancy">B</span>ut if you wish to contribute in some other way, we would love a few pennies to put in our pot, for our honeymoon trip afteer tying the knot!</p>
-							<p>If you would like to put in a penny or two - you can donate by clicking the piggy bank below,</p>
-							<p className="fancy">Thank You x</p>
-							<div className="uk-margin">
-								<a href={`${this.props.url.asPath}/donate`} target="_blank">
-									<img src="/assets/pig-bank.png" style={{ width: 200 }} />
-								</a>
-							</div>
-						</div>
-					</div>
-					<div ref={ref => this.rsvpSection = ref}>
-						<RsvpSection
+						<InvitedSection
 							attendees={this.props.attendees}
-							onSelectEvent={(evId, attenId, value) => this.selectEventForRsvp(evId, attenId, value)}
-							selectedEvents={this.state.selectedEvents}
-							onSubmit={this.onSubmit}
-							isAnUpdate={this.state.previouslyConfirmed}
-							foodSelections={this.state.dietryRequirements}
-							onSelectStarter={(aId, food) => this.selectFoodChoice(aId, 'starter', food)}
-							onSelectMains={(aId, food) => this.selectFoodChoice(aId, 'main', food)}
-							onAllergiesChange={(aId, value) => this.updateAllergies(aId, value)}
-							dietryRequiredEvents={this.state.dietEvents}
-							disabled={this.state.rsvpDisabled}
-							onEnable={() => this.setState({ rsvpDisabled: false })}
+							singleInvitation={this.props.singleInvitation}
+							onGoToRsvp={btnElement => this.scrollToRsvp(btnElement)}
 						/>
-					</div>
-					{this.state.showRsvpConfirmModal && (
-						<div className="success-modal">
-							<Modal
-								onClose={() => this.setState({ showRsvpConfirmModal: false })}
-								title="Thank you!"
-							>
-								<i className="material-icons success-modal-check-icon">check</i>
-								<p>Your Response has been logged and saved</p>
-								<p>And We'll see you sson!</p>
-								<p className="fancy">xx</p>
-								<div>
-									<button onClick={() => this.setState({ showRsvpConfirmModal: false })} className="uk-button uk-button-large">Ok</button>
+						<AddressSection events={this.props.allInvitedEvents} />
+						<Services events={this.props.allInvitedEvents} />
+						{this.props.bridalParty && this.props.bridalParty.bridesmaids && !!this.props.bridalParty.bridesmaids.BridalParties.length && (
+							<div className="section section-bridemaids">
+								<h2 className="section-title"><span>Meet the</span>Bridesmaids</h2>
+								<div className="bridal-party bridemaids">
+									{this.props.bridalParty.bridesmaids.BridalParties.map(bridesmaid => {
+										return (
+											<div key={bridesmaid.id} className={cx('bridal-party-member', {primary: bridesmaid.vip})}>
+												{bridesmaid.subRole && <div className="badge">{bridesmaid.subRole}</div>}
+												<figure className="selfie">
+													<img src={bridesmaid.Image.squareImage} />
+												</figure>
+												<header>{bridesmaid.firstName} {bridesmaid.lastName}</header>
+												{bridesmaid.comment && <footer>{bridesmaid.comment}</footer>}
+											</div>
+										);
+									})}
 								</div>
-							</Modal>
+							</div>
+						)}
+						{this.props.bridalParty && this.props.bridalParty.groomsmen && !!this.props.bridalParty.groomsmen.BridalParties.length && (
+							<div className="section section-groomsmen">
+								<h2 className="section-title"><span>Meet the</span>Groomsmen</h2>
+								<div className="bridal-party groomsmen">
+									{this.props.bridalParty.groomsmen.BridalParties.map(groomsmen => {
+										return (
+											<div key={groomsmen.id} className={cx('bridal-party-member', {primary: groomsmen.vip})}>
+												{groomsmen.subRole && <div className="badge">{groomsmen.subRole}</div>}
+												<figure className="selfie">
+													<img src={groomsmen.Image.squareImage} />
+												</figure>
+												<header>{groomsmen.firstName} {groomsmen.lastName}</header>
+												{groomsmen.comment && <footer>{groomsmen.comment}</footer>}
+											</div>
+										);
+									})}
+								</div>
+							</div>
+						)}
+						<div className="section section-donate">
+							<h2 className="section-title"><span>wishing us</span>Well xx</h2>
+							<div className="yd-container">
+								<p><span className="fancy">T</span>he most important gift to us is having you share in our special day</p>
+								<p><span className="fancy">B</span>ut if you wish to contribute in some other way, we would love a few pennies to put in our pot, for our honeymoon trip afteer tying the knot!</p>
+								<p>If you would like to put in a penny or two - you can donate by clicking the piggy bank below,</p>
+								<p className="fancy">Thank You x</p>
+								<div className="uk-margin">
+									<a href={`${this.props.url.asPath}/donate`} target="_blank">
+										<img src="/assets/pig-bank.png" style={{ width: 200 }} />
+									</a>
+								</div>
+							</div>
 						</div>
-					)}
-				</div>
+						<div ref={ref => this.rsvpSection = ref}>
+							<RsvpSection
+								attendees={this.props.attendees}
+								onSelectEvent={(evId, attenId, value) => this.selectEventForRsvp(evId, attenId, value)}
+								selectedEvents={this.state.selectedEvents}
+								onSubmit={this.onSubmit}
+								isAnUpdate={this.state.previouslyConfirmed}
+								foodSelections={this.state.dietryRequirements}
+								onSelectStarter={(aId, food) => this.selectFoodChoice(aId, 'starter', food)}
+								onSelectMains={(aId, food) => this.selectFoodChoice(aId, 'main', food)}
+								onAllergiesChange={(aId, value) => this.updateAllergies(aId, value)}
+								dietryRequiredEvents={this.state.dietEvents}
+								disabled={this.state.rsvpDisabled}
+								onEnable={() => this.setState({ rsvpDisabled: false })}
+							/>
+						</div>
+						{this.state.showRsvpConfirmModal && (
+							<div className="success-modal">
+								<Modal
+									onClose={() => this.setState({ showRsvpConfirmModal: false })}
+									title="Thank you!"
+								>
+									<i className="material-icons success-modal-check-icon">check</i>
+									<p>Your Response has been logged and saved</p>
+									<p>And We'll see you sson!</p>
+									<p className="fancy">xx</p>
+									<div>
+										<button onClick={() => this.setState({ showRsvpConfirmModal: false })} className="uk-button uk-button-large">Ok</button>
+									</div>
+								</Modal>
+							</div>
+						)}
+					</div>
+				}
 			</AppLayout>
 		);
 	}
