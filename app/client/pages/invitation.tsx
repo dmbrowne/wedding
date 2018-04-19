@@ -200,7 +200,9 @@ export default class Invitation extends React.Component<Props, State> {
 				{this.state.windowHeight === 0 ?
 					null :
 					<div className="wedding-invitation">
-						<HeroSection />
+						<div style={{height: this.state.windowHeight}}>
+							<HeroSection />
+						</div>
 						<InvitedSection
 							attendees={this.props.attendees}
 							singleInvitation={this.props.singleInvitation}
@@ -250,8 +252,8 @@ export default class Invitation extends React.Component<Props, State> {
 						<div className="section section-donate">
 							<h2 className="section-title"><span>wishing us</span>Well xx</h2>
 							<div className="yd-container">
-								<p><span className="fancy">T</span>he most important gift to us is having you share in our special day</p>
-								<p><span className="fancy">B</span>ut if you wish to contribute in some other way, we would love a few pennies to put in our pot, for our honeymoon trip afteer tying the knot!</p>
+								<p><span className="fancy">T</span>he most important gift to us is having you share our special day</p>
+								<p><span className="fancy">B</span>ut if you wish to contribute in some other way, we would love a few pennies to put in our pot, for our honeymoon trip after tying the knot!</p>
 								<p>If you would like to put in a penny or two - you can donate by clicking the piggy bank below,</p>
 								<p className="fancy">Thank You x</p>
 								<div className="uk-margin">
@@ -281,8 +283,9 @@ export default class Invitation extends React.Component<Props, State> {
 							<div className="success-modal">
 								<Modal title="Thank you!">
 									<i className="material-icons success-modal-check-icon">check</i>
-									<p>Your Response has been logged and saved</p>
-									<p>And We'll see you sson!</p>
+									<p>Your Response has been received</p>
+									{/* <p>We look forward to seeing you on our big day!</p> */}
+									<p>Sorry you can't make our big day, we hope to see you soon</p>
 									<p className="fancy">xx</p>
 									<div>
 										<button onClick={() => this.setState({ showRsvpConfirmModal: false })} className="uk-button uk-button-large">Ok</button>

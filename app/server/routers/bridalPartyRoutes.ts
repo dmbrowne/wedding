@@ -3,6 +3,7 @@ import { verifyUser, xhrOnly } from '../utils/express';
 import BridalParty from '../models/bridalParty';
 import BridalPartyRole from '../models/bridalPartyRoles';
 import { asyncAwaitTryCatch } from '../utils';
+import dbModels from '../models';
 
 interface RequestWithBridalParty extends Request {
 	bridalPartyMember: BridalParty;
@@ -27,7 +28,7 @@ router.route('/')
 	})
 	.post((req, res) => {
 		const { bridalPartyInput } = req.body;
-		BridalParty.create(bridalPartyInput)
+		dbModels.BridalParty.create(bridalPartyInput)
 			.then(bridalPartyMember => res.send(bridalPartyMember))
 			.catch(e => res.status(400).json({ error: e }));
 	})

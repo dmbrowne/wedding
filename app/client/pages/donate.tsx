@@ -87,7 +87,7 @@ export default class StripeTestPage extends React.Component<Props> {
 					<link
 						key="stripe-payment-fonts"
 						rel="stylesheet"
-						href="//fonts.googleapis.com/icon?family=Source+Code+Pro|Source+Sans+Pro"
+						href="//fonts.googleapis.com/icon?family=Source+Code+Pro|Source+Sans+Pro:400,400i"
 					/>
 					<link
 						key="uikit-stylesheet"
@@ -114,13 +114,13 @@ export default class StripeTestPage extends React.Component<Props> {
 								<img src="/assets/y&d-logo.png" />
 								<h1>Honeymoon Fund</h1>
 							</header>
-							<p className="message uk-text-muted">
+							<p className="message">
 								Many kisses we've shared, and many things we've got.<br/>
 								In lieu of a present, a monetary gift would help a lot.<br/>
 								A special honeymoon is our wish,<br/>
 								A wonderful experience together is worth more than a wish.
 							</p>
-							<p className="message">
+							<p className="message footer-message uk-text-muted">
 								With lots and lots of love<br/>
 								Yasmin & Daryl xx
 							</p>

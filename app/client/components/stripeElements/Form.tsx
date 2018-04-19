@@ -36,14 +36,16 @@ class PaymentForm extends Component<Props> {
 			<form onSubmit={this.handleSubmit}>
 				<CardData />
 				<PaymentRequestElement />
-				<div className="uk-text-center uk-margin-large">
+				<div className="uk-margin-large uk-text-left">
+					<label className="">Your message to the bride and groom</label>
 					<textarea
 						className="uk-textarea"
+						placeholder="Enter your message here"
 						value={this.props.personalMessage}
 						onChange={this.onTextAreaChange}
 						ref={ref => this.textArea = ref}
 					/>
-					<button className="uk-button uk-button-primary uk-width-1-1">Confirm donation</button>
+					<button className="uk-button uk-button-primary uk-width-1-1 uk-text-center">Confirm donation</button>
 				</div>
 			</form>
 		);

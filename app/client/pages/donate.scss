@@ -16,10 +16,21 @@ textarea[contentEditable=true] {
 		img { width: 100px }
 	}
 	
+	.message:first-of-type {
+		margin-top: 3rem;
+	}
 	.message {
-		font-family: Great Vibes;
 		font-size: 1.3rem;
+		font-family: Source Sans Pro;
 		text-align: center;
+		line-height: 2em;
+		font-style: italic;
+	}
+	
+	.footer-message {
+		font-family: Great Vibes;
+		font-size: 1.7rem;
+		font-style: normal;
 	}
 	
 	label {

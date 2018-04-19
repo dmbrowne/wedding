@@ -37,14 +37,14 @@ export default class InvitedSection extends React.Component<Props> {
 	render() {
 		return (
 			<div className="section section-invited">
-				<div className="yd-container">
+				<div className="yd-container fancy">
 					<h2 className="section-title"><span>You're</span>Invited</h2>
 					<p>With great pleasure</p>
 					<p><span className="fancy">Yasmin Obosi</span> and <span className="fancy">Daryl Browne</span></p>
 					<p>invite you to join them at the celebration of their marriage.</p>
 					<br/>
 					{this.props.singleInvitation ? this.singleMessage() : this.groupMessage()}
-					{!!this.props.confirmed && (
+					{!this.props.confirmed && (
 						<React.Fragment>
 							<p>Click the button below to confirm your attendance / absence now,</p>
 							<button

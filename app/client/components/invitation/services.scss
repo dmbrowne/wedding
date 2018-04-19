@@ -1,9 +1,10 @@
+@import "../../styles/yd-variables.scss";
 
 .section-services {
 	background: url('/assets/dark_wall_@2X.png');
-	color: lighten(#80705e, 20%);
+	color: lighten($info, 20%);
 
-	.section-title { color: #80705e; }
+	.section-title { color: $info; }
 
 	.services {
 		display: flex;
@@ -18,7 +19,7 @@
 		font-size: 14px;
 		max-width: 700px;
 		margin: 60px auto 0;
-		span { color: #7676a2; font-size: 1.5rem;}
+		span { color: $secondary-hover; font-size: 1.5rem;}
 	}
 }
 
@@ -35,7 +36,7 @@
 		left: 20px;
 		height: 1px;
 		width: calc(100% - 40px);
-		background: #80705e;
+		background: $info;
 	}
 	&:before { top: 0; }
 	&:after { bottom: 0; }
@@ -58,7 +59,7 @@
 		top: 40px;
 		width: 1px;
 		height: calc(100% - 80px);
-		background: #80705e;
+		background: $info;
 	}
 
 	&:before { left: 0; }
@@ -78,7 +79,7 @@
 			width: 10px;
 			height: 10px;
 			border-radius: 50%;
-			border: 3px solid #7676a2;
+			border: 3px solid $secondary-hover;
 			margin: 0 20px;
 		}
 
@@ -94,7 +95,7 @@
 				display: block;
 				width: 100px;
 				height: 2px;
-				background: #7676a2;
+				background: $secondary-hover;
 				margin: 0 auto;
 				text-align: center;
 			}

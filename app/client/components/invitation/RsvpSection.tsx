@@ -146,15 +146,14 @@ export default class RsvpSection extends React.Component<Props> {
 		return (
 			<div className="section section-rsvp">
 				{this.props.disabled ?
-					<div className="rvsp">
-						<p>Your reply has been saved and sent.</p>
-						<p>However, should anything change, you can edit your response by clicking the edit response button below</p>
+					<div className="yd-container">
+						<p>Your reply has been received.</p>
+						<p>However, should anything change, you can edit your response by clicking the edit response button below. Your Response cannot be changed after the 30th June</p>
 						<button className="uk-button" onClick={this.props.onEnable}>Edit response</button>
 					</div> :
 					<React.Fragment>
 						<h2 className="section-title"><span>Please reply</span> Répondez s'il vous plaît</h2>
 						<p>Please send your response by<br/><strong>May 31st</strong><br/>Responses after this date has passed will not be counted and your place will not be guaranteed.</p>
-						<p>Tap on an event to select/unselect it and indicate your attendance.</p>
 						<div className="row rsvps">
 							{this.props.attendees.map(attendee =>  (
 								<div key={attendee.id} className={cx('rsvp')}>

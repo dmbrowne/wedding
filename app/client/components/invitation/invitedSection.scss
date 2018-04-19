@@ -1,13 +1,13 @@
-@import '../../styles/invite.scss';
+@import '../../styles/yd-variables.scss';
 
 .section-invited {
-	@extend .concrete-bg;
+	@extend ∞concrete-bg;
 	padding-left: 8vw;
 	padding-right: 8vw;
-	.section-title { color: #80705e; }
+	.section-title { color: $info; }
 	.go-to-rsvp {
-		color: #80705e;
-		border: 3px  solid #80705e;
+		color: $info;
+		border: 3px  solid $info;
 		background-color: transparent;
 		margin-bottom: 30px;
 
@@ -15,7 +15,7 @@
     box-sizing: border-box;
     padding: 0 15px;
     vertical-align: middle;
-    font-size: 1rem;
+    font-size: 1.1rem;
     line-height: 1.8rem;
     text-align: center;
     text-transform: uppercase;
@@ -25,9 +25,9 @@
 		cursor: pointer;
 
 		&:hover {
-			background: lighten(#80705e, 2%);
+			background: lighten($info, 2%);
 			color: #fff;
-			border-color: darken(#80705e, 10%);
+			border-color: darken($info, 10%);
 		}
 		&:focus { outline: none; }
 	}

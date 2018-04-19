@@ -1,3 +1,4 @@
+@import './yd-variables.scss';
 @import "bootstrap/scss/functions.scss";
 @import "bootstrap/scss/variables.scss";
 @import "bootstrap/scss/mixins.scss";
@@ -121,10 +122,6 @@ textarea {
 	}
 }
 
-.concrete-bg {
-	background: url('/assets/vintage-concrete.png');
-}
-
 .bridal-party {
 	display: flex;
 	flex-wrap: wrap;
@@ -156,9 +153,9 @@ textarea {
 	footer { font-style: italic; color: #969696; }
 
 	&.primary {
-		background: #80705e;
+		background: $info;
 		color: #e9e9e9;
-		footer { color: lighten(#80705e, 20%); }
+		footer { color: lighten($info, 20%); }
 		
 		@media (min-width: 1400px) {
 			margin: 30px; 
@@ -172,7 +169,7 @@ textarea {
 }
 
 .section-groomsmen {
-	@extend .concrete-bg;
+	@extend ∞concrete-bg;
 }
 
 .section-donate {

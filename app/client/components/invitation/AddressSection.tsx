@@ -8,6 +8,7 @@ import moment from 'moment';
 
 const LocationAddress = event => (
 	<address>
+		<p style={{ margin: '30px 0' }}>{moment(event.startTime).format('Do MMMM YYYY')}</p>
 		<p><span>{event.venueName}</span></p>
 		<p style={{whiteSpace: 'pre-line'}}>{event.address}</p>
 		{event.mapsLink && <a href={event.mapsLink} target="_blank">
@@ -28,7 +29,7 @@ const CeremonySection = (event) => (
 			<LinearOrnament colour="#e0b278" />
 		</div>
 		<time>
-			Be there for: <span>{moment(event.entryTime).format('h')} o'Clock</span>
+			Please arrive by: <span>{moment(event.entryTime).format('h:mm a')}</span>
 		</time>
 	</div>
 );
@@ -50,7 +51,7 @@ const ReceptionSection = (event) => {
 					<LinearOrnament colour="#e0b278" />
 				</div>
 				<time>
-					Be there for: <span>{moment(event.startTime).format('h')} o'Clock</span>
+					Starts from: <span>{moment(event.startTime).format('h:mm a')}</span>
 				</time>
 			</div>
 		</div>

@@ -8,6 +8,7 @@ interface WrapperProps {
 	bridalParty?: BridalParty;
 	roleOptions: BridalPartyRole[];
 	onChange: <C>(C) => any;
+	onImageChange: (image: GalleryImage) => any;
 }
 
 interface WrapperStateTextFields {
@@ -78,6 +79,7 @@ const BridalPartyForm = (props: BridalFormProps) => {
 					onChange={e => onRoleChange(parseInt(e.target.value, 10))}
 					value={bridalParty.partyRoleId}
 				>
+					<option value={0}>--- Select a role ---</option>
 					{roleOptions.map(role => (
 						<option key={role.id} value={role.id}>{role.name}</option>
 					))}
@@ -146,8 +148,7 @@ export default class BridalPartyFormDataWrapper extends React.Component<WrapperP
 				Image: image,
 				imageId: image.id,
 			},
-		});
-		this.props.onChange(this.state);
+		}, () => this.props.onChange(this.state));
 	}
 
 	updateRole = (roleId: number) => {

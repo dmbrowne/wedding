@@ -1,9 +1,11 @@
+@import "../../styles/yd-variables.scss";
+
 .section-where {
 	background: url('/assets/town-hall-staircase.jpg') center center no-repeat;
 	background-size: cover;
 	position: relative;
 
-	.section-title { color: #ffeb7d; }
+	.section-title { color: $primary; }
 
 	> * { position: relative; z-index: 1; }
 	
@@ -14,7 +16,6 @@
     height: 100%;
     top: 0;
     left: 0;
-    background-color: rgba(183, 174, 22, 0.4);
     background-color: rgba(105, 99, 0, 0.6);
     z-index: 0;
 	}
@@ -54,7 +55,7 @@
 		}
 		p { margin: 5px }
 		a {
-			color: darken(#ffeb7d, 10%);
+			color: darken($primary, 10%);
 			text-decoration: none;
 			display: inline-flex;
 			align-items: center;
@@ -64,7 +65,7 @@
 
 	time span {
 		padding-left: 10px;
-		color: darken(#ffeb7d, 10%);
+		color: darken($primary, 10%);
 	}
 }
 
@@ -101,7 +102,7 @@
 		position: absolute;
 		width: 25vw;
 		svg path, svg g {
-			fill: #b9b9ff;
+			fill: $secondary-hover;
 		}
 	}
 
@@ -115,7 +116,7 @@
     left: 5px;
 	}
 
-	.section-title { color: #b9b9ff; }
+	.section-title { color: $secondary-hover; }
 
 	.caligraphy-divider {
 		@media screen and (min-width: 480px) { width: 50%; }
@@ -125,10 +126,10 @@
 
 	address, time {
 		color: #fff;
-		a { color: darken(#b9b9ff, 10%); }
+		a { color: darken($secondary-hover, 10%); }
 	}
 
 	time span {
-		color: darken(#b9b9ff, 10%);
+		color: darken($secondary-hover, 10%);
 	}
 }

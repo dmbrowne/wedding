@@ -4,7 +4,7 @@ import moment from 'moment';
 export default function Services(props) {
 	return (
 		<div className="section section-services">
-			<h2 className="section-title"><span>Order of</span>Service</h2>
+			<h2 className="section-title"><span>Order of the</span>Day</h2>
 			<div className="services">
 				{props.events && props.events.map(occurence => {
 					const startDate = moment(occurence.startTime);
@@ -23,15 +23,15 @@ export default function Services(props) {
 					);
 				})}
 			</div>
-			{/* {this.state.noBreakfast && <div className="side-note">
+			<div className="side-note">
 				<p>
 					<span>*</span>
-					Please note, that between the ceremony and wedding reception, there will be a slight time gap. This is to allow close family to have a sit down with the newly weds, before the wedding reception starts in the evening.
+					Please note, that between the ceremony and wedding reception, there will be a considerable time gap. This is to allow close family to have a sit down with the newly weds, before the wedding reception starts in the evening.
 				</p>
 				<p>
-					Whilst we would love for you to attend both, we understand your reservations if you only choose to attend one
+					Whilst we would love for you to attend both the Ceremony and the Reception, we understand if you only choose to attend one
 				</p>
-			</div>} */}
+			</div>
 		</div>
 	);
 }

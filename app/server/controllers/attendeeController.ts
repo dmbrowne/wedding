@@ -5,11 +5,9 @@ import models from '../models';
 import { getDesiredValuesFromRequestBody, objectToArray } from '../utils';
 import SendGroup from '../models/sendGroup';
 import EventModel from '../models/event';
-// import GalleryImage from '../models/galleryImage';
 import FoodChoice, { ChoiceTypes } from '../models/foodChoice';
-import BridalPartyRoles from '../models/bridalPartyRoles';
+import BridalPartyRole from '../models/bridalPartyRoles';
 import Attendee from '../models/attendee';
-import BridalParty from '../models/bridalParty';
 
 interface Rsvp {
 	attendeeId: string;
@@ -26,7 +24,7 @@ interface Rsvp {
 
 // type ResponseLocals = Response['locals'];
 interface IniviteResponseLocals {
-	bridalParties: { [bridalId: string]: BridalParty };
+	bridalParties: { [bridalPartyRoleTypeValue: string]: BridalPartyRole };
 	allInvitedEvents: EventModel[];
 }
 
@@ -195,7 +193,7 @@ export function deleteAttendee(req: NextAppRequest, res: Response, next: NextFun
 export function getGroupInvitation(req: NextAppRequest, res: Response, next: NextFunction) {
 	const { sendGroupId } = req.params;
 	Promise.all([
-		BridalPartyRoles.getWithMembers(),
+		BridalPartyRole.getWithMembers(),
 		SendGroup.getWithAttendeesAndEvents(sendGroupId),
 	])
 	.then(([bridalParties, sendGroup]) => {
@@ -224,7 +222,7 @@ export function getGroupInvitation(req: NextAppRequest, res: Response, next: Nex
 export function getSingleInvitation(req: NextAppRequest, res: Response, next: NextFunction) {
 	const { attendeeId } = req.params;
 	Promise.all([
-		BridalPartyRoles.getWithMembers(),
+		BridalPartyRole.getWithMembers(),
 		Attendee.getAttendeeWtihInvitedEvents(attendeeId),
 	])
 	.then(([bridalParties, attendee]) => {
