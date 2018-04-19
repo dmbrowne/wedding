@@ -28,6 +28,7 @@
 	.uk-modal-title { margin: 0; }
 	.uk-modal-body {
 		height: 50vh;
+		max-height: 350px;
 		overflow-y: auto;
 	}
 }

@@ -74,22 +74,20 @@
 .section-rsvp {
 	overflow: hidden;
 	position: relative;
-	background: #010101 url('/assets/723B3933.jpg') no-repeat center center;
-	background-size: cover;
+	background: #010101;
 	color: #ccc;
 	font-size: 1.1rem;
 	min-height: 100vh;
 	&:before {
 		content: '';
 		position: absolute;
-		top: -5%;
+		top: 0%;
     left: -5%;
     width: 110%;
-    height: 110%;
-		background-color: rgba(0,0,0,0.7);
+    height: 100%;
 		z-index: 0;
 		filter: brightness(50%) blur(7px);
-		background: center center / cover no-repeat url('/assets/723B3933.jpg')
+		background: top center / 100% auto no-repeat url('/assets/723B3933.jpg')
 	}
 	> * { position: relative; z-index: 1;}
 	.section-title {
