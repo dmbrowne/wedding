@@ -6,6 +6,7 @@ import AttendeeModel from '../../server/models/attendee';
 import SendGroupModel from '../../server/models/sendGroup';
 import BridalPartyRoleModel from '../../server/models/bridalPartyRoles';
 import EventModel from '../../server/models/event';
+import { FoodChoiceType } from '../../server/models/foodChoice';
 import { SingleInvitationResponseLocals, GroupInvitationResponseLocals } from '../../server/controllers/attendeeController';
 import AppLayout from '../components/AppLayout';
 import InvitedSection from '../components/invitation/InvitedSection';
@@ -23,20 +24,18 @@ interface State {
 			[eventId: string]: boolean;
 		},
 	};
-	dietryRequirements: {
+	foodSelections: {
 		[attendeeId: string]: {
-			starter: 'meat' | 'fish' | 'vegetarian',
-			main: 'meat' | 'fish' | 'vegetarian',
+			starter: FoodChoiceType,
+			main: FoodChoiceType,
+			valid: boolean;
 			allergies: string;
 		},
 	};
-	dietEvents: {
-		[attendeeId: string]: {
-			[eventId: string]: boolean;
-		},
-	};
+	dietEvents: string[];
 	rsvpDisabled: boolean;
 	showRsvpConfirmModal: boolean;
+	rsvpFormIsPristine: boolean;
 }
 
 interface Props {
@@ -82,7 +81,7 @@ export default class Invitation extends React.Component<Props, State> {
 
 	rsvpSection: HTMLElement = null;
 
-	constructor(props) {
+	constructor(props: Props) {
 		super(props);
 		const selectedEvents = props.attendees.reduce((accum, attendee) => ({
 			...accum,
@@ -91,22 +90,24 @@ export default class Invitation extends React.Component<Props, State> {
 				[event.id]: event.EventAttendee.attending,
 			}), {}),
 		}), {});
-		const dietryRequirements = props.attendees.reduce((accum, attendee) => ({
+		const foodSelections = props.attendees.reduce((accum, attendee) => ({
 			...accum,
 			[attendee.id]: {
 				starter: attendee.FoodChoice && attendee.FoodChoice.starter || null,
 				main: attendee.FoodChoice && attendee.FoodChoice.main || null,
 				allergies: attendee.FoodChoice && attendee.FoodChoice.allergies || '',
+				valid: this.attendeeFoodChoiceIsValid(attendee.FoodChoice),
 			},
 		}), {});
 
 		this.state = {
 			windowHeight: 0,
 			selectedEvents,
-			dietryRequirements,
+			foodSelections,
 			dietEvents: props.allInvitedEvents.filter(service => service.dietFeedback).map(event => event.id),
 			rsvpDisabled: props.previouslyConfirmed,
 			showRsvpConfirmModal: false,
+			rsvpFormIsPristine: true,
 		};
 	}
 
@@ -130,15 +131,23 @@ export default class Invitation extends React.Component<Props, State> {
 		});
 	}
 
-	selectFoodChoice = (attendeeId: string, courseType: 'starter' | 'main', preference: 'meat' | 'fish' | 'vegetarian') => {
+	attendeeFoodChoiceIsValid(foodSelection: Pick<State['foodSelections']['attendeeId'], 'starter' | 'main' | 'allergies'>) {
+		return (
+			!!foodSelection && !!foodSelection.starter && !!foodSelection.main
+		);
+	}
+
+	selectFoodChoice = (attendeeId: string, courseType: 'starter' | 'main', preference: FoodChoiceType) => {
 		return new Promise(resolve => {
+			const newSelection = {
+				...this.state.foodSelections[attendeeId],
+				[courseType]: preference,
+			};
+			newSelection.valid = this.attendeeFoodChoiceIsValid(newSelection);
 			this.setState({
-				dietryRequirements: {
-					...this.state.dietryRequirements,
-					[attendeeId]: {
-						...this.state.dietryRequirements[attendeeId],
-						[courseType]: preference,
-					},
+				foodSelections: {
+					...this.state.foodSelections,
+					[attendeeId]: newSelection,
 				},
 			}, () => resolve());
 		});
@@ -146,17 +155,53 @@ export default class Invitation extends React.Component<Props, State> {
 
 	updateAllergies = (attendeeId: string, value: string) => {
 		this.setState({
-			dietryRequirements: {
-				...this.state.dietryRequirements,
+			foodSelections: {
+				...this.state.foodSelections,
 				[attendeeId]: {
-					...this.state.dietryRequirements[attendeeId],
+					...this.state.foodSelections[attendeeId],
 					allergies: value,
 				},
 			},
 		});
 	}
 
+	noEventsSelected() {
+		const selectedEvents = Object.keys(this.state.selectedEvents).filter(attendeeId => {
+			return Object.keys(this.state.selectedEvents[attendeeId]).filter(eventId => {
+				return this.state.selectedEvents[attendeeId][eventId];
+			});
+		});
+		return selectedEvents.length === 0;
+	}
+
+	isRsvpValid() {
+		const attendeeValidations = this.props.attendees.reduce((accum, attendee) => {
+			const requiresFoodChoiceValidation = Object.keys(this.state.selectedEvents[attendee.id]).some(eventId => {
+				return this.state.dietEvents.indexOf(eventId) >= 0;
+			});
+			return {
+				...accum,
+				[attendee.id]: {
+					...attendee,
+					valid: requiresFoodChoiceValidation ? this.state.foodSelections[attendee.id].valid : true,
+				},
+			};
+		}, {});
+		const inValidAttendees = Object.keys(attendeeValidations).filter(attendeeId => {
+			return !attendeeValidations[attendeeId].valid;
+		});
+
+		return inValidAttendees;
+	}
+
 	onSubmit = () => {
+		const inValidAttendees = this.isRsvpValid();
+		if (inValidAttendees.length > 0) {
+			return this.setState({ rsvpFormIsPristine: false }, () =>
+				alert('Please fill out the food choices before sending your response'),
+			);
+		}
+
 		let body;
 		body = this.props.attendees.map(attendee => ({
 			attendeeId: attendee.id,
@@ -164,7 +209,7 @@ export default class Invitation extends React.Component<Props, State> {
 				...this.state.selectedEvents[attendee.id],
 			},
 			foodChoices: {
-				...this.state.dietryRequirements[attendee.id],
+				...this.state.foodSelections[attendee.id],
 			},
 		}));
 		body = this.props.singleInvitation ? body[0] : body;
@@ -270,13 +315,14 @@ export default class Invitation extends React.Component<Props, State> {
 								selectedEvents={this.state.selectedEvents}
 								onSubmit={this.onSubmit}
 								isAnUpdate={this.props.previouslyConfirmed}
-								foodSelections={this.state.dietryRequirements}
+								foodSelections={this.state.foodSelections}
 								onSelectStarter={(aId, food) => this.selectFoodChoice(aId, 'starter', food)}
 								onSelectMains={(aId, food) => this.selectFoodChoice(aId, 'main', food)}
 								onAllergiesChange={(aId, value) => this.updateAllergies(aId, value)}
 								dietryRequiredEvents={this.state.dietEvents}
 								disabled={this.state.rsvpDisabled}
 								onEnable={() => this.setState({ rsvpDisabled: false })}
+								pristine={this.state.rsvpFormIsPristine}
 							/>
 						</div>
 						{this.state.showRsvpConfirmModal && (
@@ -284,8 +330,10 @@ export default class Invitation extends React.Component<Props, State> {
 								<Modal title="Thank you!">
 									<i className="material-icons success-modal-check-icon">check</i>
 									<p>Your Response has been received</p>
-									{/* <p>We look forward to seeing you on our big day!</p> */}
-									<p>Sorry you can't make our big day, we hope to see you soon</p>
+									{this.noEventsSelected() ?
+										<p>Sorry you can't make our big day, we hope to see you soon</p> :
+										<p>We look forward to seeing you on our big day!</p>
+									}
 									<p className="fancy">xx</p>
 									<div>
 										<button onClick={() => this.setState({ showRsvpConfirmModal: false })} className="uk-button uk-button-large">Ok</button>

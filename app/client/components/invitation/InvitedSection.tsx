@@ -37,16 +37,18 @@ export default class InvitedSection extends React.Component<Props> {
 	render() {
 		return (
 			<div className="section section-invited">
-				<div className="yd-container fancy">
-					<h2 className="section-title"><span>You're</span>Invited</h2>
-					<p>With great pleasure</p>
-					<p><span className="fancy">Yasmin Obosi</span> and <span className="fancy">Daryl Browne</span></p>
-					<p>invite you to join them at the celebration of their marriage.</p>
-					<br/>
-					{this.props.singleInvitation ? this.singleMessage() : this.groupMessage()}
+				<h2 className="section-title"><span>You're</span>Invited</h2>
+				<div className="yd-container">
+					<div className="fancy">
+						<p>With great pleasure</p>
+						<p><span className="fancy">Yasmin Obosi</span> and <span className="fancy">Daryl Browne</span></p>
+						<p>invite you to join them at the celebration of their marriage.</p>
+						<br/>
+						{this.props.singleInvitation ? this.singleMessage() : this.groupMessage()}
+					</div>
 					{!this.props.confirmed && (
 						<React.Fragment>
-							<p>Click the button below to confirm your attendance / absence now,</p>
+							<p className="fancy">Click the button below to confirm your attendance / absence now,</p>
 							<button
 								ref={ref => this.goToRsvp = ref}
 								className="go-to-rsvp"
@@ -54,7 +56,7 @@ export default class InvitedSection extends React.Component<Props> {
 							>
 								RSVP
 							</button>
-							<p>... Or read on for more details...</p>
+							<p className="fancy">... Or read on for more details...</p>
 						</React.Fragment>
 					)}
 				</div>

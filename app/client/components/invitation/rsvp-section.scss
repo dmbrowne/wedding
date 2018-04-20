@@ -103,6 +103,16 @@
 		font-size: 1.7rem;
 		color: $primary;
 	}
+	.error-alert {
+		padding: 10px;
+    margin: 20px 0;
+    background: indianred;
+    border: darkred 1px solid;
+    color: #fff;
+		font-weight: 400;
+		> * { vertical-align: middle; }
+		i { margin-right: 5px; }
+	}
 	.rsvps, .dietry-feedback {
 		justify-content: center;
 	}
@@ -130,6 +140,7 @@
 	}
 	.attendance { margin-top: 15px; }
 	.attendance + .dietry-requirements { margin-top: 30px }
+	.attendance .note { display:block; color: #fff; font-weight: 300; }
 	.dietry-requirements {
 		padding: 15px;
 		margin: 15px -15px 0;

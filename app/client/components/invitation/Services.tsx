@@ -1,7 +1,14 @@
 import './services.scss';
 import moment from 'moment';
+import Event from '../../../server/models/event';
 
-export default function Services(props) {
+export default function Services(props: { events: Event[] }) {
+	let showTimeGapNote = false;
+	if (props.events.length === 2) {
+		showTimeGapNote = props.events.filter(event => {
+			return (event.slug === 'ceremony' || event.slug ===  'breakfast');
+		}).length === 2;
+	}
 	return (
 		<div className="section section-services">
 			<h2 className="section-title"><span>Order of the</span>Day</h2>
@@ -23,15 +30,17 @@ export default function Services(props) {
 					);
 				})}
 			</div>
-			<div className="side-note">
-				<p>
-					<span>*</span>
-					Please note, that between the ceremony and wedding reception, there will be a considerable time gap. This is to allow close family to have a sit down with the newly weds, before the wedding reception starts in the evening.
-				</p>
-				<p>
-					Whilst we would love for you to attend both the Ceremony and the Reception, we understand if you only choose to attend one
-				</p>
-			</div>
+			{showTimeGapNote && (
+				<div className="side-note">
+					<p>
+						<span>*</span>
+						Please note, that between the ceremony and wedding reception, there will be a considerable time gap. This is to allow close family to have a sit down with the newly weds, before the wedding reception starts in the evening.
+					</p>
+					<p>
+						Whilst we would love for you to attend both the Ceremony and the Reception, we understand if you only choose to attend one
+					</p>
+				</div>
+			)}
 		</div>
 	);
 }
