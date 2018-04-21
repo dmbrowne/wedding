@@ -16,7 +16,7 @@ function sendGroup(
 		route: groupId ? `admin/sendgroups/${groupId}` : 'admin/sendgroups',
 		method: groupId ? 'PUT' : 'POST',
 		body: JSON.stringify({
-			...groupDetails,
+			...groupDetails ? groupDetails : {},
 			attendeeIds,
 		}),
 	});

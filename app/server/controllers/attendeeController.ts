@@ -43,11 +43,12 @@ export interface GroupInvitationResponseLocals extends IniviteResponseLocals {
 export async function getAllAttendees(req: NextAppRequest, res: Response, next) {
 	const { search, emailable } = req.query;
 
-	if (emailable) {
-		return getEmailableAttendees(req, res, next);
-	}
-
 	let attendees;
+
+	if (emailable) {
+		attendees = await getEmailableAttendees();
+		return res.send(attendees);
+	}
 
 	if (search) {
 		const searchTerms = decodeURIComponent(search).split(',').filter(term => term).map(term => `%${term}%`);
@@ -65,7 +66,10 @@ export async function getAllAttendees(req: NextAppRequest, res: Response, next) 
 			}],
 		});
 	} else {
-		attendees = await models.Attendee.findAll();
+		attendees = await Attendee.findAll({
+			order: [['firstName', 'ASC']],
+			include: [{ model: models.SendGroup }],
+		});
 	}
 
 	res.locals.attendees = attendees;
@@ -76,17 +80,15 @@ export async function getAllAttendees(req: NextAppRequest, res: Response, next) 
 	}
 }
 
-export function getEmailableAttendees(req, res, next) {
-	models.Attendee.findAll({
+export function getEmailableAttendees() {
+	return models.Attendee.findAll({
+		order: [
+			['firstName', 'ASC'],
+		],
 		where: { email: {[Op.not]: null} },
 		include: [{
 			model: models.SendGroup,
-		}]
-	})
-	.then(attendees => res.send(attendees))
-	.catch(e => {
-		console.log(e);
-		next(e);
+		}],
 	});
 }
 

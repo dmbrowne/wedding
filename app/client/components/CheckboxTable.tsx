@@ -1,3 +1,4 @@
+import './checkboxTable.scss';
 import * as React from 'react';
 import withModal, { ChildProps } from './withModal';
 
@@ -126,21 +127,23 @@ class DataItemListing extends React.Component<InternalProps, State> {
 	render() {
 		return (
 			<div>
-				<div className="uk-clearfix uk-margin">
-					{this.props.buttons}
-					{this.props.bulk && (
-						<div className="uk-float-right">
-							{this.state.bulkMode && this.bulkModeButtons()}
-							{!!this.props.data.length && (
-								<button
-									onClick={this.selectAll}
-									className="uk-button-small uk-button uk-button-text uk-margin-left"
-								>
-									Select all
-								</button>
-							)}
-						</div>
-					)}
+				<div>
+					<div className="uk-clearfix uk-margin menu-bar" data-uk-sticky={true}>
+						{this.props.buttons}
+						{this.props.bulk && (
+							<div className="uk-float-right">
+								{this.state.bulkMode && this.bulkModeButtons()}
+								{!!this.props.data.length && (
+									<button
+										onClick={this.selectAll}
+										className="uk-button-small uk-button uk-button-text uk-margin-left"
+									>
+										Select all
+									</button>
+								)}
+							</div>
+						)}
+					</div>
 				</div>
 				<div className="uk-overflow-auto">
 					<table className="uk-table uk-table-justify uk-table-divider">

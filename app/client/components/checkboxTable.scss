@@ -1,0 +1,8 @@
+.menu-bar {
+	padding: 0;
+	transition: padding 400ms;
+	&.uk-active {
+		padding: 15px 0;
+		background: #fff;
+	}
+}
