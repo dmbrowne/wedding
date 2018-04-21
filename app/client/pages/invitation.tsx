@@ -232,7 +232,7 @@ export default class Invitation extends React.Component<Props, State> {
 
 	render() {
 		return (
-			<AppLayout>
+			<AppLayout title="Mr & Mrs Browne 2018">
 				<Head>
 					<link
 						key="google-fonts"
