@@ -129,7 +129,7 @@ class FireFlies extends React.Component {
 			this.pxs[i] = new Circle(this.canvasContext, this.componentWidth, this.componentHeight, this.rint);
 			this.pxs[i].reset();
 		}
-		this.fliesInterval = window.setInterval(() => this.draw(), 50);
+		this.fliesInterval = window.setInterval(() => this.draw(), 40);
 
 		setTimeout(() => {
 			this.stopFlies();
