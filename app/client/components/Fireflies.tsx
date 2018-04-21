@@ -18,7 +18,7 @@ function Circle(canvasContext, width, height, rint) {
 		xmax: 1,
 		ymax: 1,
 		rmax: 1,
-		rt: 0.8,
+		rt: 2,
 		xdef: 960,
 		ydef: 540,
 		xdrift: 3,
@@ -54,20 +54,21 @@ function Circle(canvasContext, width, height, rint) {
 			this.reset();
 		}
 
-		// const newo = 1 - (this.rt / this.hl);
 		const newo = 1;
 		this.canvasContext.beginPath();
-		this.canvasContext.arc(this.x, this.y, this.r, 0, Math.PI * 2, true);
+		this.canvasContext.rect(this.x, this.y, this.r, Math.PI);
+		// this.canvasContext.arc(this.x, this.y, this.r, 0, Math.PI * 2, true);
 		this.canvasContext.closePath();
 
 		const cr = this.r * newo;
 		const g = this.canvasContext.createRadialGradient(this.x, this.y, 0, this.x, this.y, (cr <= 0 ? 1 : cr));
-		// g.addColorStop(0.0, 'rgba(255,255,255,' + newo + ')');
-		// g.addColorStop(this.stop, 'rgba(255,255,255,' + (newo * 0.7) + ')');
-		// g.addColorStop(1.0, 'rgba(255,255,255,0.3)');
-		g.addColorStop(0.0, 'rgba(238,180,28,'+newo+')');
-		g.addColorStop(this.stop, 'rgba(238,180,28,'+(newo*.3)+')');
-		g.addColorStop(1.0, 'rgba(238,180,28,0.1)');
+		g.addColorStop(0.0, 'rgba(255,255,255,' + newo + ')');
+		g.addColorStop(this.stop, 'rgba(255,255,255,' + (newo * 1) + ')');
+		g.addColorStop(1.0, 'rgba(255,255,255,0.1)');
+
+		// g.addColorStop(0.0, 'rgba(238,180,28,'+newo+')');
+		// g.addColorStop(this.stop, 'rgba(238,180,28,'+(newo*.3)+')');
+		// g.addColorStop(1.0, 'rgba(238,180,28,0.1)');
 
 		this.canvasContext.fillStyle = g;
 		this.canvasContext.fill();
@@ -124,7 +125,7 @@ class FireFlies extends React.Component {
 		this.componentHeight = this.element.offsetHeight;
 		this.canvasContext = this.canvas.getContext('2d');
 
-		for (let i = 0; i < 200; i++) {
+		for (let i = 0; i < 300; i++) {
 			this.pxs[i] = new Circle(this.canvasContext, this.componentWidth, this.componentHeight, this.rint);
 			this.pxs[i].reset();
 		}
