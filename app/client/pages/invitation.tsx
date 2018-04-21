@@ -16,6 +16,7 @@ import Services from '../components/invitation/Services';
 import RsvpSection from '../components/invitation/RsvpSection';
 import { restfulRequest } from '../api/utils';
 import Modal from '../components/Modal';
+import Pig from '../components/icons/Pig';
 
 interface State {
 	windowHeight: number;
@@ -303,7 +304,8 @@ export default class Invitation extends React.Component<Props, State> {
 								<p className="fancy">Thank You x</p>
 								<div className="uk-margin">
 									<a href={`${this.props.url.asPath}/donate`} target="_blank">
-										<img src="/assets/pig-bank.png" style={{ width: 200 }} />
+										<Pig />
+										{/* <img src="/assets/pig-bank.png" style={{ width: 200 }} /> */}
 									</a>
 								</div>
 							</div>
