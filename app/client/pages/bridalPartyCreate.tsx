@@ -29,6 +29,7 @@ class BridalPartyCreate extends React.Component<Props> {
 	}
 
 	onChange = (values) => {
+		console.log(values)
 		this.setState({
 			input: values,
 		});
@@ -36,6 +37,7 @@ class BridalPartyCreate extends React.Component<Props> {
 
 	save = () => {
 		const { firstName, lastName, comment, partyRoleId, imageId, subRole, vip } = this.state.input.bridalParty;
+		console.log(this.state.input);
 		const promise = this.props.bridalPartyMemberExists ?
 			updateBridalParty(this.props.bridalParty.id, { firstName, lastName, comment, partyRoleId, imageId, subRole, vip }) :
 			createBridalParty({ firstName, lastName, comment, partyRoleId, imageId, subRole, vip });
@@ -52,6 +54,7 @@ class BridalPartyCreate extends React.Component<Props> {
 					bridalParty={this.props.bridalParty}
 					roleOptions={this.props.bridalPartyRoleOptions}
 					onChange={this.onChange}
+					onImage
 				/>
 				<button onClick={this.save} className="uk-button uk-button-primary">
 					Save

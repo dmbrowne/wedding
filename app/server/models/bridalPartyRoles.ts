@@ -1,4 +1,4 @@
-import Sequelize, { Model, HasManyGetAssociationsMixin } from 'sequelize';
+import Sequelize, { Model } from 'sequelize';
 import BridalParty from './bridalParty';
 import GalleryImage from './galleryImage';
 
@@ -51,5 +51,5 @@ export default class BridalPartyRole extends Model {
 	id: number;
 	name: string;
 	value: string;
-	BridalParties: HasManyGetAssociationsMixin<BridalParty>;
+	BridalParties: BridalParty[];
 }

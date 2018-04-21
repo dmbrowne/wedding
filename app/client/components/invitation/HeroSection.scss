@@ -1,7 +1,10 @@
+@import "../../styles/yd-variables.scss";
+
 .section-hero {
 	height: 100%;
 	min-height: 600px;
 	position: relative;
+	padding-bottom: 5vh;
 
 	> * { z-index: 1;}
 

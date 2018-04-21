@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router, Request } from 'express';
 import {
 	getAllAttendees,
 	getAttendee,
@@ -6,8 +6,15 @@ import {
 	editAttendee,
 	deleteAttendee,
 } from '../controllers/attendeeController';
-import { NextAppRequest } from '../types';
 import { verifyUser } from '../utils/express';
+import Attendee from '../models/attendee';
+import Event from '../models/event';
+
+declare module "express" {
+	interface Request {
+		attendee: Attendee;
+	}
+}
 
 const router = Router();
 
@@ -18,10 +25,29 @@ router.route('/')
 	.post(createNewAttendees)
 	.delete(deleteAttendee);
 
-router.get('/new', (req: NextAppRequest, res) => req.nextAppRenderer.render(req, res, '/attendeeCreate'));
+router.get('/new', (req: Request, res) => req.nextAppRenderer.render(req, res, '/attendeeCreate'));
 
 router.route('/:attendeeId')
-	.get(getAttendee)
+	.all(async (req: Request, res, next) => {
+		const attendee = await Attendee.getAttendeeWtihInvitedEvents(req.params.attendeeId);
+		if (!attendee) {
+			res.status(400);
+			throw Error(`Attendee not found with the id ${req.params.attendeeId}`);
+		}
+		req.attendee = attendee;
+		next();
+	})
+	.get((req: Request, res, next) => {
+		if (req.xhr) {
+			res.send(req.attendee);
+		}
+		return next();
+	})
+	.get(async (req: Request, res) => {
+		res.locals.attendee = req.attendee;
+		res.locals.allEvents = await Event.findAll();
+		req.nextAppRenderer.render(req, res, '/attendeeEdit');
+	})
 	.put(editAttendee)
 	.delete(deleteAttendee);
 

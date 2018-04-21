@@ -5,9 +5,13 @@ import PaymentRequestElement from './PaymentRequestElement';
 
 interface Props extends ReactStripeElements.InjectedStripeProps {
 	onSubmit: (token: ReactStripeElements.PatchedTokenResponse['token']) => any;
+	personalMessage: string;
+	onMessageChange: (personalMessage: string) => any;
 }
 
 class PaymentForm extends Component<Props> {
+	textArea: HTMLTextAreaElement = null;
+
 	handleSubmit = (ev) => {
 		ev.preventDefault();
 
@@ -19,9 +23,12 @@ class PaymentForm extends Component<Props> {
 			}
 			this.props.onSubmit(token);
 		});
+	}
 
-		// However, this line of code will do the same thing:
-		// this.props.stripe.createToken({type: 'card', name: 'Jenny Rosen'});
+	onTextAreaChange = e => {
+		this.props.onMessageChange(e.target.value);
+		this.textArea.style.height = '80px'; // Prevent height from growing when deleting lines.
+		this.textArea.style.height = this.textArea.scrollHeight + 'px';
 	}
 
 	render() {
@@ -29,8 +36,16 @@ class PaymentForm extends Component<Props> {
 			<form onSubmit={this.handleSubmit}>
 				<CardData />
 				<PaymentRequestElement />
-				<div className="uk-text-center uk-margin-large">
-					<button className="uk-button uk-button-primary uk-button-large">Confirm donation</button>
+				<div className="uk-margin-large uk-text-left">
+					<label className="">Your message to the bride and groom</label>
+					<textarea
+						className="uk-textarea"
+						placeholder="Enter your message here"
+						value={this.props.personalMessage}
+						onChange={this.onTextAreaChange}
+						ref={ref => this.textArea = ref}
+					/>
+					<button className="uk-button uk-button-primary uk-width-1-1 uk-text-center">Confirm donation</button>
 				</div>
 			</form>
 		);

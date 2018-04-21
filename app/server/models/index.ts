@@ -11,6 +11,7 @@ import GalleryImage from './galleryImage';
 import BridalParty from './bridalParty';
 import BridalPartyRoles from './bridalPartyRoles';
 import FoodChoice from './foodChoice';
+import Donation from './donation';
 import sequelizeConnection from './lib/connection';
 
 interface IModels {
@@ -27,6 +28,7 @@ interface IModels {
   BridalParty: typeof BridalParty;
   BridalPartyRoles: typeof BridalPartyRoles;
   FoodChoice: typeof FoodChoice;
+  Donation: typeof Donation;
 }
 
 const modelz = [
@@ -43,6 +45,7 @@ const modelz = [
   CampaignSendGroup,
   GalleryImage,
   FoodChoice,
+  Donation,
 ];
 
 const dbModels = modelz.reduce((models, ModelClass) => {

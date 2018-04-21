@@ -1,22 +1,27 @@
+@import "../../styles/yd-variables.scss";
+
 .section-where {
-	background: url('/assets/town-hall-staircase.jpg') center center no-repeat;
-	background-size: cover;
 	position: relative;
+	color: #000;
 
-	.section-title { color: #ffeb7d; }
+	> * { position: relative; z-index: 2; }
 
-	> * { position: relative; z-index: 1; }
-	
-	&:before {
+	&:before, &:after {
 		content: '';
     position: absolute;
     width: 100%;
     height: 100%;
     top: 0;
-    left: 0;
-    background-color: rgba(183, 174, 22, 0.4);
-    background-color: rgba(105, 99, 0, 0.6);
-    z-index: 0;
+		left: 0;
+	}
+	&:before {
+		background: center center / cover no-repeat url('/assets/town-hall-staircase.jpg');
+		filter: grayscale(100%) blur(4px);
+		z-index: 0;
+	}
+	&:after {
+    background-color: rgba(0, 0, 0, 0.1);
+    z-index: 1;
 	}
 
 	.ornate-divider {
@@ -27,7 +32,7 @@
 		@media screen and (min-width: 768px) { width: 50%; }
 		@media screen and (min-width: 1024px) { width: 40%; }
 		svg g {
-			fill: #ececec;
+			fill: #3c408f;
 		}
 	}
 
@@ -35,17 +40,19 @@
 		@extend .ornate-divider;
 		width: 25vw;
 		margin: 1rem auto;
+		svg g {
+			fill: #fff;
+		}
 		@media screen and (min-width: 480px) { width: 50%; }
 		@media screen and (min-width: 600px) { width: 38%; margin: 2rem auto; }
 		@media screen and (min-width: 768px) { width: 22%; }
-		@media screen and (min-width: 1024px) { width: 14%; margin: 2.5rem auto; }
-		@media screen and (min-width: 1200px) { width: 10%; }
+		@media screen and (min-width: 1024px) { width: 16%; margin: 2.5rem auto; }
+		@media screen and (min-width: 1200px) { width: 12%; }
 	}
 
 	address, time {
 		display: block;
 		text-align: center;
-		color: #fff;
 		font-size: 1.5rem;
 		span {
 			font-family: 'Great Vibes';
@@ -54,7 +61,7 @@
 		}
 		p { margin: 5px }
 		a {
-			color: darken(#ffeb7d, 10%);
+			color: $secondary-hover;
 			text-decoration: none;
 			display: inline-flex;
 			align-items: center;
@@ -62,9 +69,16 @@
 		}
 	}
 
+	.venue-name {
+		background: rgba(255,255,255,0.4);
+    padding: 5px 40px;
+    border-radius: 40px;
+	}
+
 	time span {
 		padding-left: 10px;
-		color: darken(#ffeb7d, 10%);
+		// color: darken(#d8ab73, 10%);
+		color: #fff;
 	}
 }
 
@@ -76,6 +90,9 @@
 	overflow: hidden;
 	color: #e3e3e3;
 
+	.venue-name {
+		background: none; padding: 0;
+	}
 	.bg {
 		position: absolute;
 		top: -5%;
@@ -101,7 +118,7 @@
 		position: absolute;
 		width: 25vw;
 		svg path, svg g {
-			fill: #b9b9ff;
+			fill: $secondary-hover;
 		}
 	}
 
@@ -115,9 +132,10 @@
     left: 5px;
 	}
 
-	.section-title { color: #b9b9ff; }
+	.section-title { color: $secondary-hover; }
 
 	.caligraphy-divider {
+		svg g { fill: #fff; }
 		@media screen and (min-width: 480px) { width: 50%; }
 		@media screen and (min-width: 600px) { width: 38%; margin: 2rem auto; }
 		@media screen and (min-width: 768px) { width: 22%; }
@@ -125,10 +143,10 @@
 
 	address, time {
 		color: #fff;
-		a { color: darken(#b9b9ff, 10%); }
+		a { color: darken($secondary-hover, 10%); }
 	}
 
 	time span {
-		color: darken(#b9b9ff, 10%);
+		color: darken($secondary-hover, 10%);
 	}
 }

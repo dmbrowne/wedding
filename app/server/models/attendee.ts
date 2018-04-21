@@ -15,6 +15,9 @@ interface GetApplicableAttendeeRecipientVars {
 	attendeeIds?: Attendee['id'] | string[];
 }
 
+const baseUrl = process.env.NODE_ENV === 'production' ? 'https://thebrownes.info' : 'http://localhost:4000';
+export const invitationUrlPrefix = `${baseUrl}/invitation/a`;
+
 export default class Attendee extends Model {
 	static init(sequelizeConnection) {
 		super.init({
@@ -26,6 +29,14 @@ export default class Attendee extends Model {
 			lastName: Sequelize.STRING,
 			tableId: Sequelize.UUID,
 			sendGroupId: Sequelize.UUID,
+			invitationUrl: {
+				type: Sequelize.VIRTUAL,
+				get: function getInvitationUrl() {
+					return this.sendGroupId ?
+						SendGroup.invitationUrl(this.sendGroupId) :
+						Attendee.invitationUrl(this.id);
+				},
+			},
 		},
 		{
 			sequelize: sequelizeConnection,
@@ -103,6 +114,8 @@ export default class Attendee extends Model {
 			}],
 		});
 	}
+
+	static invitationUrl = (attendeeId) => invitationUrlPrefix + '/' + attendeeId;
 
 	id: string;
 	email: string;

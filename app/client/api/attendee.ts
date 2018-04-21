@@ -1,7 +1,11 @@
 import { restfulRequest } from './utils';
-import { IAttendee } from '../../server/types/models';
 
-type CreateAttendeeInput = Pick<IAttendee, 'firstName' | 'lastName' | 'email'>;
+export interface CreateAttendeeInput {
+	firstName: string;
+	lastName?: string;
+	email?: string;
+	eventIds?: string[];
+}
 
 export function createAttendees(attendees: CreateAttendeeInput[]) {
 	return restfulRequest({

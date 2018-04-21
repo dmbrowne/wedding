@@ -8,7 +8,8 @@ import moment from 'moment';
 
 const LocationAddress = event => (
 	<address>
-		<p><span>{event.venueName}</span></p>
+		<p className="date" style={{ margin: '30px 0' }}>{moment(event.startTime).format('Do MMMM YYYY')}</p>
+		<p><span className="venue-name">{event.venueName}</span></p>
 		<p style={{whiteSpace: 'pre-line'}}>{event.address}</p>
 		{event.mapsLink && <a href={event.mapsLink} target="_blank">
 			<small>open in google maps</small>
@@ -23,12 +24,13 @@ const CeremonySection = (event) => (
 		<div className="ornate-divider">
 			<OrnateDivider colour="#e0b278" />
 		</div>
+		<p className="fancy">The Ceremony will be held on</p>
 		<LocationAddress {...event} />
 		<div className="caligraphy-divider">
 			<LinearOrnament colour="#e0b278" />
 		</div>
 		<time>
-			Be there for: <span>{moment(event.entryTime).format('h')} o'Clock</span>
+			Please arrive by: <span>{moment(event.entryTime).format('h:mm a')}</span>
 		</time>
 	</div>
 );
@@ -45,12 +47,13 @@ const ReceptionSection = (event) => {
 				<FloralSwirl />
 			</div>
 			<div className="yd-container">
+				<p className="fancy">The reception will commence on</p>
 				<LocationAddress {...event} />
 				<div className="caligraphy-divider">
 					<LinearOrnament colour="#e0b278" />
 				</div>
 				<time>
-					Be there for: <span>{moment(event.startTime).format('h')} o'Clock</span>
+					Starts from: <span>{moment(event.startTime).format('h:mm a')}</span>
 				</time>
 			</div>
 		</div>

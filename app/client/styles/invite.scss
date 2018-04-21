@@ -1,3 +1,4 @@
+@import './yd-variables.scss';
 @import "bootstrap/scss/functions.scss";
 @import "bootstrap/scss/variables.scss";
 @import "bootstrap/scss/mixins.scss";
@@ -9,6 +10,10 @@ html, body {
 	height: 100%;
 }
 
+textarea {
+	min-height: 80px;
+}
+
 .__next { min-height: 100%; }
 
 .wedding-invitation {
@@ -18,13 +23,14 @@ html, body {
 	
 	h1, h2 { font-family: 'Great Vibes', cursive; }
 	h1 { font: 52px/56px Great Vibes; }
+	
+	.yd-container { margin: auto; max-width: 600px; }
 }
 
-.yd-container { margin: auto; max-width: 600px; }
 
 .fancy {
 	font: 1.5em/normal 'Great Vibes';
-	display: inline-block;
+	// display: inline-block;
 	padding: 0 5px;
 }
 
@@ -117,10 +123,6 @@ html, body {
 	}
 }
 
-.concrete-bg {
-	background: url('/assets/vintage-concrete.png');
-}
-
 .bridal-party {
 	display: flex;
 	flex-wrap: wrap;
@@ -152,9 +154,9 @@ html, body {
 	footer { font-style: italic; color: #969696; }
 
 	&.primary {
-		background: #80705e;
+		background: $info;
 		color: #e9e9e9;
-		footer { color: lighten(#80705e, 20%); }
+		footer { color: lighten($info, 20%); }
 		
 		@media (min-width: 1400px) {
 			margin: 30px; 
@@ -168,7 +170,7 @@ html, body {
 }
 
 .section-groomsmen {
-	@extend .concrete-bg;
+	@extend ∞concrete-bg;
 }
 
 .section-donate {

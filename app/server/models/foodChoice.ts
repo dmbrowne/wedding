@@ -1,11 +1,7 @@
 import Sequelize, { Model, BelongsToCreateAssociationMixin } from 'sequelize';
 import Attendee from './attendee';
 
-export enum ChoiceTypes {
-	Meat = 'meat',
-	Fish = 'fish',
-	Vegetarian = 'vegetarian',
-}
+export type FoodChoiceType = 'meat' | 'fish' | 'vegetarian';
 
 export default class FoodChoice extends Model {
 	static rawAttributes = {
@@ -29,8 +25,8 @@ export default class FoodChoice extends Model {
 		});
 	}
 
-	starter: string;
-	main: string;
+	starter: FoodChoiceType;
+	main: FoodChoiceType;
 	allergies: string;
 	attendeeId: string;
 	attendee: BelongsToCreateAssociationMixin<Attendee>;

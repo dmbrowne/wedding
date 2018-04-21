@@ -1,3 +1,7 @@
+@import "../../styles/yd-variables.scss";
+@import "bootstrap/scss/functions.scss";
+@import "bootstrap/scss/variables.scss";
+
 .tile {
 	max-width: 450px;
 	text-align: left;
@@ -35,12 +39,9 @@
 		background: #d8d8d8;
 	}
 	&.selected {
-		border-color: #32d296;
-		border-color: #ffeb7d;
-		background: #edfbf6;
-		background: rgba(183, 175, 130, 0.7);
-		color: #32d296;
-		color: #ffeb7d;
+		border-color: $primary;
+		background: rgba(darken(desaturate($primary, 70%), 30%), 0.7);
+		color: $primary;
 		font-weight: 400;
 	}
 	* { cursor: pointer; }
@@ -61,8 +62,7 @@
 }
 
 .checkbox-group.selected .custom-checkbox {
-	background: #32d296;
-	background: #dcc33b;
+	background: $primary-selected;
 	color: #fff;
 	text-indent: 0px;
 }
@@ -74,33 +74,44 @@
 .section-rsvp {
 	overflow: hidden;
 	position: relative;
-	background: #010101 url('/assets/723B3933.jpg') no-repeat center center;
-	background-size: cover;
+	background: #010101;
 	color: #ccc;
 	font-size: 1.1rem;
+	min-height: 100vh;
 	&:before {
 		content: '';
 		position: absolute;
-		top: 0; left: 0;
-		width: 100%; height: 100%;
-		background-color: rgba(0,0,0,0.7);
+		top: 0%;
+    left: -5%;
+    width: 110%;
+    height: 100%;
 		z-index: 0;
 		filter: brightness(50%) blur(7px);
-		background: center center / cover no-repeat url('/assets/723B3933.jpg')
+		background: top center / 100% auto no-repeat url('/assets/723B3933.jpg')
 	}
 	> * { position: relative; z-index: 1;}
 	.section-title {
 		width: auto;
 		display: inline-block;
 		padding: 0 30px 20px;
-		border-bottom: 1px solid #ffeb7d;
+		border-bottom: 1px solid $primary;
 	}
 	header {
 		font: 1.7rem/2.1rem 'Great Vibes';
 	}
 	strong {
 		font-size: 1.7rem;
-		color: #ffeb7d;
+		color: $primary;
+	}
+	.error-alert {
+		padding: 10px;
+    margin: 20px 0;
+    background: indianred;
+    border: darkred 1px solid;
+    color: #fff;
+		font-weight: 400;
+		> * { vertical-align: middle; }
+		i { margin-right: 5px; }
 	}
 	.rsvps, .dietry-feedback {
 		justify-content: center;
@@ -108,9 +119,14 @@
 	.rsvp {
 		@extend .tile;
 		min-width: 300px;
-		margin: 30px;
+		margin: 15px 0;
 		flex: 1;
-		background: rgba(255,255,255,0.6)
+		background: rgba(255,255,255,0.6);
+		
+		@media screen and (min-width: map-get($grid-breakpoints, sm)) {
+			margin-left: 15px;
+			margin-right: 15px;
+		}
 	}
 	.dietry-feedback .rsvp {
 		min-width: 0;
@@ -118,12 +134,13 @@
 	}
 	button {
 		margin: 40px 0;
-		background: #80705e;
-		border: 1px solid lighten(#80705e, 20%);
+		background: $info;
+		border: 1px solid lighten($info, 20%);
 		color: #fff;
 	}
 	.attendance { margin-top: 15px; }
 	.attendance + .dietry-requirements { margin-top: 30px }
+	.attendance .note { display:block; color: #fff; font-weight: 300; }
 	.dietry-requirements {
 		padding: 15px;
 		margin: 15px -15px 0;
@@ -131,18 +148,26 @@
 
 		header { font-family: 'Roboto Condensed'; font-size: 1rem; }
 
-		.food-choices { display: flex; margin: 0 -5px; }
+		.food-choices { 
+			@media screen and (min-width: map-get($grid-breakpoints, md)) {
+				display: flex; margin: 0 -5px; 
+			}
+		}
 
 		.course {
 			background: #f1f1f1;
 			padding: 15px;
-			margin: 15px 5px;
+			margin: 15px 0;
 			flex: 1;
 			small { display: block; margin: 10px 0; }
+			@media screen and (min-width: map-get($grid-breakpoints, md)) {
+				margin-left: 5px;
+				margin-right: 5px;
+			}
 		}
 	
 		.course-options-option {
-			display: flex;
+			display: block;
 			opacity: 0.5;
 			transition: opacity 330ms;
 			cursor: pointer;
@@ -157,8 +182,15 @@
 		}
 
 		.course-options-option {
-			p { margin: 0; }
+			p {
+				vertical-align: middle;
+				margin: 0;
+				display: inline-block;
+				width: calc(100% - 70px);
+				font-weight: 300;
+			}
 			figure {
+				vertical-align: middle;
 				margin-bottom: 0;
 				width: 35px;
 				height: 35px;
@@ -166,11 +198,11 @@
 				justify-content: center;
 				border-radius: 50%;
 				padding: 5px;
-				display: flex;
 				margin-right: 10px;
+				display: inline-block;
 			}
 			
-			figure svg { flex: 1; }
+			figure svg { width: 25px; height: 25px; }
 			&.selected figure svg g {
 				fill: #edfbf6;
 			}

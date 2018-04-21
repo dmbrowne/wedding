@@ -10,6 +10,20 @@ interface AttendeeWithDietOptions extends Attendee {
 	dietFeedbackRequired?: boolean;
 }
 
+interface WeddingBreakfastCardContentProps {
+	selected: Pick<FoodChoice, 'starter' | 'main'>;
+	starterSelect: (choice: 'meat' | 'fish' | 'vegetarian') => any;
+	mainSelect: (choice: 'meat' | 'fish' | 'vegetarian') => any;
+	onAllergiesChange: (value: string) => any;
+}
+
+interface ReceptionCardContentProps {
+	attendee: Attendee;
+	selectEvent: Props['onSelectEvent'];
+	selectedEvents: Props['selectedEvents']['attendeeId'];
+	displayFoodChoiceNote?: boolean;
+}
+
 interface Props {
 	attendees: AttendeeWithDietOptions[];
 	selectedEvents: {
@@ -17,34 +31,48 @@ interface Props {
 			[eventId: string]: boolean;
 		};
 	};
+	dietryRequiredEvents: string[];
 	isAnUpdate: boolean;
 	foodSelections: {
-		[attendeeId: string]: Pick<FoodChoice, 'starter' | 'main'>,
+		[attendeeId: string]: {
+			starter: 'meat' | 'fish' | 'vegetarian',
+			main: 'meat' | 'fish' | 'vegetarian',
+			allergies: string;
+			valid: boolean;
+		},
 	};
+	disabled: boolean;
+	pristine: boolean;
 	onSubmit: () => any;
+	onEnable: () => any;
 	onSelectEvent: (attendeeId: string, eventId: string, value: boolean) => any;
 	onSelectStarter?: (attendeeId: string, choice: 'meat' | 'fish' | 'vegetarian') => Promise<any>;
 	onSelectMains?: (attendeeId: string, choice: 'meat' | 'fish' | 'vegetarian') => Promise<any>;
 	onAllergiesChange?: (attendeeId: string, value: string) => any;
 }
 
-const ReceptionCardContent = ({attendee, selectEvent, selectedEvents}) => {
+const ReceptionCardContent = (props: ReceptionCardContentProps) => {
+	const {attendee, selectEvent, selectedEvents, displayFoodChoiceNote = true} = props;
 	return (
 		<div className="attendance">
-			<p><small>Please tap to select/unselect an event</small></p>
+			<p><small>Please tap to select / unselect an event</small></p>
 			<div>
 				{attendee.Events.map(eventService => {
 					const isSelected = selectedEvents[eventService.id];
 					return (
-						<div
-							key={eventService.id}
-							className={cx('checkbox-group', {selected: isSelected})}
-							onClick={() => selectEvent(attendee.id, eventService.id, !isSelected)}
-						>
-							<i className="custom-checkbox material-icons">check</i>
-							<label className="form-check-label">
-								{eventService.name}
-							</label>
+						<div key={eventService.id}>
+							<div
+								className={cx('checkbox-group', {selected: isSelected})}
+								onClick={() => selectEvent(attendee.id, eventService.id, !isSelected)}
+							>
+								<i className="custom-checkbox material-icons">check</i>
+								<label className="form-check-label">
+									{eventService.name}
+									{displayFoodChoiceNote && eventService.dietFeedback && isSelected && (
+										<small className="note">Don't forget to make your food selection below</small>
+									)}
+								</label>
+							</div>
 						</div>
 					);
 				})}
@@ -52,13 +80,6 @@ const ReceptionCardContent = ({attendee, selectEvent, selectedEvents}) => {
 		</div>
 	);
 };
-
-interface WeddingBreakfastCardContentProps {
-	selected: Pick<FoodChoice, 'starter' | 'main'>;
-	starterSelect: (choice: 'meat' | 'fish' | 'vegetarian') => any;
-	mainSelect: (choice: 'meat' | 'fish' | 'vegetarian') => any;
-	onAllergiesChange: (value: string) => any;
-}
 
 export const WeddingBreakfastCardContent = ({ selected, starterSelect, mainSelect, onAllergiesChange }: WeddingBreakfastCardContentProps) => {
 	return (
@@ -80,7 +101,7 @@ export const WeddingBreakfastCardContent = ({ selected, starterSelect, mainSelec
 							<figure className="custom-checkbox">
 								<Cow />
 							</figure>
-							<p>Meat</p>
+							<p>Corn fed chicken terrine, with apple puree, red chicory and onion rings</p>
 						</div>
 						<div
 							onClick={() => starterSelect('fish')}
@@ -94,7 +115,7 @@ export const WeddingBreakfastCardContent = ({ selected, starterSelect, mainSelec
 							<figure className="custom-checkbox">
 								<Fish />
 							</figure>
-							<p>Fish</p>
+							<p>Smoked salmon with pickled beetroot, horseradish abd seaweed cracker</p>
 						</div>
 					</div>
 				</div>
@@ -108,7 +129,7 @@ export const WeddingBreakfastCardContent = ({ selected, starterSelect, mainSelec
 							<figure className="custom-checkbox">
 								<Cow />
 							</figure>
-							<p>Meat</p>
+							<p>Corn feed chicken with mushrooms, sweet potato puree and tarragon suce</p>
 						</div>
 						<div
 							onClick={() => mainSelect('fish')}
@@ -117,7 +138,7 @@ export const WeddingBreakfastCardContent = ({ selected, starterSelect, mainSelec
 							<figure className="custom-checkbox">
 								<Fish />
 							</figure>
-							<p>Fish</p>
+							<p>Roast salmon with red pepper compote and pomegranate vinaigrette</p>
 						</div>
 					</div>
 				</div>
@@ -139,24 +160,24 @@ export default class RsvpSection extends React.Component<Props> {
 		return (
 			<div className="section section-rsvp">
 				{this.props.disabled ?
-					<div className="rvsp">
-						<p>Your reply has been saved and sent.</p>
-						<p>However, should anything change, you can edit your response by clicking the edit response button below</p>
+					<div className="yd-container">
+						<p>Your reply has been received.</p>
+						<p>However, should anything change, you can edit your response by clicking the edit response button below. Your Response cannot be changed after the 30th June</p>
 						<button className="uk-button" onClick={this.props.onEnable}>Edit response</button>
 					</div> :
 					<React.Fragment>
 						<h2 className="section-title"><span>Please reply</span> Répondez s'il vous plaît</h2>
 						<p>Please send your response by<br/><strong>May 31st</strong><br/>Responses after this date has passed will not be counted and your place will not be guaranteed.</p>
-						<p>Tap on an event to select/unselect it and indicate your attendance.</p>
 						<div className="row rsvps">
 							{this.props.attendees.map(attendee =>  (
-								<div key={attendee.id} className={cx('rsvp')}>
-									<header>{attendee.firstName} {attendee.lastName}</header>
+								<div key={attendee.id} className="rsvp">
+									<header>{attendee.firstName}{!!attendee.lastName && ' ' + attendee.lastName}</header>
 									<div className="content">
 										<ReceptionCardContent
 											attendee={attendee}
 											selectedEvents={this.props.selectedEvents[attendee.id]}
 											selectEvent={this.props.onSelectEvent}
+											displayFoodChoiceNote={!this.props.foodSelections[attendee.id].valid}
 										/>
 									</div>
 								</div>
@@ -167,13 +188,23 @@ export default class RsvpSection extends React.Component<Props> {
 								const dietFeedbackRequired = this.props.dietryRequiredEvents.some(eventId => {
 									return this.props.selectedEvents[attendee.id][eventId];
 								});
+								const foodSelections = this.props.foodSelections[attendee.id];
 								return (
 									dietFeedbackRequired ?
 										<div key={attendee.id} className={cx('rsvp')}>
 											<header>{attendee.firstName} {attendee.lastName}</header>
+											{!this.props.pristine && !foodSelections.starter || !foodSelections.main && (
+												<div className="error-alert">
+													<i className="material-icons">error</i>
+													<span>Choose
+														{!foodSelections.starter && 'a starter'}
+														{!foodSelections.starter && !foodSelections.main && ' and '}
+														{!foodSelections.main && 'a main'}</span>
+												</div>
+											)}
 											{dietFeedbackRequired &&
 												<WeddingBreakfastCardContent
-													selected={this.props.foodSelections[attendee.id]}
+													selected={foodSelections}
 													starterSelect={(choice) => this.props.onSelectStarter(attendee.id, choice)}
 													mainSelect={(choice) => this.props.onSelectMains(attendee.id, choice)}
 													onAllergiesChange={(value) => this.props.onAllergiesChange(attendee.id, value)}

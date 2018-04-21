@@ -64,6 +64,6 @@ export default class BridalParty extends Model {
 	imageId: number;
 	partyRoleId: number;
 	vip: boolean;
-	WeddingRole: BelongsToCreateAssociationMixin<BridalPartyRole>;
-	Image: BelongsToCreateAssociationMixin<GalleryImage>;
+	WeddingRole: BridalPartyRole;
+	Image: GalleryImage;
 }

@@ -24,7 +24,7 @@ async function getAttendeesThatArentInAGroup() {
 		[attendee.email]: {
 			first: attendee.firstName,
 			last: attendee.lastName,
-			invitationlink: `http://savethedate.thebrownes.info/a/${attendee.id}`,
+			invitationlink: models.Attendee.invitationUrl(attendee.id),
 		},
 	}), {});
 	return {
@@ -47,7 +47,7 @@ async function getSendGroups() {
 		...accum,
 		[group.email]: {
 			name: group.name,
-			invitationlink: `http://savethedate.thebrownes.info/g/${group.id}`,
+			invitationlink: models.SendGroup.invitationUrl(group.id),
 		},
 	}), {});
 

@@ -5,11 +5,9 @@ import models from '../models';
 import { getDesiredValuesFromRequestBody, objectToArray } from '../utils';
 import SendGroup from '../models/sendGroup';
 import EventModel from '../models/event';
-// import GalleryImage from '../models/galleryImage';
 import FoodChoice, { ChoiceTypes } from '../models/foodChoice';
-import BridalPartyRoles from '../models/bridalPartyRoles';
+import BridalPartyRole from '../models/bridalPartyRoles';
 import Attendee from '../models/attendee';
-import BridalParty from '../models/bridalParty';
 
 interface Rsvp {
 	attendeeId: string;
@@ -26,30 +24,31 @@ interface Rsvp {
 
 // type ResponseLocals = Response['locals'];
 interface IniviteResponseLocals {
-	bridalParties: { [bridalId: string]: BridalParty };
+	bridalParties: { [bridalPartyRoleTypeValue: string]: BridalPartyRole };
 	allInvitedEvents: EventModel[];
 }
 
-interface SingleInvitationResponseLocals extends IniviteResponseLocals {
+export interface SingleInvitationResponseLocals extends IniviteResponseLocals {
 	invitationId: Attendee['id'];
 	attendee: Attendee;
 	singleInvitation: true;
 }
 
-interface GroupInvitationResponseLocals extends IniviteResponseLocals {
+export interface GroupInvitationResponseLocals extends IniviteResponseLocals {
 	invitationId: SendGroup['id'];
 	sendGroup: SendGroup;
-	singleInvitation: false;
+	singleInvitation?: false;
 }
 
 export async function getAllAttendees(req: NextAppRequest, res: Response, next) {
 	const { search, emailable } = req.query;
 
-	if (emailable) {
-		return getEmailableAttendees(req, res, next);
-	}
-
 	let attendees;
+
+	if (emailable) {
+		attendees = await getEmailableAttendees();
+		return res.send(attendees);
+	}
 
 	if (search) {
 		const searchTerms = decodeURIComponent(search).split(',').filter(term => term).map(term => `%${term}%`);
@@ -67,7 +66,10 @@ export async function getAllAttendees(req: NextAppRequest, res: Response, next) 
 			}],
 		});
 	} else {
-		attendees = await models.Attendee.findAll();
+		attendees = await Attendee.findAll({
+			order: [['firstName', 'ASC']],
+			include: [{ model: models.SendGroup }],
+		});
 	}
 
 	res.locals.attendees = attendees;
@@ -78,29 +80,16 @@ export async function getAllAttendees(req: NextAppRequest, res: Response, next) 
 	}
 }
 
-export function getEmailableAttendees(req, res, next) {
-	models.Attendee.findAll({
+export function getEmailableAttendees() {
+	return models.Attendee.findAll({
+		order: [
+			['firstName', 'ASC'],
+		],
 		where: { email: {[Op.not]: null} },
 		include: [{
 			model: models.SendGroup,
-		}]
-	})
-	.then(attendees => res.send(attendees))
-	.catch(e => {
-		console.log(e);
-		next(e);
+		}],
 	});
-}
-
-export async function getAttendee(req: NextAppRequest, res: Response) {
-	const { attendeeId } = req.params;
-	const attendee = await models.Attendee.findById(attendeeId, { include: [{ model: FoodChoice }]});
-	res.locals.attendee = attendee;
-	if (req.xhr) {
-		res.send(attendee);
-	} else {
-		req.nextAppRenderer.render(req, res, '/attendeeEdit');
-	}
 }
 
 export function createNewAttendees(req: NextAppRequest, res: Response) {
@@ -152,8 +141,10 @@ export async function editAttendee(req: NextAppRequest, res: Response) {
 		res.redirect('/admin/attendees?error=404&type=attendee');
 	}
 
-	await attendee.update(updateValues);
-	const updatedAttendee = await models.Attendee.findById(attendeeId);
+	let updatedAttendee = await attendee.update(updateValues);
+	if (req.body.eventIds) {
+		updatedAttendee = await updatedAttendee.setEvents(req.body.eventIds);
+	}
 	if (req.xhr) {
 		return res.send(updatedAttendee);
 	}
@@ -195,7 +186,7 @@ export function deleteAttendee(req: NextAppRequest, res: Response, next: NextFun
 export function getGroupInvitation(req: NextAppRequest, res: Response, next: NextFunction) {
 	const { sendGroupId } = req.params;
 	Promise.all([
-		BridalPartyRoles.getWithMembers(),
+		BridalPartyRole.getWithMembers(),
 		SendGroup.getWithAttendeesAndEvents(sendGroupId),
 	])
 	.then(([bridalParties, sendGroup]) => {
@@ -224,7 +215,7 @@ export function getGroupInvitation(req: NextAppRequest, res: Response, next: Nex
 export function getSingleInvitation(req: NextAppRequest, res: Response, next: NextFunction) {
 	const { attendeeId } = req.params;
 	Promise.all([
-		BridalPartyRoles.getWithMembers(),
+		BridalPartyRole.getWithMembers(),
 		Attendee.getAttendeeWtihInvitedEvents(attendeeId),
 	])
 	.then(([bridalParties, attendee]) => {

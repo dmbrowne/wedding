@@ -5,6 +5,7 @@ import AttendeeNames, { Props as AttendeeNamesProps } from './AttendeeNames';
 interface Props extends AttendeeNamesProps {
 	singleInvitation: boolean;
 	onGoToRsvp: (buttonElement: HTMLElement) => any;
+	confirmed: boolean;
 }
 
 export default class InvitedSection extends React.Component<Props> {
@@ -36,22 +37,28 @@ export default class InvitedSection extends React.Component<Props> {
 	render() {
 		return (
 			<div className="section section-invited">
+				<h2 className="section-title"><span>You're</span>Invited</h2>
 				<div className="yd-container">
-					<h2 className="section-title"><span>You're</span>Invited</h2>
-					<p>With great pleasure</p>
-					<p><span className="fancy">Yasmin Obosi</span> and <span className="fancy">Daryl Browne</span></p>
-					<p>invite you to join them at the celebration of their marriage.</p>
-					<br/>
-					{this.props.singleInvitation ? this.singleMessage() : this.groupMessage()}
-					<p>Click the button below to confirm your attendance / absence now,</p>
-					<button
-						ref={ref => this.goToRsvp = ref}
-						className="go-to-rsvp"
-						onClick={() => this.props.onGoToRsvp(this.goToRsvp)}
-					>
-						RSVP
-					</button>
-					<p>... Or read on for more details...</p>
+					<div className="fancy">
+						<p>With great pleasure</p>
+						<p><span className="fancy">Yasmin Obosi</span> and <span className="fancy">Daryl Browne</span></p>
+						<p>invite you to join them at the celebration of their marriage.</p>
+						<br/>
+						{this.props.singleInvitation ? this.singleMessage() : this.groupMessage()}
+					</div>
+					{!this.props.confirmed && (
+						<React.Fragment>
+							<p className="fancy">Click the button below to confirm your attendance / absence now,</p>
+							<button
+								ref={ref => this.goToRsvp = ref}
+								className="go-to-rsvp"
+								onClick={() => this.props.onGoToRsvp(this.goToRsvp)}
+							>
+								RSVP
+							</button>
+							<p className="fancy">... Or read on for more details...</p>
+						</React.Fragment>
+					)}
 				</div>
 			</div>
 		);
