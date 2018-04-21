@@ -244,7 +244,6 @@ class SendInvites extends React.Component {
 	}
 
 	render() {
-		console.log(this.props);
 		const { editorState } = this.state;
 		return (
 			<div className="uk-container">

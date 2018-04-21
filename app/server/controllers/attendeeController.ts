@@ -90,17 +90,6 @@ export function getEmailableAttendees(req, res, next) {
 	});
 }
 
-export async function getAttendee(req: NextAppRequest, res: Response) {
-	const { attendeeId } = req.params;
-	const attendee = await models.Attendee.findById(attendeeId, { include: [{ model: FoodChoice }]});
-	res.locals.attendee = attendee;
-	if (req.xhr) {
-		res.send(attendee);
-	} else {
-		req.nextAppRenderer.render(req, res, '/attendeeEdit');
-	}
-}
-
 export function createNewAttendees(req: NextAppRequest, res: Response) {
 	if (!req.xhr) {
 		res.status(400).send('This resource is only available via XHR');
@@ -150,8 +139,10 @@ export async function editAttendee(req: NextAppRequest, res: Response) {
 		res.redirect('/admin/attendees?error=404&type=attendee');
 	}
 
-	await attendee.update(updateValues);
-	const updatedAttendee = await models.Attendee.findById(attendeeId);
+	let updatedAttendee = await attendee.update(updateValues);
+	if (req.body.eventIds) {
+		updatedAttendee = await updatedAttendee.setEvents(req.body.eventIds);
+	}
 	if (req.xhr) {
 		return res.send(updatedAttendee);
 	}
