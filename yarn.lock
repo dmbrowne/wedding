@@ -127,9 +127,9 @@
   version "9.4.7"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-9.4.7.tgz#57d81cd98719df2c9de118f2d5f3b1120dcd7275"
 
-"@types/react-stripe-elements@^1.1.1":
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/@types/react-stripe-elements/-/react-stripe-elements-1.1.1.tgz#7dfaca8e800123335017b752e6b54a7a3afd170a"
+"@types/react-stripe-elements@^1.1.2":
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/@types/react-stripe-elements/-/react-stripe-elements-1.1.2.tgz#b6abe463e4e8b0eb3c33f38f9feb84451392a2f0"
   dependencies:
     "@types/react" "*"
     "@types/stripe-v3" "*"

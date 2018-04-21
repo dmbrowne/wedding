@@ -1,5 +1,5 @@
 Arguments: 
-  /Users/dbrowne/.nvm/versions/node/v9.4.0/bin/node /usr/local/Cellar/yarn/1.5.1/libexec/bin/yarn.js remove -D @types/stripe
+  /Users/dbrowne/.nvm/versions/node/v9.4.0/bin/node /usr/local/Cellar/yarn/1.5.1/libexec/bin/yarn.js add @types/react-elements
 
 PATH: 
   /Users/dbrowne/.rbenv/shims:/Users/dbrowne/.nvm/versions/node/v9.4.0/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Users/dbrowne/Library/Android/sdk/tools:/Users/dbrowne/Library/Android/sdk/platform-tools/:/Users/dbrowne/Library/Android/sdk/platform-tools/com.google.android.gmail_6.5.apk
@@ -20,14 +20,13 @@ npm manifest:
     "main": "index.js",
     "license": "MIT",
     "dependencies": {
-      "@types/uikit": "^2.27.6",
-      "@zeit/next-typescript": "^0.0.11",
       "bcrypt": "^1.0.3",
       "body-parser": "^1.18.2",
       "bootstrap": "^4.0.0",
       "browser-sync": "^2.23.6",
       "classnames": "^2.2.5",
       "cli-color": "^1.2.0",
+      "cloudinary": "^1.11.0",
       "connect-redis": "3.3.3",
       "draft-convert": "^2.0.1",
       "draft-js": "^0.10.5",
@@ -43,6 +42,7 @@ npm manifest:
       "material-ui-pickers": "^1.0.0-rc.4",
       "medium-draft": "^0.6.0-beta1",
       "moment": "^2.21.0",
+      "multer": "^1.3.0",
       "next": "^5.0.0",
       "node-sass": "^4.7.2",
       "nodemon": "^1.15.0",
@@ -50,6 +50,7 @@ npm manifest:
       "pg-hstore": "^2.3.2",
       "react": "^16.3.0",
       "react-dom": "^16.3.0",
+      "react-stripe-elements": "^1.6.0",
       "route-matcher": "^0.1.0",
       "sequelize": "^4.37.6",
       "sinon": "^4.5.0",
@@ -61,14 +62,12 @@ npm manifest:
       "start:dev": "nodemon index.js -w \"app/server/**/*.js\"",
       "start:production": "NODE_ENV=production node index.js",
       "browserSync": "browser-sync start --proxy localhost:4000 --files \"app/client/**/*.(js|css|png|jpg|jpeg|svg)\"",
-      "dev": "npm run tsc && concurrently \"npm run start:dev\" \"npm run tsc:server -- --watch\" \"npm run tsc:client -- --watch\"",
+      "dev": "npm run tsc || true && concurrently \"npm run start:dev\" \"npm run tsc -- --watch\"",
       "test": "NODE_ENV=test jest",
-      "tsc": "npm run tsc:client || true && npm run tsc:server || true",
-      "tsc:client": "tsc -p app/client/tsconfig.json",
-      "tsc:server": "tsc -p tsconfig.json",
+      "tsc": "tsc -p tsconfig.json",
       "lint": "tslint **/*.ts",
       "clean": "npm run clean:app && npm run clean:config && npm run clean:migrations&& npm run clean:seeders",
-      "clean:app": "rimraf app/**/*.js",
+      "clean:app": "rimraf app/**/**.js",
       "clean:config": "rimraf config/**/*.js",
       "clean:migrations": "rimraf migrations/**/*.js",
       "clean:seeders": "rimraf seeders/**/*.js",
@@ -83,6 +82,8 @@ npm manifest:
       "seed:undo:all": "tsc -p migrations || true && sequelize db:seed:undo:all"
     },
     "devDependencies": {
+      "@types/uikit": "^2.27.6",
+      "@zeit/next-typescript": "^0.0.11",
       "@types/bcrypt": "^1.0.0",
       "@types/cli-color": "^0.3.29",
       "@types/connect-redis": "^0.0.7",
@@ -91,15 +92,19 @@ npm manifest:
       "@types/js-beautify": "^0.0.31",
       "@types/lodash": "^4.14.105",
       "@types/moment": "^2.13.0",
+      "@types/multer": "^1.3.6",
       "@types/next": "^2.4.8",
       "@types/node": "^9.4.7",
       "@types/react": "^16.0.38",
+      "@types/react-stripe-elements": "^1.1.1",
       "@types/sequelize": "types/sequelize",
       "@types/sinon": "^4.3.1",
       "@types/stripe": "^5.0.9",
+      "@types/stripe-node": "^4.7.1",
       "@zeit/next-css": "^0.1.5",
       "@zeit/next-sass": "^0.1.1",
       "concurrently": "^3.5.1",
+      "faker": "^4.1.0",
       "jest": "^22.4.3",
       "rimraf": "^2.6.2",
       "sequelize-cli": "^4.0.0",
@@ -238,6 +243,12 @@ Lockfile:
     dependencies:
       moment "*"
   
+  "@types/multer@^1.3.6":
+    version "1.3.6"
+    resolved "https://registry.yarnpkg.com/@types/multer/-/multer-1.3.6.tgz#e00454074bf9fd86d20ea652eba9850eb76604c4"
+    dependencies:
+      "@types/express" "*"
+  
   "@types/next@^2.4.8":
     version "2.4.8"
     resolved "https://registry.yarnpkg.com/@types/next/-/next-2.4.8.tgz#a8105cb67bd0871d241ab987d275e90fb1061327"
@@ -248,6 +259,13 @@ Lockfile:
   "@types/node@*", "@types/node@^9.4.7":
     version "9.4.7"
     resolved "https://registry.yarnpkg.com/@types/node/-/node-9.4.7.tgz#57d81cd98719df2c9de118f2d5f3b1120dcd7275"
+  
+  "@types/react-stripe-elements@^1.1.1":
+    version "1.1.1"
+    resolved "https://registry.yarnpkg.com/@types/react-stripe-elements/-/react-stripe-elements-1.1.1.tgz#7dfaca8e800123335017b752e6b54a7a3afd170a"
+    dependencies:
+      "@types/react" "*"
+      "@types/stripe-v3" "*"
   
   "@types/react-transition-group@^2.0.6":
     version "2.0.7"
@@ -283,6 +301,16 @@ Lockfile:
   "@types/sinon@^4.3.1":
     version "4.3.1"
     resolved "https://registry.yarnpkg.com/@types/sinon/-/sinon-4.3.1.tgz#32458f9b166cd44c23844eee4937814276f35199"
+  
+  "@types/stripe-node@^4.7.1":
+    version "4.7.1"
+    resolved "https://registry.yarnpkg.com/@types/stripe-node/-/stripe-node-4.7.1.tgz#cb11d65e73136509801582bd0daac50b794cfdc1"
+    dependencies:
+      "@types/node" "*"
+  
+  "@types/stripe-v3@*":
+    version "3.0.6"
+    resolved "https://registry.yarnpkg.com/@types/stripe-v3/-/stripe-v3-3.0.6.tgz#07ac0ab17fd4868dd46a330716fa7eade5d37e32"
   
   "@types/stripe@^5.0.9":
     version "5.0.9"
@@ -508,6 +536,10 @@ Lockfile:
     dependencies:
       micromatch "^3.1.4"
       normalize-path "^2.1.1"
+  
+  append-field@^0.1.0:
+    version "0.1.0"
+    resolved "https://registry.yarnpkg.com/append-field/-/append-field-0.1.0.tgz#6ddc58fa083c7bc545d3c5995b2830cc2366d44a"
   
   append-transform@^0.4.0:
     version "0.4.0"
@@ -1666,6 +1698,13 @@ Lockfile:
     version "3.0.0"
     resolved "https://registry.yarnpkg.com/builtin-status-codes/-/builtin-status-codes-3.0.0.tgz#85982878e21b98e1c66425e03d0174788f569ee8"
   
+  busboy@^0.2.11:
+    version "0.2.14"
+    resolved "https://registry.yarnpkg.com/busboy/-/busboy-0.2.14.tgz#6c2a622efcf47c57bbbe1e2a9c37ad36c7925453"
+    dependencies:
+      dicer "0.2.5"
+      readable-stream "1.1.x"
+  
   bytes@3.0.0:
     version "3.0.0"
     resolved "https://registry.yarnpkg.com/bytes/-/bytes-3.0.0.tgz#d32815404d689699f85a4ea4fa8755dd13a96048"
@@ -1935,6 +1974,13 @@ Lockfile:
   clone@^1.0.2:
     version "1.0.3"
     resolved "https://registry.yarnpkg.com/clone/-/clone-1.0.3.tgz#298d7e2231660f40c003c2ed3140decf3f53085f"
+  
+  cloudinary@^1.11.0:
+    version "1.11.0"
+    resolved "https://registry.yarnpkg.com/cloudinary/-/cloudinary-1.11.0.tgz#3f6b21961d17859f271738f452427d9899591ff1"
+    dependencies:
+      lodash "^4.17.4"
+      q "^1.5.1"
   
   cls-bluebird@^2.1.0:
     version "2.1.0"
@@ -2589,6 +2635,13 @@ Lockfile:
     version "1.0.1"
     resolved "https://registry.yarnpkg.com/dev-ip/-/dev-ip-1.0.1.tgz#a76a3ed1855be7a012bb8ac16cb80f3c00dc28f0"
   
+  dicer@0.2.5:
+    version "0.2.5"
+    resolved "https://registry.yarnpkg.com/dicer/-/dicer-0.2.5.tgz#5996c086bb33218c812c090bddc09cd12facb70f"
+    dependencies:
+      readable-stream "1.1.x"
+      streamsearch "0.1.2"
+  
   diff@^3.1.0, diff@^3.2.0:
     version "3.5.0"
     resolved "https://registry.yarnpkg.com/diff/-/diff-3.5.0.tgz#800c0dd1e0a8bfbc95835c202ad220fe317e5a12"
@@ -3182,6 +3235,10 @@ Lockfile:
   extsprintf@^1.2.0:
     version "1.4.0"
     resolved "https://registry.yarnpkg.com/extsprintf/-/extsprintf-1.4.0.tgz#e2689f8f356fad62cca65a3a91c5df5f9551692f"
+  
+  faker@^4.1.0:
+    version "4.1.0"
+    resolved "https://registry.yarnpkg.com/faker/-/faker-4.1.0.tgz#1e45bbbecc6774b3c195fad2835109c6d748cc3f"
   
   fast-deep-equal@^1.0.0:
     version "1.1.0"
@@ -5556,6 +5613,19 @@ Lockfile:
     version "2.1.1"
     resolved "https://registry.yarnpkg.com/ms/-/ms-2.1.1.tgz#30a5864eb3ebb0a66f2ebe6d727af06a09d86e0a"
   
+  multer@^1.3.0:
+    version "1.3.0"
+    resolved "https://registry.yarnpkg.com/multer/-/multer-1.3.0.tgz#092b2670f6846fa4914965efc8cf94c20fec6cd2"
+    dependencies:
+      append-field "^0.1.0"
+      busboy "^0.2.11"
+      concat-stream "^1.5.0"
+      mkdirp "^0.5.1"
+      object-assign "^3.0.0"
+      on-finished "^2.3.0"
+      type-is "^1.6.4"
+      xtend "^4.0.0"
+  
   mv@2.1.1:
     version "2.1.1"
     resolved "https://registry.yarnpkg.com/mv/-/mv-2.1.1.tgz#ae6ce0d6f6d5e0a4f7d893798d03c1ea9559b6a2"
@@ -5910,6 +5980,10 @@ Lockfile:
     version "0.8.2"
     resolved "https://registry.yarnpkg.com/oauth-sign/-/oauth-sign-0.8.2.tgz#46a6ab7f0aead8deae9ec0565780b7d4efeb9d43"
   
+  object-assign@^3.0.0:
+    version "3.0.0"
+    resolved "https://registry.yarnpkg.com/object-assign/-/object-assign-3.0.0.tgz#9bedd5ca0897949bca47e7ff408062d549f587f2"
+  
   object-assign@^4.0.1, object-assign@^4.1.0, object-assign@^4.1.1:
     version "4.1.1"
     resolved "https://registry.yarnpkg.com/object-assign/-/object-assign-4.1.1.tgz#2109adc7965887cfc05cbbd442cac8bfbb360863"
@@ -5969,7 +6043,7 @@ Lockfile:
     dependencies:
       isobject "^3.0.1"
   
-  on-finished@~2.3.0:
+  on-finished@^2.3.0, on-finished@~2.3.0:
     version "2.3.0"
     resolved "https://registry.yarnpkg.com/on-finished/-/on-finished-2.3.0.tgz#20f1336481b083cd75337992a16971aa2d906947"
     dependencies:
@@ -6735,7 +6809,7 @@ Lockfile:
       loose-envify "^1.3.1"
       object-assign "^4.1.1"
   
-  prop-types@^15.5.6, prop-types@^15.5.8, prop-types@^15.6.0:
+  prop-types@^15.5.10, prop-types@^15.5.6, prop-types@^15.5.8, prop-types@^15.6.0:
     version "15.6.1"
     resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.6.1.tgz#36644453564255ddda391191fb3a125cbdf654ca"
     dependencies:
@@ -6824,7 +6898,7 @@ Lockfile:
     version "2.1.0"
     resolved "https://registry.yarnpkg.com/punycode/-/punycode-2.1.0.tgz#5f863edc89b96db09074bad7947bf09056ca4e7d"
   
-  q@^1.1.2:
+  q@^1.1.2, q@^1.5.1:
     version "1.5.1"
     resolved "https://registry.yarnpkg.com/q/-/q-1.5.1.tgz#7e32f75b41381291d04611f1bf14109ac00651d7"
   
@@ -6981,6 +7055,12 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/react-stand-in/-/react-stand-in-4.0.0-beta.21.tgz#fb694e465cb20fab7f36d3284f82b68bbd7a657e"
     dependencies:
       shallowequal "^1.0.2"
+  
+  react-stripe-elements@^1.6.0:
+    version "1.6.0"
+    resolved "https://registry.yarnpkg.com/react-stripe-elements/-/react-stripe-elements-1.6.0.tgz#1433bf6b7a83479f2cdb9ba459bf36fb201b97be"
+    dependencies:
+      prop-types "^15.5.10"
   
   react-text-mask@^5.1.0:
     version "5.2.1"
@@ -8083,6 +8163,10 @@ Lockfile:
       commander "^2.2.0"
       limiter "^1.0.5"
   
+  streamsearch@0.1.2:
+    version "0.1.2"
+    resolved "https://registry.yarnpkg.com/streamsearch/-/streamsearch-0.1.2.tgz#808b9d0e56fc273d809ba57338e929919a1a9f1a"
+  
   strict-uri-encode@^1.0.0:
     version "1.1.0"
     resolved "https://registry.yarnpkg.com/strict-uri-encode/-/strict-uri-encode-1.1.0.tgz#279b225df1d582b1f54e65addd4352e18faa0713"
@@ -8573,7 +8657,7 @@ Lockfile:
     version "4.0.8"
     resolved "https://registry.yarnpkg.com/type-detect/-/type-detect-4.0.8.tgz#7646fb5f18871cfbb7749e69bd39a6388eb7450c"
   
-  type-is@~1.6.15, type-is@~1.6.16:
+  type-is@^1.6.4, type-is@~1.6.15, type-is@~1.6.16:
     version "1.6.16"
     resolved "https://registry.yarnpkg.com/type-is/-/type-is-1.6.16.tgz#f89ce341541c672b25ee7ae3c73dee3b2be50194"
     dependencies:
@@ -9308,14 +9392,11 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/yeast/-/yeast-0.1.2.tgz#008e06d8094320c372dbc2f8ed76a0ca6c8ac419"
 
 Trace: 
-  Error: Not enough arguments, expected at least 1.
+  Error: Couldn't find package "@types/react-elements" on the "npm" registry.
       at new MessageError (/usr/local/Cellar/yarn/1.5.1/libexec/lib/cli.js:186:110)
-      at Object.<anonymous> (/usr/local/Cellar/yarn/1.5.1/libexec/lib/cli.js:60368:13)
+      at NpmResolver.<anonymous> (/usr/local/Cellar/yarn/1.5.1/libexec/lib/cli.js:51625:15)
       at Generator.next (<anonymous>)
       at step (/usr/local/Cellar/yarn/1.5.1/libexec/lib/cli.js:98:30)
-      at /usr/local/Cellar/yarn/1.5.1/libexec/lib/cli.js:116:14
-      at new Promise (<anonymous>)
-      at new F (/usr/local/Cellar/yarn/1.5.1/libexec/lib/cli.js:23451:28)
-      at Object.<anonymous> (/usr/local/Cellar/yarn/1.5.1/libexec/lib/cli.js:95:12)
-      at Object.run (/usr/local/Cellar/yarn/1.5.1/libexec/lib/cli.js:60486:17)
-      at run (/usr/local/Cellar/yarn/1.5.1/libexec/lib/cli.js:89113:20)
+      at /usr/local/Cellar/yarn/1.5.1/libexec/lib/cli.js:109:13
+      at <anonymous>
+      at process._tickCallback (internal/process/next_tick.js:160:7)
