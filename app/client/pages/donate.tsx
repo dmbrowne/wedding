@@ -87,7 +87,7 @@ export default class StripeTestPage extends React.Component<Props> {
 
 	render() {
 		return (
-			<AppLayout>
+			<AppLayout title="Honeymoon donation - Mr & Mrs Browne 2018">
 				<Head>
 					<script src="//js.stripe.com/v3/" key="stripe-elements-api" />
 					<link
