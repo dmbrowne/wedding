@@ -48,7 +48,7 @@ class PaymentRequestForm extends Component<Props> {
 
 	componentWillReceiveProps(props) {
 		if (props.stripe) {
-			if (props.amount !== this.props.amount) {
+			if (props.amount) {
 				this.setPaymentRequestObject(props);
 			}
 		}
