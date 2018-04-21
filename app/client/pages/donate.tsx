@@ -12,6 +12,7 @@ import { restfulRequest } from '../api/utils';
 interface Props {
 	attendee?: Attendee;
 	sendGroup?: SendGroup;
+	stripePublishableKey: string;
 }
 
 export default class StripeTestPage extends React.Component<Props> {
@@ -19,6 +20,11 @@ export default class StripeTestPage extends React.Component<Props> {
 		return {
 			attendee: res ? res.locals.attendee : null,
 			sendGroup: res ? res.locals.sendGroup : null,
+			stripePublishableKey: res ?
+				(process.env.NODE_ENV === 'production' ?
+					'pk_live_C8avAq5MnX6tkDaGWgyUJ29M' :
+					'pk_test_gbZv1zKSysff7KprihcWi6ms') :
+				null,
 		};
 	}
 
@@ -63,7 +69,7 @@ export default class StripeTestPage extends React.Component<Props> {
 		this.UIkit = require('uikit');
 		setTimeout(() => {
 			this.setState({
-				stripe: window.Stripe('pk_test_gbZv1zKSysff7KprihcWi6ms'),
+				stripe: window.Stripe(this.props.stripePublishableKey),
 				windowHeight: document.body.clientHeight,
 			});
 		}, 500);
