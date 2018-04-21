@@ -25,6 +25,7 @@ interface State {
 	selected: {
 		[key: string]: RowItem;
 	};
+	filterSearchTerms: string;
 }
 
 class DataItemListing extends React.Component<InternalProps, State> {
@@ -35,6 +36,7 @@ class DataItemListing extends React.Component<InternalProps, State> {
 	state = {
 		bulkMode: false,
 		selected: {},
+		filterSearchTerms: '',
 	};
 
 	onCheckboxClick(itemId: string, e) {
@@ -124,6 +126,16 @@ class DataItemListing extends React.Component<InternalProps, State> {
 		);
 	}
 
+	filteredItems() {
+		if (Array.isArray(this.props.data)) {
+			return this.props.data.filter(dataItem => {
+				const searchField = Object.keys(dataItem).map(key => dataItem[key]).join(' ');
+				return this.state.filterSearchTerms ? searchField.indexOf(this.state.filterSearchTerms) >= 0 : true;
+			});
+		}
+		return [];
+	}
+
 	render() {
 		return (
 			<div>
@@ -146,6 +158,15 @@ class DataItemListing extends React.Component<InternalProps, State> {
 					</div>
 				</div>
 				<div className="uk-overflow-auto">
+					<div className="uk-margin">
+						<input
+							type="text"
+							className="uk-input"
+							placeholder="Filter..."
+							onChange={e => this.setState({ filterSearchTerms: e.target.value })}
+							value={this.state.filterSearchTerms}
+						/>
+					</div>
 					<table className="uk-table uk-table-justify uk-table-divider">
 						{this.props.renderHeaderRow &&
 							<thead>
@@ -153,7 +174,7 @@ class DataItemListing extends React.Component<InternalProps, State> {
 							</thead>
 						}
 						<tbody>
-							{this.props.data.map(this.renderRow)}
+							{this.filteredItems().map(this.renderRow)}
 						</tbody>
 					</table>
 				</div>
