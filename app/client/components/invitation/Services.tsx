@@ -6,7 +6,7 @@ export default function Services(props: { events: Event[] }) {
 	let showTimeGapNote = false;
 	if (props.events.length === 2) {
 		showTimeGapNote = props.events.filter(event => {
-			return (event.slug === 'ceremony' || event.slug ===  'breakfast');
+			return (event.slug === 'ceremony' || event.slug ===  'reception');
 		}).length === 2;
 	}
 	return (
