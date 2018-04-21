@@ -54,7 +54,8 @@ class Attendees extends React.Component<Props, State> {
 			<tr>
 				<th>First name</th>
 				<th>Last name</th>
-				<th className="uk-expand">Email</th>
+				<th>Email</th>
+				<th className="uk-text-center">Invitation</th>
 				<th style={{width: 50, boxSizing: 'border-box' }} />
 				<th style={{width: 50, boxSizing: 'border-box' }} />
 			</tr>
@@ -67,6 +68,11 @@ class Attendees extends React.Component<Props, State> {
 				<td>{attendee.firstName}</td>
 				<td>{attendee.lastName}</td>
 				<td>{attendee.email}</td>
+				<td className="uk-text-center">
+					<a href={attendee.invitationUrl} target="_blank">
+						<i className="material-icons">open_in_new</i>
+					</a>
+				</td>
 				<td>
 					<Link href={`/admin/attendees/${attendee.id}`}>
 						<i className="material-icons">mode_edit</i>

@@ -9,6 +9,9 @@ interface GetApplicableSendGroupRecipientVars {
 	sendGroupIds?: SendGroup['id'] | string[];
 }
 
+const baseUrl = process.env.NODE_ENV === 'production' ? 'https://thebrownes.info' : 'http://localhost:4000';
+export const invitationUrlPrefix = `${baseUrl}/invitation/g`;
+
 export default class SendGroup extends Model {
 	static init(sequelizeConnection) {
 		super.init({
@@ -46,7 +49,6 @@ export default class SendGroup extends Model {
 				},
 			});
 		}
-
 		const applicableSendees = sendGroupIds ? sendGroups : sendGroups.filter(group => group.getDataValue('email'));
 		const sendAddresses = applicableSendees.map(group => group.getDataValue('email'));
 		const recipientVars = applicableSendees.reduce((accum, group) => {
@@ -54,7 +56,7 @@ export default class SendGroup extends Model {
 				...accum,
 				[group.getDataValue('email')]: {
 					name: group.name,
-					invitationlink: `http://thebrownes.info/invitation/g/${group.id}`,
+					invitationlink: SendGroup.invitationUrl(group.id),
 				},
 			};
 		}, {});
@@ -65,6 +67,8 @@ export default class SendGroup extends Model {
 			recipientVars,
 		};
 	}
+
+	static invitationUrl = (sendGroup) => invitationUrlPrefix + '/' + sendGroup;
 
 	static getWithAttendeesAndEvents(id) {
 		return this.findById(id, {
