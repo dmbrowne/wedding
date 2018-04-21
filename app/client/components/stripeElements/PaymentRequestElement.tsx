@@ -1,33 +1,39 @@
 import { Component } from 'react';
-import { injectStripe, PaymentRequestButtonElement } from 'react-stripe-elements';
+import { ReactStripeElements, injectStripe, PaymentRequestButtonElement } from 'react-stripe-elements';
 
-class PaymentRequestForm extends Component {
+interface Props {
+	paymentRequestEnabled: (enabled: boolean) => any;
+	amount: number;
+	submit: (token: ReactStripeElements.PatchedTokenResponse['token']) => any;
+	stripe?: ReactStripeElements.StripeProps;
+}
+
+class PaymentRequestForm extends Component<Props> {
 	state = {
 		canMakePayment: false,
 		paymentRequest: null,
 	};
 
-	setPaymentRequestObject(stripe) {
+	setPaymentRequestObject = (props) => {
 		if (this.state.paymentRequest) {
 			return;
 		}
 
-		const paymentRequest = stripe.paymentRequest({
+		const paymentRequest = props.stripe.paymentRequest({
 			country: 'GB',
 			currency: 'gbp',
 			total: {
 				label: 'Demo total',
-				amount: 1000,
+				amount: props.amount,
 			},
 		});
 
 		paymentRequest.on('token', ({complete, token, ...data}) => {
-			console.log('Received Stripe token: ', token);
-			console.log('Received customer information: ', data);
-			complete('success');
+			this.props.submit(token);
 		});
 
 		paymentRequest.canMakePayment().then(result => {
+			props.paymentRequestEnabled(!!result);
 			this.setState({canMakePayment: !!result});
 		});
 
@@ -42,7 +48,7 @@ class PaymentRequestForm extends Component {
 
 	componentWillReceiveProps(props) {
 		if (props.stripe && !this.props.stripe) {
-			this.setPaymentRequestObject(props.stripe);
+			this.setPaymentRequestObject(props);
 		}
 	}
 
@@ -53,7 +59,7 @@ class PaymentRequestForm extends Component {
 				className="PaymentRequestButton"
 				style={{
 					paymentRequestButton: {
-						theme: 'light',
+						theme: 'dark',
 						height: '64px',
 					},
 				}}

@@ -2,7 +2,7 @@ import './donate.scss';
 import * as React from 'react';
 import AppLayout from '../components/AppLayout';
 import Head from 'next/head';
-import { StripeProvider, Elements } from 'react-stripe-elements';
+import { StripeProvider, Elements, ReactStripeElements } from 'react-stripe-elements';
 import PaymentForm from '../components/stripeElements/Form';
 import TopUp from '../components/stripeElements/TopUp';
 import SendGroup from '../../server/models/sendGroup';
@@ -13,6 +13,8 @@ interface Props {
 	attendee?: Attendee;
 	sendGroup?: SendGroup;
 	stripePublishableKey: string;
+	personalMessage: string;
+	onMessageChange: (personalMessage: string) => any;
 }
 
 export default class StripeTestPage extends React.Component<Props> {
@@ -28,6 +30,8 @@ export default class StripeTestPage extends React.Component<Props> {
 		};
 	}
 
+	textArea: HTMLTextAreaElement = null;
+
 	state = {
 		stripe: null,
 		donateAmount: 30,
@@ -35,7 +39,7 @@ export default class StripeTestPage extends React.Component<Props> {
 		personalMessage: '',
 	};
 
-	submit(token) {
+	submit(token: ReactStripeElements.PatchedTokenResponse['token']) {
 		return restfulRequest({
 			route: 'charge',
 			method: 'POST',
@@ -55,7 +59,7 @@ export default class StripeTestPage extends React.Component<Props> {
 		});
 	}
 
-	confirmOrder = (token) => {
+	confirmOrder = (token: ReactStripeElements.PatchedTokenResponse['token']) => {
 		this.UIkit.modal.confirm(
 			`A donation of £${this.state.donateAmount} will be charged to the card provided. press ok to confirm.`,
 		)
@@ -73,6 +77,12 @@ export default class StripeTestPage extends React.Component<Props> {
 				windowHeight: document.body.clientHeight,
 			});
 		}, 500);
+	}
+
+	onTextAreaChange = e => {
+		this.setState({ personalMessage: e.target.value });
+		this.textArea.style.height = '80px'; // Prevent height from growing when deleting lines.
+		this.textArea.style.height = this.textArea.scrollHeight + 'px';
 	}
 
 	render() {
@@ -140,11 +150,20 @@ export default class StripeTestPage extends React.Component<Props> {
 											onChange={value => this.setState({ donateAmount: value })}
 										/>
 									</div>
+									<div className="uk-margin-large uk-text-left">
+										<label className="">Your message to the bride and groom</label>
+										<textarea
+											className="uk-textarea"
+											placeholder="Enter your message here"
+											value={this.props.personalMessage}
+											onChange={this.onTextAreaChange}
+											ref={ref => this.textArea = ref}
+										/>
+									</div>
 									<Elements>
 										<PaymentForm
 											onSubmit={this.confirmOrder}
-											personalMessage={this.state.personalMessage}
-											onMessageChange={personalMessage => this.setState({ personalMessage })}
+											amount={this.state.donateAmount * 100}
 										/>
 									</Elements>
 								</div>
