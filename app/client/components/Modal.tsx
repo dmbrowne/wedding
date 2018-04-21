@@ -23,12 +23,12 @@ export default class Modal extends React.Component<Props> {
 					<div className="uk-modal-body">
 						{children}
 					</div>
+					{!!footer && (
+						<div className="uk-modal-footer">
+							{footer}
+						</div>
+					)}
 				</div>
-				{!!footer && (
-					<div className="uk-modal-footer">
-					{footer}
-				</div>
-				)}
 			</ModalBackdrop>
 		);
 	}
