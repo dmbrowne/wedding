@@ -12,7 +12,7 @@ const LocationAddress = event => (
 		<p><span className="venue-name">{event.venueName}</span></p>
 		<p style={{whiteSpace: 'pre-line'}}>{event.address}</p>
 		{event.mapsLink && <a href={event.mapsLink} target="_blank">
-			<small>open in google maps</small>
+			<small>View map</small>
 			<i className="material-icons">map</i>
 		</a>}
 	</address>
