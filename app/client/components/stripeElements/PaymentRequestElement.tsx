@@ -15,10 +15,6 @@ class PaymentRequestForm extends Component<Props> {
 	};
 
 	setPaymentRequestObject = (props) => {
-		if (this.state.paymentRequest) {
-			return;
-		}
-
 		const paymentRequest = props.stripe.paymentRequest({
 			country: 'GB',
 			currency: 'gbp',
@@ -48,7 +44,9 @@ class PaymentRequestForm extends Component<Props> {
 
 	componentWillReceiveProps(props) {
 		if (props.stripe) {
-			if (props.amount) {
+			if (!this.props.stripe) {
+				this.setPaymentRequestObject(props);
+			} else if (props.amount !== this.props.amount) {
 				this.setPaymentRequestObject(props);
 			}
 		}
@@ -62,7 +60,7 @@ class PaymentRequestForm extends Component<Props> {
 				style={{
 					paymentRequestButton: {
 						theme: 'dark',
-						height: '64px',
+						height: '44px',
 					},
 				}}
 			/>
