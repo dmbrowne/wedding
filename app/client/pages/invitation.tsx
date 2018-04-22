@@ -178,7 +178,7 @@ export default class Invitation extends React.Component<Props, State> {
 	isRsvpValid() {
 		const attendeeValidations = this.props.attendees.reduce((accum, attendee) => {
 			const requiresFoodChoiceValidation = Object.keys(this.state.selectedEvents[attendee.id]).some(eventId => {
-				return this.state.dietEvents.indexOf(eventId) >= 0;
+				return this.state.selectedEvents[attendee.id][eventId] && this.state.dietEvents.indexOf(eventId) >= 0;
 			});
 			return {
 				...accum,
