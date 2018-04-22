@@ -170,7 +170,7 @@ export default class Invitation extends React.Component<Props, State> {
 		const selectedEvents = Object.keys(this.state.selectedEvents).filter(attendeeId => {
 			return Object.keys(this.state.selectedEvents[attendeeId]).filter(eventId => {
 				return this.state.selectedEvents[attendeeId][eventId];
-			});
+			}).length > 0;
 		});
 		return selectedEvents.length === 0;
 	}
