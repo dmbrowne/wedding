@@ -15,11 +15,20 @@ class PaymentRequestForm extends Component<Props> {
 	};
 
 	setPaymentRequestObject = (props) => {
+		if (this.state.paymentRequest) {
+			this.state.paymentRequest.update({
+				total: {
+					amount: props.amount,
+				},
+			});
+			return;
+		}
+
 		const paymentRequest = props.stripe.paymentRequest({
 			country: 'GB',
 			currency: 'gbp',
 			total: {
-				label: 'Demo total',
+				label: 'Mr & Mrs Browne - honeymoon donation',
 				amount: props.amount,
 			},
 		});
