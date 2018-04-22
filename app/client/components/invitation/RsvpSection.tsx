@@ -196,10 +196,12 @@ export default class RsvpSection extends React.Component<Props> {
 											{!this.props.pristine && !foodSelections.starter || !foodSelections.main && (
 												<div className="error-alert">
 													<i className="material-icons">error</i>
-													<span>Choose
+													<span>
+														Choose{' '}
 														{!foodSelections.starter && 'a starter'}
 														{!foodSelections.starter && !foodSelections.main && ' and '}
-														{!foodSelections.main && 'a main'}</span>
+														{!foodSelections.main && 'a main'}
+													</span>
 												</div>
 											)}
 											{dietFeedbackRequired &&
