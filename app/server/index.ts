@@ -72,6 +72,7 @@ function configureRoutes(server) {
 	server.get('/admin', verifyUser, (req, res) => req.nextAppRenderer.render(req, res, '/dashboard'));
 	server.get('/admin/myaccount', verifyUser, (req, res) => req.nextAppRenderer.render(req, res, '/account'));
 	server.get('/admin/sendInvites', verifyUser, (req, res) => req.nextAppRenderer.render(req, res, '/sendInvites'));
+	server.get('/donations', (req, res) => req.nextAppRenderer.render(req, res, '/donate'));
 	server.get('*', (req, res) => handler(req, res));
 
 	server.post('/charge', donate);
