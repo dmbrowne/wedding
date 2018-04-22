@@ -74,9 +74,9 @@ export async function getAllAttendees(req: NextAppRequest, res: Response, next) 
 
 	res.locals.attendees = attendees;
 	if (req.xhr) {
-		res.send(attendees);
+		return res.send(attendees);
 	} else {
-		req.nextAppRenderer.render(req, res, '/attendees');
+		return req.nextAppRenderer.render(req, res, '/attendees');
 	}
 }
 
