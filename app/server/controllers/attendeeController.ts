@@ -98,7 +98,11 @@ export function createNewAttendees(req: NextAppRequest, res: Response) {
 	}
 
 	const { newAttendees } = req.body;
-	const attendees = newAttendees.filter(attendee => !!attendee.firstName && !!attendee.lastName);
+	const attendees = newAttendees.filter(attendee => !!attendee.firstName);
+
+	if (attendees.length !== newAttendees.length) {
+		return res.status(400).send({ message: 'all new attendees require a firstname'});
+	}
 
 	return bulkCreateWithAssociations(attendees)
 		.then(() => res.json({success: true}))
