@@ -19,8 +19,6 @@ class PaymentForm extends Component<Props> {
 	handleSubmit = (ev) => {
 		ev.preventDefault();
 
-		// Within the context of `Elements`, this call to createToken knows which Element to
-		// tokenize, since there's only one in this group.
 		this.props.stripe.createToken().then(({token, error}) => {
 			if (error) {
 				return this.setState({ error });
@@ -30,6 +28,7 @@ class PaymentForm extends Component<Props> {
 	}
 
 	render() {
+		const { paymentRequestEnabled } = this.state;
 		return (
 			<form onSubmit={this.handleSubmit}>
 				<PaymentRequestElement
@@ -38,9 +37,11 @@ class PaymentForm extends Component<Props> {
 					submit={this.props.onSubmit}
 				/>
 				<div className="card-entry-section">
-					<p className="instruction">Or enter your card details below</p>
+					<p className="instruction">{paymentRequestEnabled ? 'Or enter' : 'Enter'} your card details below</p>
 					<CardData />
-					<button className="uk-button uk-button-primary uk-text-center">Donate by card</button>
+					<button className="uk-button uk-button-primary uk-text-center">
+						Donate{paymentRequestEnabled ? ' by card' : ''}
+					</button>
 				</div>
 			</form>
 		);
