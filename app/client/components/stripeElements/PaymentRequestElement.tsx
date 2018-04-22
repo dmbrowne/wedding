@@ -18,6 +18,7 @@ class PaymentRequestForm extends Component<Props> {
 		if (this.state.paymentRequest) {
 			this.state.paymentRequest.update({
 				total: {
+					label: 'Mr & Mrs Browne - honeymoon donation',
 					amount: props.amount,
 				},
 			});
