@@ -7,7 +7,7 @@ const { secretKey } = stripeApiKeys[process.env.NODE_ENV || 'development'];
 const stripe = new stripeApi(secretKey);
 
 export async function donate(req, res, next) {
-	const { amount, token, description, message } = req.body;
+	const { amount, token, description, message, email } = req.body;
 
 	if (message) {
 		await models.Donation.create({ message, amount });
@@ -18,7 +18,7 @@ export async function donate(req, res, next) {
 		description,
 		currency: 'gbp',
 		source: token,
-		receipt_email: req.body.email,
+		receipt_email: email,
 	})
 	.then(charge => {
 		res.send(charge);

@@ -17,7 +17,15 @@ interface Props {
 	onMessageChange: (personalMessage: string) => any;
 }
 
-export default class StripeTestPage extends React.Component<Props> {
+interface State {
+	stripe: ReactStripeElements.StripeProps;
+	donateAmount: number;
+	donationSuccessful: boolean;
+	personalMessage: string;
+	email: string;
+}
+
+export default class StripeTestPage extends React.Component<Props, State> {
 	static getInitialProps = async ({ res }) => {
 		return {
 			attendee: res ? res.locals.attendee : null,
@@ -32,12 +40,16 @@ export default class StripeTestPage extends React.Component<Props> {
 
 	textArea: HTMLTextAreaElement = null;
 
-	state = {
-		stripe: null,
-		donateAmount: 30,
-		donationSuccessful: false,
-		personalMessage: '',
-	};
+	constructor(props) {
+		super(props);
+		this.state = {
+			stripe: null,
+			donateAmount: 30,
+			donationSuccessful: false,
+			personalMessage: '',
+			email: props.attendee && props.attendee.email || props.sendGroup && props.sendGroup.email || '',
+		};
+	}
 
 	submit(token: ReactStripeElements.PatchedTokenResponse['token']) {
 		return restfulRequest({
@@ -48,6 +60,7 @@ export default class StripeTestPage extends React.Component<Props> {
 				token: token.id,
 				description: 'Test Charge!!',
 				message: this.state.personalMessage,
+				email: this.state.email,
 			}),
 		})
 		.then(() => this.setState({ donationSuccessful : true }))
@@ -145,12 +158,23 @@ export default class StripeTestPage extends React.Component<Props> {
 									<div className="uk-margin uk-text-center">
 										<label>Donation amont</label>
 										<TopUp
-											minValue={20}
+											minValue={10}
 											value={this.state.donateAmount}
 											onChange={value => this.setState({ donateAmount: value })}
 										/>
 									</div>
-									<div className="uk-margin-large uk-text-left">
+									<div className="uk-margin uk-text-left uk-margin-large-top">
+										<label className="uk-form-label">Enter an email address</label>
+										<input
+											type="email"
+											className="uk-input"
+											value={this.state.email}
+											placeholder="Your email address"
+											onChange={e => this.setState({ email: e.target.value })}
+										/>
+										<small>A payment receipt will be sent to the email address given above</small>
+									</div>
+									<div className="uk-margin uk-text-left">
 										<label className="">Your message to the bride and groom</label>
 										<textarea
 											className="uk-textarea"
