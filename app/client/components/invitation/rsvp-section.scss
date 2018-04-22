@@ -74,7 +74,7 @@
 .section-rsvp {
 	overflow: hidden;
 	position: relative;
-	background: #010101;
+	background: #403355;
 	color: #ccc;
 	font-size: 1.1rem;
 	min-height: 100vh;
@@ -87,7 +87,8 @@
     height: 100%;
 		z-index: 0;
 		filter: brightness(50%) blur(7px);
-		background: top center / 100% auto no-repeat url('/assets/723B3933.jpg')
+		background: top center / 100% auto no-repeat url('/assets/33516114_s.jpg')
+		// background: top center / 100% auto no-repeat url('/assets/723B3933.jpg')
 	}
 	> * { position: relative; z-index: 1;}
 	.section-title {

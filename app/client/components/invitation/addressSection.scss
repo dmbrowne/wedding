@@ -32,7 +32,7 @@
 		@media screen and (min-width: 768px) { width: 50%; }
 		@media screen and (min-width: 1024px) { width: 40%; }
 		svg g {
-			fill: $secondary;
+			fill: #fff;
 		}
 	}
 
@@ -40,9 +40,6 @@
 		@extend .ornate-divider;
 		width: 25vw;
 		margin: 1rem auto;
-		svg g {
-			fill: #fff;
-		}
 		@media screen and (min-width: 480px) { width: 50%; }
 		@media screen and (min-width: 600px) { width: 38%; margin: 2rem auto; }
 		@media screen and (min-width: 768px) { width: 22%; }
@@ -72,6 +69,7 @@
 
 	.venue-name {
 		background: rgba(255,255,255,0.3);
+		box-shadow: 0 0 80px 10px rgba(255, 255, 255, 0.5);
     padding: 5px 20px;
     border-radius: 40px;
 	}
@@ -94,6 +92,7 @@
 
 	.venue-name {
 		background: none; padding: 0;
+		box-shadow: none;
 	}
 	.bg {
 		position: absolute;
@@ -101,8 +100,9 @@
     left: -5%;
     width: 110%;
     height: 110%;
-		background: center center / cover no-repeat url('/assets/33516114_s.jpg');
-		filter: blur(3px);
+		background: center center / cover no-repeat url('/assets/vanilla.jpg');
+		// background: center center / cover no-repeat url('/assets/33516114_s.jpg');
+		// filter: blur(3px);
 		z-index: 0;
 		&:before {
 			content: '';
@@ -120,7 +120,7 @@
 		position: absolute;
 		width: 25vw;
 		svg path, svg g {
-			fill: $secondary-hover;
+			fill: rgba($secondary-hover, 0.8);
 		}
 	}
 

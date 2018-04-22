@@ -154,9 +154,8 @@ textarea {
 	footer { font-style: italic; color: #969696; }
 
 	&.primary {
-		background: $info;
-		color: #e9e9e9;
-		footer { color: lighten($info, 20%); }
+		background: url('/assets/noisy_net.png');
+		color: #bebebe;
 		
 		@media (min-width: 1400px) {
 			margin: 30px; 
@@ -170,11 +169,20 @@ textarea {
 }
 
 .section-groomsmen {
-	@extend ∞concrete-bg;
+	background: url('/assets/noisy_net.png');
+	.section-title { color: #bebebe; }
+	.bridal-party-member {
+		color: #e9e9e9;
+		&.primary {
+			background: #969696;
+			color: #000;
+			footer { color: #454545; }
+		}
+	}
 }
 
 .section-donate {
-	background: url('/assets/cubes.png');
+	background: url('/assets/brushed_alu.png');
 	svg {
 		width: 150px;
 		g { fill: #000; transition: fill 300ms; }

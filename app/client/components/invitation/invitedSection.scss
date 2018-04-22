@@ -10,9 +10,6 @@
 	display: flex;
 	flex-direction: column;
 	.section-title { color: $info; }
-	strong {
-		font-size: 1.5em;
-	}
 	.go-to-rsvp {
 		color: $info;
 		border: 3px  solid $info;
