@@ -35,6 +35,9 @@ export default class BridalPartyRole extends Model {
 		options = options || {};
 		return this.findAll({
 			...options ? options : {},
+			order: [
+				[{model: BridalParty,  as: 'BridalParties'}, 'order', 'ASC'],
+			],
 			include: [{
 				model: BridalParty,
 				as: 'BridalParties',
