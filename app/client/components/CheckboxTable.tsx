@@ -129,8 +129,14 @@ class DataItemListing extends React.Component<InternalProps, State> {
 	filteredItems() {
 		if (Array.isArray(this.props.data)) {
 			return this.props.data.filter(dataItem => {
-				const searchField = Object.keys(dataItem).map(key => dataItem[key]).join(' ');
-				return this.state.filterSearchTerms ? searchField.indexOf(this.state.filterSearchTerms) >= 0 : true;
+				const searchField = Object.keys(dataItem)
+					.filter(key => typeof dataItem[key] === 'string')
+					.map(key => dataItem[key].toLowerCase())
+					.join(' ').trim();
+
+				return this.state.filterSearchTerms ?
+					searchField.indexOf(this.state.filterSearchTerms) >= 0 :
+					true;
 			});
 		}
 		return [];
@@ -163,7 +169,7 @@ class DataItemListing extends React.Component<InternalProps, State> {
 							type="text"
 							className="uk-input"
 							placeholder="Filter..."
-							onChange={e => this.setState({ filterSearchTerms: e.target.value })}
+							onChange={e => this.setState({ filterSearchTerms: e.target.value.toLowerCase() })}
 							value={this.state.filterSearchTerms}
 						/>
 					</div>
