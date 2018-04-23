@@ -123,6 +123,8 @@ class FireFlies extends React.Component {
 
 		this.componentWidth = this.element.offsetWidth;
 		this.componentHeight = this.element.offsetHeight;
+		this.canvas.width = this.componentWidth;
+		this.canvas.height = this.componentHeight;
 		this.canvasContext = this.canvas.getContext('2d');
 
 		for (let i = 0; i < 300; i++) {
@@ -156,8 +158,6 @@ class FireFlies extends React.Component {
 						position: 'absolute',
 						top: 0,
 						left: 0,
-						width: '100%',
-						height: '100%',
 					}}
 				/>
 				{this.props.children}
