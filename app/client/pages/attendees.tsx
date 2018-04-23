@@ -208,6 +208,13 @@ class Attendees extends React.Component<Props, State> {
 		this.setState({ selected });
 	}
 
+	filterEmailable = (e) => {
+		this.setState({
+			onlyShowEmailableAttendees: e.target.checked,
+			...this.attendeeList(this.props.attendees, e.target.checked),
+		});
+	}
+
 	render() {
 		const { attendeesOrder, attendees, showSendGroupsModal, sendGroups, selected, onlyShowEmailableAttendees } = this.state;
 		return (
@@ -221,7 +228,7 @@ class Attendees extends React.Component<Props, State> {
 							type="checkbox"
 							className="uk-checkbox"
 							checked={onlyShowEmailableAttendees}
-							onClick={e => this.setState({ onlyShowEmailableAttendees: e.target.checked })}
+							onClick={this.filterEmailable}
 						/> Only show attendees with email addresses
 					</label>
 				</div>
