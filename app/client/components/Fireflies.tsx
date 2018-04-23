@@ -63,8 +63,8 @@ function Circle(canvasContext, width, height, rint) {
 		const cr = this.r * newo;
 		const g = this.canvasContext.createRadialGradient(this.x, this.y, 0, this.x, this.y, (cr <= 0 ? 1 : cr));
 		g.addColorStop(0.0, 'rgba(255,255,255,' + newo + ')');
-		g.addColorStop(this.stop, 'rgba(255,255,255,' + (newo * 1) + ')');
-		g.addColorStop(1.0, 'rgba(255,255,255,0.1)');
+		g.addColorStop(this.stop, 'rgba(255,255,255,' + (newo * 0.2) + ')');
+		g.addColorStop(1.0, 'rgba(255,255,255,0)');
 
 		// g.addColorStop(0.0, 'rgba(238,180,28,'+newo+')');
 		// g.addColorStop(this.stop, 'rgba(238,180,28,'+(newo*.3)+')');
@@ -127,16 +127,11 @@ class FireFlies extends React.Component {
 		this.canvas.height = this.componentHeight;
 		this.canvasContext = this.canvas.getContext('2d');
 
-		for (let i = 0; i < 300; i++) {
+		for (let i = 0; i < 50; i++) {
 			this.pxs[i] = new Circle(this.canvasContext, this.componentWidth, this.componentHeight, this.rint);
 			this.pxs[i].reset();
 		}
-		this.fliesInterval = window.setInterval(() => this.draw(), 40);
-
-		setTimeout(() => {
-			this.stopFlies();
-			setTimeout(() => { this.startFireFlies(); }, 60000);
-		}, 30000);
+		this.fliesInterval = window.setInterval(() => this.draw(), 50);
 	}
 
 	draw() {
