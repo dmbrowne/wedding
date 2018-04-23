@@ -38,6 +38,7 @@ class BridalParties extends React.Component<Props, State> {
 				<th>Role</th>
 				<th>Sub-role</th>
 				<th className="uk-table-shrink">VIP</th>
+				<th className="uk-table-shrink">Order</th>
 				<th style={{width: 50, boxSizing: 'border-box' }} />
 				<th style={{width: 50, boxSizing: 'border-box' }} />
 			</tr>
@@ -52,6 +53,7 @@ class BridalParties extends React.Component<Props, State> {
 				<td>{!!bridalPartyMember.WeddingRole && bridalPartyMember.WeddingRole.name}</td>
 				<td>{bridalPartyMember.subRole}</td>
 				<td>{bridalPartyMember.vip.toString()}</td>
+				<td className="uk-text-center">{bridalPartyMember.order}</td>
 				<td>
 					<Link prefetch={true} href={`/admin/bridalParties/${bridalPartyMember.id}`}>
 						<i className="material-icons">mode_edit</i>

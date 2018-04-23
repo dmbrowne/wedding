@@ -11,6 +11,7 @@ export default class BridalParty extends Model {
 		partyRoleId: { type: Sequelize.INTEGER },
 		subRole: { type: Sequelize.STRING },
 		vip: { type: Sequelize.BOOLEAN },
+		order: { type: Sequelize.INTEGER, defaultValue: 1 },
 	};
 
 	static defaultIncludeOptions = [{
@@ -61,9 +62,10 @@ export default class BridalParty extends Model {
 	lastName: string;
 	comment: string;
 	subRole: string;
-	imageId: number;
+	imageId: string;
 	partyRoleId: number;
 	vip: boolean;
+	order: number;
 	WeddingRole: BridalPartyRole;
 	Image: GalleryImage;
 }

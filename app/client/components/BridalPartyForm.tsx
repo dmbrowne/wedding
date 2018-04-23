@@ -8,7 +8,6 @@ interface WrapperProps {
 	bridalParty?: BridalParty;
 	roleOptions: BridalPartyRole[];
 	onChange: <C>(C) => any;
-	onImageChange: (image: GalleryImage) => any;
 }
 
 interface WrapperStateTextFields {
@@ -17,25 +16,16 @@ interface WrapperStateTextFields {
 	comment: string;
 	subRole: string;
 	vip: boolean;
+	order: number;
 }
-
-interface NewBridalParty extends WrapperStateTextFields {
-	vip: boolean;
-	partyRoleId: number;
-	imageId: string;
-	Image?: GalleryImage;
-	WeddingRole?: BridalPartyRole;
-}
-
-type NewOrSavedBridalParty = BridalParty | NewBridalParty;
 
 interface WrapperState {
-	bridalParty: NewBridalParty;
+	bridalParty: Partial<BridalParty>;
 	roleOptions: WrapperProps['roleOptions'];
 }
 
 interface BridalFormProps {
-	bridalParty: NewBridalParty;
+	bridalParty: Partial<BridalParty>;
 	roleOptions: BridalPartyRole[];
 	onTextChange: (key: keyof WrapperStateTextFields, value: any) => any;
 	onImageChange: (image: GalleryImage) => any;
@@ -105,6 +95,17 @@ const BridalPartyForm = (props: BridalFormProps) => {
 				/>
 			</div>
 			<div className="uk-margin">
+				<label>Order</label>
+				<input
+					type="number"
+					step="1"
+					className="uk-input"
+					placeholder="Order"
+					value={bridalParty.order}
+					onChange={e => onTextChange('order', e.target.value)}
+				/>
+			</div>
+			<div className="uk-margin">
 				<AddOrReplaceImage
 					image={bridalParty.Image}
 					onImageChange={(galleryImage: GalleryImage) => onImageChange(galleryImage)}
@@ -117,14 +118,15 @@ const BridalPartyForm = (props: BridalFormProps) => {
 export default class BridalPartyFormDataWrapper extends React.Component<WrapperProps, WrapperState> {
 	componentWillMount() {
 		this.setState({
-			bridalParty: this.props.bridalParty as NewBridalParty || {
+			bridalParty: this.props.bridalParty || {
 				firstName: '',
 				lastName: '',
 				comment: '',
 				subRole: '',
 				partyRoleId: 0,
-				imageId: '',
+				imageId: null,
 				vip: false,
+				order: 1,
 			},
 			roleOptions: this.props.roleOptions || [],
 		});
