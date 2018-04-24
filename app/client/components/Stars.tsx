@@ -89,7 +89,20 @@ export default class Stars extends React.Component {
 			height: this.element.offsetHeight,
 			width: this.element.offsetWidth,
 			canvasContext: this.canvas.getContext('2d'),
-		}, () => this.createStars());
+		}, () => {
+			this.watchScroll();
+			this.createStars();
+		});
+
+	}
+
+	watchScroll() {
+		window.addEventListener('scroll', (e) => {
+			const scrollAmount = window.scrollY >= this.canvas.height ?
+				this.canvas.height :
+				window.scrollY / 3;
+			this.canvas.style.top = scrollAmount + 'px';
+		});
 	}
 
 	createStars() {
@@ -117,7 +130,7 @@ export default class Stars extends React.Component {
 	render() {
 		return (
 			<div
-				style={{ position: 'relative', width: '100%', height: '100%' }}
+				style={{ position: 'relative', width: '100%', height: '100%', overflow: 'hidden' }}
 				ref={ref => this.element = ref}
 			>
 				<canvas
