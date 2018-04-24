@@ -130,11 +130,6 @@ export function createNewAttendees(req: NextAppRequest, res: Response) {
 
 export async function editAttendee(req: NextAppRequest, res: Response) {
 	const { attendeeId } = req.params;
-	// const updateValues = getDesiredValuesFromRequestBody(['email', 'firstName', 'lastName'], req.body);
-
-	// if (!updateValues) {
-	// 	res.redirect(`/admin/attendees/${attendeeId}`);
-	// }
 
 	const attendee = await models.Attendee.findById(attendeeId);
 
@@ -259,13 +254,17 @@ export async function singleInvitationRsvpConfirm(req, res) {
 export async function groupInvitationRsvpConfirm(req, res) {
 	const { rsvp }: { rsvp: Rsvp[] } = req.body;
 	const { sendGroupId } = req.params;
-	const sendGroup = await SendGroup.findById(sendGroupId).catch(e => res.status(400).send({ error: e }));
+	const sendGroup = await SendGroup.findById(sendGroupId);
 
 	if (!sendGroup) {
 		return res.status(400).send({ message: `Sendgroup with id ${sendGroupId} does not exist`});
 	}
 
-	await sendGroup.getAttendees().then(attendees => Promise.all(
+	sendGroup.getAttendees({
+		order: [
+			'sendGroupOrder', 'ASC',
+		],
+	}).then(attendees => Promise.all(
 		attendees.map(attendee => {
 			const attendeeRsvp = rsvp.filter(singleRsvp => singleRsvp.attendeeId === attendee.id)[0];
 			if (!attendeeRsvp) {
