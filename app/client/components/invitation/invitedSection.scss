@@ -9,13 +9,13 @@
 	min-height: 85vh;
 	display: flex;
 	flex-direction: column;
+	font: 1.4em/normal Great Vibes;
 	.section-title { color: $info; }
 	.go-to-rsvp {
 		color: $info;
 		border: 3px  solid $info;
 		background-color: transparent;
 		margin-bottom: 30px;
-		// font-family: Roboto Condensed;
     display: inline-block;
     box-sizing: border-box;
     padding: 0 15px;
