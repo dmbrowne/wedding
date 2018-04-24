@@ -2,7 +2,7 @@ import * as React from 'react';
 import Link from 'next/link';
 import { withAdmin } from '../components/adminLayout';
 import Modal from '../components/Modal';
-import { deleteAttendees, getAllAttendees } from '../api/attendee';
+import { deleteAttendees, getAllAttendees, editAttendee } from '../api/attendee';
 import { createSendGroup, getSendGroups, editSendGroup } from '../api/sendGroup';
 import CheckboxTable from '../components/CheckboxTable';
 import Attendee from '../../server/models/attendee';
@@ -215,8 +215,45 @@ class Attendees extends React.Component<Props, State> {
 		});
 	}
 
+	newSendGroupDetails(value: string, key: 'name' | 'email') {
+		this.setState({
+			newSendGroup: {
+				...this.state.newSendGroup,
+				[key]: value,
+			},
+		});
+	}
+
+	updateSeletedAttendeeSendGroupOrder(orderNumber, attendeeId) {
+		const prevOrder = this.state.selected[attendeeId].sendGroupOrder;
+		this.setState({
+			attendees: {
+				...this.state.attendees,
+				[attendeeId]: {
+					...this.state.attendees[attendeeId],
+					sendGroupOrder: orderNumber,
+				},
+			},
+		}, () => {
+			editAttendee(attendeeId, { sendGroupOrder: orderNumber })
+				.then(() => void 0)
+				.catch(() => {
+					this.setState({
+						attendees: {
+							...this.state.attendees,
+							[attendeeId]: {
+								...this.state.attendees[attendeeId],
+								sendGroupOrder: prevOrder,
+							},
+						},
+					});
+				});
+		});
+	}
+
 	render() {
 		const { attendeesOrder, attendees, showSendGroupsModal, sendGroups, selected, onlyShowEmailableAttendees } = this.state;
+
 		return (
 			<div className="uk-container">
 				<h2>Everyone that you would like to come.</h2>
@@ -265,11 +302,49 @@ class Attendees extends React.Component<Props, State> {
 								attendees={Object.keys(selected).map(attendeeId => attendees[attendeeId])}
 							/>
 						</p>
+						<div className="uk-section uk-section-small uk-padding-remove-top uk-padding-remove-horizontal">
+							<header className="uk-margin-small">Order</header>
+							{
+								Object.keys(selected).map(attendeeId => {
+									const attendee = attendees[attendeeId];
+									return (
+										<div
+											key={attendee.id}
+											style={{ padding: 10, display: 'flex' }}
+											className="uk-card uk-card-default uk-card-body"
+										>
+											<div>
+												<input
+													style={{ textAlign: 'center', width: 50, marginRight: 10 }}
+													type="number"
+													step="1"
+													value={attendee.sendGroupOrder}
+													onChange={(e) => this.updateSeletedAttendeeSendGroupOrder(e.target.value, attendeeId)}
+												/>
+											</div>
+											<p>{attendee.firstName}{' ' + attendee.lastName}</p>
+										</div>
+									);
+								})
+							}
+						</div>
 						<div className="uk-section-muted uk-padding-small">
 							<header className="uk-text-uppercase">Create new</header>
 							<div className="uk-margin-small">
-								<input type="text" className="uk-input" placeholder="Name of group" />
-								<input type="text" className="uk-input" placeholder="default email" />
+								<input
+									type="text"
+									className="uk-input"
+									placeholder="Name of group"
+									value={this.state.newSendGroup.name}
+									onChange={e => this.newSendGroupDetails(e.target.value, 'name')}
+								/>
+								<input
+									type="text"
+									className="uk-input"
+									placeholder="default email"
+									value={this.state.newSendGroup.email}
+									onChange={e => this.newSendGroupDetails(e.target.value, 'email')}
+								/>
 								<div className="uk-margin-small uk-clearfix">
 									<button
 										onClick={this.createSendGroupWithAttendees}
@@ -281,7 +356,7 @@ class Attendees extends React.Component<Props, State> {
 							</div>
 						</div>
 						<div className="uk-section-muted uk-padding-small uk-margin">
-						<header className="uk-text-uppercase uk-margin">Or add to an existing group</header>
+							<header className="uk-text-uppercase uk-margin">Or add to an existing group</header>
 							{sendGroups &&
 								<ul className="uk-list uk-list-divider">
 									{sendGroups.map(sendGroup => this.renderSendGroupListRow(sendGroup))}
