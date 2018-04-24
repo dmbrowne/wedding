@@ -266,7 +266,7 @@ export default class Invitation extends React.Component<Props, State> {
 											<div key={bridesmaid.id} className={cx('bridal-party-member', {primary: bridesmaid.vip})}>
 												{bridesmaid.subRole && <div className="badge">{bridesmaid.subRole}</div>}
 												<figure className="selfie">
-													<img src={bridesmaid.Image.squareImage} />
+													<img src={bridesmaid.Image.squareHiRes} />
 												</figure>
 												<header>{bridesmaid.firstName} {bridesmaid.lastName}</header>
 												{bridesmaid.comment && <footer>{bridesmaid.comment}</footer>}
@@ -285,7 +285,7 @@ export default class Invitation extends React.Component<Props, State> {
 											<div key={groomsmen.id} className={cx('bridal-party-member', {primary: groomsmen.vip})}>
 												{groomsmen.subRole && <div className="badge">{groomsmen.subRole}</div>}
 												<figure className="selfie">
-													<img src={groomsmen.Image.squareImage} />
+													<img src={groomsmen.Image.squareHiRes} />
 												</figure>
 												<header>{groomsmen.firstName} {groomsmen.lastName}</header>
 												{groomsmen.comment && <footer>{groomsmen.comment}</footer>}
