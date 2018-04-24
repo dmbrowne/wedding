@@ -130,11 +130,11 @@ export function createNewAttendees(req: NextAppRequest, res: Response) {
 
 export async function editAttendee(req: NextAppRequest, res: Response) {
 	const { attendeeId } = req.params;
-	const updateValues = getDesiredValuesFromRequestBody(['email', 'firstName', 'lastName'], req.body);
+	// const updateValues = getDesiredValuesFromRequestBody(['email', 'firstName', 'lastName'], req.body);
 
-	if (!updateValues) {
-		res.redirect(`/admin/attendees/${attendeeId}`);
-	}
+	// if (!updateValues) {
+	// 	res.redirect(`/admin/attendees/${attendeeId}`);
+	// }
 
 	const attendee = await models.Attendee.findById(attendeeId);
 
@@ -145,7 +145,7 @@ export async function editAttendee(req: NextAppRequest, res: Response) {
 		res.redirect('/admin/attendees?error=404&type=attendee');
 	}
 
-	let updatedAttendee = await attendee.update(updateValues);
+	let updatedAttendee = await attendee.update(req.body);
 	if (req.body.eventIds) {
 		updatedAttendee = await updatedAttendee.setEvents(req.body.eventIds);
 	}

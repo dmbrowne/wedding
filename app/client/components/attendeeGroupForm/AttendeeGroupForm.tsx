@@ -1,19 +1,20 @@
 import * as React from 'react';
 import AttendeeSearch from '../AttendeeSearch';
 import '../../styles/admin.scss';
-import { IAttendee } from '../../../server/types/models';
+import Attendee from '../../../server/models/attendee';
 import SelectedAttendees from './SelectedAttendees';
 import AutoCompleteSearch from '../AutoCompleteSearch';
 
 interface Props {
 	email: string;
 	groupName: string;
-	attendeesSearchResults: IAttendee[];
-	selectedAttendees: { [key: string]: IAttendee };
+	attendeesSearchResults: Attendee[];
+	selectedAttendees: { [key: string]: Attendee };
 	onSearch: (e: React.MouseEvent<HTMLElement>) => any;
 	onChange: (e, keyName: 'email' | 'groupName') => any;
-	removeAttendee: (attendeeIds: Array<IAttendee['id']>) => any;
-	onSelectAttendee: (attendeeIds: Array<IAttendee['id']>) => any;
+	removeAttendee: (attendeeIds: Array<Attendee['id']>) => any;
+	onSelectAttendee: (attendeeIds: Array<Attendee['id']>) => any;
+	onOrderChange: (attendeeId: string, order: number) => any;
 }
 
 interface State {
@@ -92,6 +93,7 @@ export default class AttendeeGroupForm extends React.Component<Props, State> {
 							<SelectedAttendees
 								attendeesMap={this.props.selectedAttendees}
 								onClick={this.props.removeAttendee}
+								onOrderChange={this.props.onOrderChange}
 							/>
 						}
 					</div>

@@ -37,6 +37,7 @@ export default class Attendee extends Model {
 						Attendee.invitationUrl(this.id);
 				},
 			},
+			sendGroupOrder: Sequelize.INTEGER,
 		},
 		{
 			sequelize: sequelizeConnection,
@@ -124,6 +125,7 @@ export default class Attendee extends Model {
 	tableId: string;
 	sendGroupId: string;
 	campaignId: string;
+	sendGroupOrder: number;
 	createdAt: Date;
 	updatedAt: Date;
 	Events?: EventWithDetailsJoin[];

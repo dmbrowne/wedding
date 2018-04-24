@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Router from 'next/router';
 import { withAdmin } from '../components/adminLayout';
-import { searchForAttendee } from '../api/attendee';
+import { searchForAttendee, editAttendee } from '../api/attendee';
 import { getSendGroups, editSendGroup } from '../api/sendGroup';
 import AttendeeGroupForm from '../components/attendeeGroupForm';
 import { IAttendee, ISendGroup } from '../../server/types/models';
@@ -109,6 +109,33 @@ class CreateSendGroupScreen extends React.Component<Props, State> {
 		}
 	}
 
+	onAttendeeOrderChange = (attendeeId, order) => {
+		const prevOrder = this.state.selectedAttendees[attendeeId].sendGroupOrder;
+		this.setState({
+			selectedAttendees: {
+				...this.state.selectedAttendees,
+				[attendeeId]: {
+					...this.state.selectedAttendees[attendeeId],
+					sendGroupOrder: order,
+				},
+			},
+		}, () => {
+			editAttendee(attendeeId, { sendGroupOrder: order })
+				.then(() => void 0)
+				.catch(() => {
+					this.setState({
+						selectedAttendees: {
+							...this.state.selectedAttendees,
+							[attendeeId]: {
+								...this.state.selectedAttendees[attendeeId],
+								sendGroupOrder: prevOrder,
+							},
+						},
+					});
+				});
+		});
+	}
+
 	render() {
 		return (
 			<div>
@@ -122,6 +149,7 @@ class CreateSendGroupScreen extends React.Component<Props, State> {
 					onSelectAttendee={this.selectAttendee}
 					onSearch={this.attendeeSearch}
 					removeAttendee={this.removeFromGroup}
+					onOrderChange={this.onAttendeeOrderChange}
 				/>
 				<div className="uk-clearfix uk-margin uk-margin-large-top uk-container">
 					<button

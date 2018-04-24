@@ -1,6 +1,15 @@
 import React from 'react';
+import Attendee from '../../../server/models/attendee';
 
-const SelectedAttendees = ({ attendeesMap, onClick }) => (
+interface Props {
+	attendeesMap: {
+		[attendeeId: string]: Attendee;
+	};
+	onClick: (attendeeIds: string[]) => any;
+	onOrderChange?: (attendeeId: string, order: number) => any;
+}
+
+const SelectedAttendees = ({ attendeesMap, onClick, onOrderChange }: Props) => (
 	<React.Fragment>
 		{Object.keys(attendeesMap).map(attendeeId => {
 			const attendee = attendeesMap[attendeeId];
@@ -9,7 +18,6 @@ const SelectedAttendees = ({ attendeesMap, onClick }) => (
 					key={`selected-attendee-${attendeeId}`}
 					className="uk-card uk-card-default uk-card-small uk-margin"
 				>
-					{/* <div className="uk-card-badge uk-label">Primary</div> */}
 					<div className="uk-card-header uk-flex uk-flex-middle">
 						<i className="material-icons">account_circle</i>
 						<div className="uk-margin-left">
@@ -20,6 +28,16 @@ const SelectedAttendees = ({ attendeesMap, onClick }) => (
 						</div>
 					</div>
 					<div className="uk-card-body uk-clearfix">
+						<div className="uk-float-left">
+							Order:{' '}
+							<input
+								style={{ width: 50 }}
+								value={attendee.sendGroupOrder || 1}
+								type="number"
+								placeholder="Order"
+								onChange={e => onOrderChange(attendeeId, parseInt(e.target.value, 10))}
+							/>
+						</div>
 						<button
 							onClick={() => onClick(attendeeId)}
 							style={{fontSize: '0.8rem'}}
@@ -27,12 +45,6 @@ const SelectedAttendees = ({ attendeesMap, onClick }) => (
 						>
 							Remove from group
 						</button>
-						{/* <button
-							style={{fontSize: '0.8rem'}}
-							className="uk-button uk-button-link uk-float-right"
-						>
-							Make Primary
-						</button> */}
 					</div>
 				</div>
 			);

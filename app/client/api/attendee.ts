@@ -1,4 +1,5 @@
 import { restfulRequest } from './utils';
+import Attendee from '../../server/models/attendee';
 
 export interface CreateAttendeeInput {
 	firstName: string;
@@ -7,7 +8,7 @@ export interface CreateAttendeeInput {
 	eventIds?: string[];
 }
 
-export function createAttendees(attendees: CreateAttendeeInput[]) {
+export function createAttendees(attendees: Array<Partial<Attendee>>) {
 	return restfulRequest({
 		route: 'admin/attendees',
 		method: 'POST',
@@ -27,7 +28,7 @@ export function deleteAttendees(attendeeIds: string[]) {
 	});
 }
 
-export function editAttendee(attendeeId: string, values: CreateAttendeeInput) {
+export function editAttendee(attendeeId: string, values: Partial<Attendee>) {
 	return restfulRequest({
 		route: `admin/attendees/${attendeeId}`,
 		method: 'PUT',
