@@ -103,7 +103,8 @@ textarea {
 		font: 62px/66px Great Vibes;
 	}
 
-	span {
+	span { display: inline-block; }
+	span:first-of-type {
 		font: 300 26px/40px Roboto Condensed;
 		position: relative;
 		padding-right: 30px;
