@@ -116,7 +116,10 @@ export default class Stars extends React.Component {
 
 	render() {
 		return (
-			<div ref={ref => this.element = ref} className="firefly-container">
+			<div
+				style={{ position: 'relative', width: '100%', height: '100%' }}
+				ref={ref => this.element = ref}
+			>
 				<canvas
 					ref={ref => this.canvas = ref}
 					style={{
