@@ -3,8 +3,12 @@ import EventModel from './event';
 import SendGroup from './sendGroup';
 import EventAttendee from './eventAttendee';
 import Campaign from './campaign';
-import FoodChoice, { ChoiceTypes } from './foodChoice';
+import FoodChoice, { FoodChoiceType } from './foodChoice';
 import GalleryImage from './galleryImage';
+import mg, { variables as mailGunVariables } from './lib/mailgun';
+import * as path from 'path';
+
+const { from } = mailGunVariables;
 
 interface EventWithDetailsJoin extends EventModel {
 	EventAttendee: EventAttendee;
@@ -153,10 +157,45 @@ export default class Attendee extends Model {
 		);
 	}
 
-	selectFood(input: {starter: ChoiceTypes, main: ChoiceTypes, allergies?: string | null}): PromiseLike<any> {
+	selectFood(input: {starter: FoodChoiceType, main: FoodChoiceType, allergies?: string | null}): PromiseLike<any> {
 		return FoodChoice.upsert({
 			attendeeId: this.id,
 			...input,
+		});
+	}
+
+	async sendRsvpConfirmationEmail() {
+		const filename = path.join(__dirname, '../../client/assets/y&d-logo.png');
+		const name = this.getDataValue('firstName');
+		const events = await this.getEvents();
+		const attending = events.map(event => event.EventAttendee.attending).length > 0;
+		const attendingMsg = 'We\'re really happy that you\'ll be attending, We can\'t wait to see you on the day';
+		const unattendingMsg = 'Sorry you can\'t share our big day with us, however we hope to see you soon';
+		const data = {
+			inline: filename,
+			to: this.getDataValue('email'),
+			from: `Mr and Mrs Browne <${from}>`,
+			subject: 'We\'ve recieved your response',
+			html: `
+<img width="150" src="cid:y&d-logo.png" />
+<h1>Thank you for your response</h1>
+<p>Hi ${name}</p>
+<p>${attending ? attendingMsg : unattendingMsg}</p>
+<br/>
+<p>
+Daryl & Yasmin<br/>
+xx
+</p>
+`,
+		};
+
+		return new Promise((resolve, reject) => {
+			mg.messages().send(data, function(error, body) {
+				if (error) {
+					reject(error);
+				}
+				resolve(body);
+			});
 		});
 	}
 }

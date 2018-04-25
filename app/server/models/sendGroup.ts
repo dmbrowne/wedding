@@ -1,8 +1,12 @@
-import Sequelize, { Model, HasManyCreateAssociationMixin, HasManyGetAssociationsMixin } from 'sequelize';
+import Sequelize, { Model, HasManyGetAssociationsMixin } from 'sequelize';
 import Attendee from './attendee';
 import GalleryImage from './galleryImage';
 import EventModel from './event';
 import FoodChoice from './foodChoice';
+import * as path from 'path';
+import mg, { variables as mailGunVariables } from './lib/mailgun';
+
+const { from } = mailGunVariables;
 
 interface GetApplicableSendGroupRecipientVars {
 	sendGroups?: SendGroup[];
@@ -114,6 +118,72 @@ export default class SendGroup extends Model {
 		}, {});
 		return Object.keys(mergedEventsKeyedByEventId).map(eventId => mergedEventsKeyedByEventId[eventId]).sort((a, b) => {
 			return new Date(a.startTime) > new Date(b.startTime) ? 1 : 0;
+		});
+	}
+
+	async sendRsvpConfirmation() {
+		const filename = path.join(__dirname, '../../client/assets/y&d-logo.png');
+		const attendees = await this.getAttendees({
+			order: [['sendGroupOrder', 'ASC']],
+			include: [{
+				model: EventModel,
+			}],
+		}).catch(e => console.log('ERRRORRR!!!', e));
+		const { present: attending, unAttending: notAttending } = attendees.reduce((accum, attendee) => {
+			let {unAttending, present} = accum;
+			const attendingEvents = attendee.Events.filter(event => event.EventAttendee.attending);
+			if (attendingEvents.length > 0) {
+				present = [...present, attendee.getDataValue('firstName')];
+			} else {
+				unAttending = [...unAttending, attendee.getDataValue('firstName')];
+			}
+			return {
+				unAttending,
+				present,
+			};
+		}, {present: [], unAttending: []});
+
+		const [attendingNames, notAttendingNames] = [attending, notAttending].map(attndees => {
+			return [
+				attndees.slice(0, -1).join(', '),
+				attndees.slice(-1)[0],
+			]
+			.join(attndees.length < 2 ? '' : ' and ');
+		});
+		const attendingMsg = attending.length ? `
+<p>Hi ${attendingNames}</p>
+<p>We\'re really happy that you\'ll be attending, We can\'t wait to see you on the day</p>
+` : '';
+		const unattendingMsg = notAttending.length ? `
+<p>Hey ${notAttendingNames}</p>
+<p>Sorry you can\'t share our big day with us, however we hope to see you soon</p>
+` : '';
+		const data = {
+			inline: filename,
+			to: this.getDataValue('email'),
+			from: `Mr and Mrs Browne <${from}>`,
+			subject: 'Thank you for your response',
+			html: `
+<img width="150" src="cid:y&d-logo.png" />
+<h1>Thank you for your response</h1>
+${attendingMsg}
+${attendingMsg && unattendingMsg ? '<br/><br/>' : ''}
+${unattendingMsg}
+<br/>
+<p>
+Daryl & Yasmin<br />
+xx
+</p>
+`,
+		};
+
+		return new Promise((resolve, reject) => {
+			mg.messages().send(data, function(error, body) {
+				if (error) {
+					reject(error);
+				}
+				resolve(body);
+			});
 		});
 	}
 }

@@ -249,6 +249,7 @@ export async function singleInvitationRsvpConfirm(req, res) {
 	])
 	.catch(e => res.status(400).send({ error: e }));
 	res.send({ success: 'ok' });
+	attendee.sendRsvpConfirmationEmail();
 }
 
 export async function groupInvitationRsvpConfirm(req, res) {
@@ -260,22 +261,21 @@ export async function groupInvitationRsvpConfirm(req, res) {
 		return res.status(400).send({ message: `Sendgroup with id ${sendGroupId} does not exist`});
 	}
 
-	sendGroup.getAttendees({
-		order: [
-			'sendGroupOrder', 'ASC',
-		],
-	}).then(attendees => Promise.all(
-		attendees.map(attendee => {
-			const attendeeRsvp = rsvp.filter(singleRsvp => singleRsvp.attendeeId === attendee.id)[0];
-			if (!attendeeRsvp) {
-				throw Error(`attendee ${attendee.id} is not part of the specified send group`);
-			}
-			return Promise.all([
-				(attendeeRsvp.foodChoices ? attendee.selectFood(attendeeRsvp.foodChoices) : Promise.resolve()),
-				attendee.updateEventAttendance(models, attendeeRsvp.events),
-			]);
-		}),
-	))
-	.catch(e => res.status(400).send({ error: e }));
-	res.send({ success: 'ok' });
+	const attendees = await sendGroup.getAttendees();
+	const foodAndEventUpdates = attendees.map(attendee => {
+		const attendeeRsvp = rsvp.filter(singleRsvp => singleRsvp.attendeeId === attendee.id)[0];
+		if (!attendeeRsvp) {
+			throw Error(`attendee ${attendee.id} is not part of the specified send group`);
+		}
+		return Promise.all([
+			(attendeeRsvp.foodChoices ? attendee.selectFood(attendeeRsvp.foodChoices) : Promise.resolve()),
+			attendee.updateEventAttendance(models, attendeeRsvp.events),
+		]);
+	});
+	Promise.all(foodAndEventUpdates)
+		.then(() => {
+			res.send({ success: 'ok' });
+			sendGroup.sendRsvpConfirmation();
+		})
+		.catch(e => { console.log(e); res.status(400).send({ error: e }); });
 }
