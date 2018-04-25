@@ -136,6 +136,9 @@ textarea {
 	justify-content: flex-end;
 	display: flex;
 	flex-direction: column;
+	flex-direction: column;
+	width: 250px;
+	align-items: center;
 
 	.badge {
 		font-size: 0.8rem;
