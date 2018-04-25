@@ -5,11 +5,10 @@ import Sequelize, {
 	BelongsToManyGetAssociationsMixin,
 } from 'sequelize';
 import draftToHtml from 'draftjs-to-html';
-import * as mailgun from 'mailgun-js';
+import mg, { variables as mailGunVariables } from './lib/mailgun';
 import * as path from 'path';
 import Attendee from './attendee';
 import SendGroup from './sendGroup';
-import mailGunConfig from '../../../config/mailgun';
 
 interface CreateCampaignOptions {
 	name: string;
@@ -18,12 +17,7 @@ interface CreateCampaignOptions {
 	groupCampaign?: boolean;
 }
 
-const { apiKey, publicKey, domain, from } = mailGunConfig[process.env.NODE_ENV || 'development'];
-const mg = mailgun({
-	apiKey,
-	publicKey,
-	domain,
-});
+const { from } = mailGunVariables;
 
 export default class Campaign extends Model {
 	static init(sequelizeConnection) {
