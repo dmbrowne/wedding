@@ -158,7 +158,7 @@ export default class StripeTestPage extends React.Component<Props, State> {
 									<div className="uk-margin uk-text-center">
 										<label>Donation amont</label>
 										<TopUp
-											minValue={10}
+											minValue={30}
 											value={this.state.donateAmount}
 											onChange={value => this.setState({ donateAmount: value })}
 										/>
