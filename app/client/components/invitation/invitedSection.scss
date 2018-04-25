@@ -11,15 +11,14 @@
 	min-height: 85vh;
 	display: flex;
 	flex-direction: column;
-	font: 1.5em/normal Great Vibes;
-	@media screen and (min-width: map-get($grid-breakpoints, sm)) {
-		font: 1.65em/normal Great Vibes;
-	}
-	@media screen and (min-width: map-get($grid-breakpoints, md)) {
-		font: 1.8em/normal Great Vibes;
-	}
-	@media screen and (min-width: map-get($grid-breakpoints, lg)) {
-		font: 2em/normal Great Vibes;
+	p {
+		font: 1.45em/normal Great Vibes;
+		@media screen and (min-width: map-get($grid-breakpoints, sm)) {
+			font: 1.65em/normal Great Vibes;
+		}
+		@media screen and (min-width: map-get($grid-breakpoints, md)) {
+			font: 1.8em/normal Great Vibes;
+		}
 	}
 	.section-title { color: $info; }
 	.go-to-rsvp {
