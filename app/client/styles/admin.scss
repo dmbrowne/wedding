@@ -1,48 +1,54 @@
-@import "bootstrap/scss/functions.scss";
-@import "bootstrap/scss/variables.scss";
-@import "bootstrap/scss/mixins.scss";
-@import "bootstrap/scss/reboot.scss";
-// @import "bootstrap/scss/forms.scss";
-// @import "bootstrap/scss/buttons.scss";
-// @import "bootstrap/scss/alert.scss";
-@import "bootstrap/scss/list-group.scss";
-@import "bootstrap/scss/utilities/background";
 
-.md-sb-button {
-	padding: 0;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
+#admin-layout {
+	@import "bootstrap/scss/functions.scss";
+	@import "bootstrap/scss/variables.scss";
+	@import "bootstrap/scss/mixins.scss";
+	@import "bootstrap/scss/reboot.scss";
+	@import "bootstrap/scss/list-group.scss";
+	@import "bootstrap/scss/utilities/background";
+	@import "uikit/src/scss/variables-theme.scss";
+	@import "uikit/src/scss/components/button.scss";
 
-.md-side-toolbar {
-	display: flex;
-}
+	color: #666;
 
-.uk-custom-modal {
-	position: relative;
-	box-sizing: border-box;
-	margin: 0 auto;
-	background: #fff;
-	width: 90%;
-	max-width: 800px;
-	box-shadow: 0 1px 50px 3px rgba(0,0,0,0.1);
-	opacity: 1;
-	transform: none;
-	padding: 15px 40px;
-	.close { float: right; }
-	> header {
+	// a { color: #007bff; }
+
+	.md-sb-button {
+		padding: 0;
 		display: flex;
 		align-items: center;
-		justify-content: flex-start;
-		padding: 10px 0;
-		width: 100%;
-		i { margin-right: 10px; }
+		justify-content: center;
+		border-radius: 50%;
 	}
-	.uk-modal-title { margin: 0; }
-	.uk-modal-body {
-		// height: 300px;
-		height: 50vh;
-		overflow-y: auto;
+
+	.md-side-toolbar {
+		display: flex;
+	}
+
+	.uk-custom-modal {
+		position: relative;
+		box-sizing: border-box;
+		margin: 0 auto;
+		background: #fff;
+		width: 90%;
+		max-width: 800px;
+		box-shadow: 0 1px 50px 3px rgba(0,0,0,0.1);
+		opacity: 1;
+		transform: none;
+		padding: 15px 40px;
+		.close { float: right; }
+		> header {
+			display: flex;
+			align-items: center;
+			justify-content: flex-start;
+			padding: 10px 0;
+			width: 100%;
+			i { margin-right: 10px; }
+		}
+		.uk-modal-title { margin: 0; }
+		.uk-modal-body {
+			height: 50vh;
+			overflow-y: auto;
+		}
 	}
 }

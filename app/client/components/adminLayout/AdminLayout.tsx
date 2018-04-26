@@ -76,7 +76,7 @@ export default class AdminLayout extends React.Component<InternalProps> {
 				>
 					{this.props.title}
 				</Titlebar>
-				<main style={{paddingTop: 15}}>
+				<main style={{paddingTop: 15}} id="admin-layout">
 					{this.props.children}
 				</main>
 				<aside ref={ref => this.offMenuEl = ref}>
