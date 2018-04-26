@@ -64,6 +64,7 @@ export default class Campaign extends Model {
 		return this.findById(id, {
 			include: [{
 				model: SendGroup,
+				include: [{ model: Attendee }],
 			}, {
 				model: Attendee,
 			}],
