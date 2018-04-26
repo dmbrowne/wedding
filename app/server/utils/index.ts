@@ -31,3 +31,11 @@ export function arrayToObject(arr, keyBy: string) {
 		[item[keyBy]]: item,
 	}), {});
 }
+
+export function getRandomInt(max) {
+  return Math.floor(Math.random() * Math.floor(max));
+}
+
+export function getRandomArbitrary(min, max) {
+  return Math.random() * (max - min) + min;
+}

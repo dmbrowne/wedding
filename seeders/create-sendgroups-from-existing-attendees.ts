@@ -2,14 +2,7 @@ import models from '../app/server/models';
 import * as fs from 'fs';
 import * as path from 'path';
 import Attendee from '../app/server/models/attendee';
-
-function getRandomInt(max) {
-  return Math.floor(Math.random() * Math.floor(max));
-}
-
-function getRandomArbitrary(min, max) {
-  return Math.random() * (max - min) + min;
-}
+import { getRandomInt, getRandomArbitrary } from '../app/server/utils';
 
 const emails = [
 	'daryl.browne@hotmail.com',

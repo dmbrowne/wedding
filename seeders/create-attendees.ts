@@ -2,13 +2,23 @@ import models from '../app/server/models';
 import * as faker from 'faker';
 import * as fs from 'fs';
 import * as path from 'path';
+import { getRandomArbitrary } from '../app/server/utils';
+
+const emails = [
+	'daryl.browne@hotmail.com',
+	'yasminobosi@yahoo.co.uk',
+];
+
+const gmailEmail = (id) => {
+	return getRandomArbitrary(0, 1) ? `daryl.browne+${id}@gmail.com` : `yasmin.obosi+${id}@gmail.com`;
+};
 
 module.exports = {
 	up: () => {
 		const fakeUsers = [];
 		for (let i = 0; i < 50; i++) {
 			fakeUsers.push({
-				email: faker.internet.email(),
+				email: getRandomArbitrary(0, 1) ? emails[getRandomArbitrary(0, emails.length - 1)] : gmailEmail(i),
 				firstName: faker.name.firstName(),
 				lastName: faker.name.lastName(),
 			});
