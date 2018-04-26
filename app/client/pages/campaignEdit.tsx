@@ -1,18 +1,38 @@
 import * as React from 'react';
 import Head from 'next/head';
 import 'medium-draft/lib/index.css';
+import { EditorState, convertToRaw } from 'draft-js';
 import { Editor, createEditorState } from 'medium-draft';
 import { withAdmin } from '../components/adminLayout';
 import withModal from '../components/withModal';
-import { convertToRaw } from 'draft-js';
-// import draftToHtml from 'draftjs-to-html';
-// import { sendAttendeeEmails } from '../api/email';
+import Attendee from '../../server/models/attendee';
+import Campaign from '../../server/models/campaign';
+import cx from 'classnames';
 import { getCampaign, editCampaign } from '../api/campaign';
 import { getAllAttendees } from '../api/attendee';
 import { getSendGroups } from '../api/sendGroup';
-import ModalBackdrop from '../components/ModalBackdrop';
+import Modal from '../components/Modal';
+import { arrayToObject } from '../../server/utils';
+import SendGroup from '../../server/models/sendGroup';
 
-class SendInvites extends React.Component {
+interface State {
+	client: boolean;
+	editorState: EditorState;
+	campaignName: string;
+	subject: string;
+	addAttendeesModal: boolean;
+	// selectedAttendeeMap: attendeeMap;
+	selectedAttendeeList: Array<Attendee['id']>;
+	attendeesSearchList: {
+		[attendeeId: string]: Attendee;
+	};
+}
+
+interface Props {
+	campaign: Campaign;
+}
+
+class SendInvites extends React.Component<Props, State> {
 	static getInitialProps = async ({ res, query }) => {
 		return {
 			campaign: (res ?
@@ -72,35 +92,26 @@ class SendInvites extends React.Component {
 			createEditorState(JSON.parse(campaign.content)) :
 			createEditorState();
 
-		let attendeeList = [];
-		let attendeeMap = {};
-		const attendees = campaign.groupCampaign ? campaign.SendGroups : campaign.Attendees;
-		if (Array.isArray(attendees)) {
-			const initialReduce = {
-				attendeeList: [],
-				attendeeMap: {},
-			};
-			const { attendeeList: list, attendeeMap: map } = attendees.reduce((accum, attendee) => ({
-				attendeeList: [
-					...accum.attendeeList,
-					attendee.id,
-				],
-				attendeeMap: {
-					...accum.attendeeMap,
-					[attendee.id]: attendee,
+		const attendeesOrGroups = campaign.groupCampaign ? campaign.SendGroups : campaign.Attendees;
+		const { map: attendeesSearchList, list: selectedAttendeeList } = attendeesOrGroups.reduce(
+			(accum, attendeeOrSendGroup) => ({
+				list: [...accum.list, attendeeOrSendGroup.id],
+				map: {
+					...accum.map,
+					[attendeeOrSendGroup.id]: attendeeOrSendGroup,
 				},
-			}), initialReduce);
-			attendeeList = list; attendeeMap = map;
-		}
+			}),
+			{ list: [], map: {} }
+		);
 
 		this.state = {
 			client: false,
 			editorState,
 			campaignName: campaign.name,
 			subject: campaign.subject || '',
-			selectedAttendeeMap: attendeeMap,
-			selectedAttendeeList: attendeeList,
-			attendeesSearchList: [],
+			selectedAttendeeList,
+			attendeesSearchList,
+			addAttendeesModal: false,
 		};
 	}
 
@@ -162,7 +173,7 @@ class SendInvites extends React.Component {
 		const attendees = this.props.campaign.groupCampaign ?
 			await getSendGroups() :
 			await getAllAttendees(emailable);
-		this.setState({ attendeesSearchList: attendees });
+		this.setState({ attendeesSearchList: arrayToObject(attendees, 'id') });
 	}
 
 	openModal = () => {
@@ -174,68 +185,105 @@ class SendInvites extends React.Component {
 		this.setState({ addAttendeesModal: false });
 	}
 
-	addAttendeeToSelectedList = (attendee) => {
-		if (this.state.selectedAttendeeMap[attendee.id]) {
-			return;
+	isGroupCampaign(attendeeOrGroup: Attendee | SendGroup, isGroup?: boolean): attendeeOrGroup is SendGroup {
+		if (isGroup !== undefined) {
+			if (isGroup) {
+				return true;
+			}
+			return false;
+		} else {
+			return !!(attendeeOrGroup as SendGroup).name;
 		}
+	}
 
+	toggleSelectedGroupOrAttendee(attendeeOrGroup: Attendee | SendGroup) {
+		if (this.state.selectedAttendeeList.indexOf(attendeeOrGroup.id) >= 0) {
+			this.removeAttendeeFromSelectedList(attendeeOrGroup);
+		} else {
+			this.addAttendeeToSelectedList(attendeeOrGroup);
+		}
+	}
+
+	selectAll = () => {
+		this.setState({
+			selectedAttendeeList: Object.keys(this.state.attendeesSearchList),
+		});
+	}
+
+	deSelectAll = () => {
+		this.setState({
+			selectedAttendeeList: [],
+		});
+	}
+
+	addAttendeeToSelectedList = (attendee) => {
 		this.setState({
 			selectedAttendeeList: [
 				...this.state.selectedAttendeeList,
 				attendee.id,
 			],
-			selectedAttendeeMap: {
-				...this.state.selectedAttendeeMap,
-				[attendee.id]: attendee,
-			},
 		});
 	}
 
 	removeAttendeeFromSelectedList = (attendee) => {
-		const { selectedAttendeeMap, selectedAttendeeList } = { ...this.state };
-		delete selectedAttendeeMap[attendee.id];
+		const { selectedAttendeeList } = { ...this.state };
 		selectedAttendeeList.splice(selectedAttendeeList.indexOf(attendee.id), 1);
 		this.setState({
-			selectedAttendeeMap,
 			selectedAttendeeList,
 		});
 	}
 
-	renderAttendeeSearchListRow(attendeeOrGroup) {
-		const { groupCampaign } = this.props.campaign;
+	renderAttendeeOrGroupSearchListRow(attendeeOrGroup) {
+		if (this.props.campaign.groupCampaign) {
+			return this.renderSendGroupSearchListRow(attendeeOrGroup);
+		} else {
+			return this.renderAttendeeSearchListRow(attendeeOrGroup);
+		}
+	}
+
+	renderAttendeeSearchListRow(attendee) {
 		return (
 			<li
-				key={attendeeOrGroup.id}
+				key={attendee.id}
 				className="uk-clearfix"
-				onClick={() => this.addAttendeeToSelectedList(attendeeOrGroup)}
+				onClick={() => this.toggleSelectedGroupOrAttendee(attendee)}
 			>
 				<span>
-					{groupCampaign ?
-						attendeeOrGroup.name :
-						`${attendeeOrGroup.firstName} ${attendeeOrGroup.lastName}`
-					}
+					{`${attendee.firstName} ${attendee.lastName}`}
 				</span>
-				{this.state.selectedAttendeeList.indexOf(attendeeOrGroup.id) >= 0 && (
+				{this.state.selectedAttendeeList.indexOf(attendee.id) >= 0 && (
 					<i className="material-icons uk-float-right">check</i>
 				)}
 			</li>
 		);
 	}
 
+	renderSendGroupSearchListRow(sendGroup) {
+		return (
+			<React.Fragment key={sendGroup.id}>
+				<dt className="uk-clearfix" onClick={() => this.toggleSelectedGroupOrAttendee(sendGroup)}>
+					<span className="uk-float-left">{sendGroup.name}</span>
+					{this.state.selectedAttendeeList.indexOf(sendGroup.id) >= 0 && (
+						<i className="material-icons uk-float-right">check</i>
+					)}
+				</dt>
+				<dd>{sendGroup.Attendees.map(attendee => attendee.firstName).join(', ')}</dd>
+			</React.Fragment>
+		);
+	}
+
 	renderSelectedAttendees() {
-		const { groupCampaign } = this.props.campaign;
 		return (
 			this.state.selectedAttendeeList.length > 0 && (
 				<ul className="uk-list uk-list-divider">
 					{this.state.selectedAttendeeList.map(attendeeId => {
-						const attendeeOrGroup = this.state.selectedAttendeeMap[attendeeId];
+						const attendeeOrGroup: Attendee | SendGroup = this.state.attendeesSearchList[attendeeId];
+						const label = this.isGroupCampaign(attendeeOrGroup) ?
+							attendeeOrGroup.name :
+							`${attendeeOrGroup.firstName} ${attendeeOrGroup.lastName}`;
+
 						return (
-							<li key={attendeeOrGroup.id}>
-								{groupCampaign ?
-									attendeeOrGroup.name :
-									`${attendeeOrGroup.firstName} ${attendeeOrGroup.lastName}`
-								}
-							</li>
+							<li key={attendeeOrGroup.id}>{label}</li>
 						);
 					})}
 				</ul>
@@ -244,23 +292,22 @@ class SendInvites extends React.Component {
 	}
 
 	render() {
-		const { editorState } = this.state;
+		const { editorState, attendeesSearchList } = this.state;
+		const { groupCampaign } = this.props.campaign;
 		return (
 			<div className="uk-container">
 				<Head>
 					<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css" />
 				</Head>
-				<div className="uk-margin-large">
-					<label>Campaign name</label>
-					<input
-						type="text"
-						className="uk-input uk-form-large"
-						value={this.state.campaignName}
-						onChange={e => this.setState({ campaignName: e.target.value })}
-					/>
-				</div>
+				<input
+					type="text"
+					className="uk-input uk-form-large"
+					value={this.state.campaignName}
+					onChange={e => this.setState({ campaignName: e.target.value })}
+				/>
 				{this.state.client && (
-					<React.Fragment>
+					<div className="uk-section uk-section-small">
+						<h3 className="uk-margin-small">Email Content</h3>
 						{this.renderShortCodes()}
 						<div className="uk-margin-top">
 							<div className="uk-text-meta uk-text-primary uk-margin-small">
@@ -282,15 +329,16 @@ class SendInvites extends React.Component {
 								onChange={this.onChange}
 							/>
 						</section>
-					</React.Fragment>
+					</div>
 				)}
-				<div className="uk-margin-large">
+				<div className="uk-section uk-section-small">
+					<h3 className="uk-margin-small">Recipients</h3>
 					{this.renderSelectedAttendees()}
 					<button
 						onClick={this.openModal}
-						className="uk-button uk-button-secondary uk-margin-right"
+						className="uk-button uk-button-secondary uk-margin"
 					>
-						Add / remove attendees
+						Add / remove {groupCampaign ? 'send groups' : 'attendees'}
 					</button>
 				</div>
 				<div className="uk-text-right uk-margin">
@@ -298,21 +346,42 @@ class SendInvites extends React.Component {
 				</div>
 				<div />
 				{!!this.state.addAttendeesModal && (
-					<ModalBackdrop>
-						<div className="uk-custom-modal">
-							<header className="uk-modal-header">
-								<h2 className="uk-modal-title">Add / remove attendees</h2>
-							</header>
-							<div className="uk-modal-body">
-								<ul className="uk-list uk-list-divider">
-									{this.state.attendeesSearchList.map(attendee => this.renderAttendeeSearchListRow(attendee))}
-								</ul>
+					<Modal
+						title={`Add / remove ${groupCampaign ? 'send groups' : 'attendees'}`}
+						footer={(
+							<div className="uk-clearfix">
+								<div className="uk-button-group uk-float-left">
+									<button
+										onClick={this.selectAll}
+										className="uk-button uk-button-secondary uk-margin-small-right"
+									>
+										Select all
+									</button>
+									<button
+										onClick={this.deSelectAll}
+										className="uk-button uk-button-secondary"
+									>
+										Unselect all
+									</button>
+								</div>
+								<button onClick={this.closeModal} className="uk-button uk-button-secondary uk-float-right">Close</button>
 							</div>
-							<footer className="uk-modal-footer uk-text-right">
-								<button onClick={this.closeModal} className="uk-button uk-button-secondary">Close</button>
-							</footer>
-						</div>
-					</ModalBackdrop>
+						)}
+					>
+						<ul
+							className={cx({
+								'uk-list': !groupCampaign,
+								'uk-list-striped': !groupCampaign,
+								'uk-description-list': groupCampaign,
+								'uk-description-list-divider': groupCampaign,
+							})}
+						>
+							{Object.keys(attendeesSearchList).length >= 0 && Object.keys(attendeesSearchList).map(attendeeOrCampaignId => {
+								const attendeeOrCampaign = attendeesSearchList[attendeeOrCampaignId];
+								return this.renderAttendeeOrGroupSearchListRow(attendeeOrCampaign);
+							})}
+						</ul>
+					</Modal>
 				)}
 			</div>
 		);

@@ -5,7 +5,8 @@ import { withAdmin } from '../components/adminLayout';
 import { getAllCampaigns, deleteCampaigns, createCampaign, sendCampaigns } from '../api/campaign';
 import Campaign from '../../server/models/campaign';
 import CheckboxTable from '../components/CheckboxTable';
-import ModalBackdrop from '../components/ModalBackdrop';
+import Modal from '../components/Modal';
+import withModal, { ChildProps } from '../components/withModal';
 
 interface State {
 	campaigns: Campaign[];
@@ -17,7 +18,11 @@ interface State {
 	};
 }
 
-class Campaigns extends React.Component<{ campaigns: Campaign[] }, State> {
+interface Props extends ChildProps {
+	campaigns: Campaign[];
+}
+
+class Campaigns extends React.Component<Props, State> {
 	static getInitialProps = async ({ res }) => {
 		return {
 			campaigns: (res ?
@@ -62,16 +67,30 @@ class Campaigns extends React.Component<{ campaigns: Campaign[] }, State> {
 		return (
 			<tr>
 				<th>Name</th>
+				<th style={{width: 160, boxSizing: 'border-box' }} />
 				<th style={{width: 50, boxSizing: 'border-box' }} />
 				<th style={{width: 50, boxSizing: 'border-box' }} />
 			</tr>
 		);
 	}
 
-	renderRow(campaign, onCheckboxTick, itemIsChecked) {
+	renderRow = (campaign, onCheckboxTick, itemIsChecked) => {
+		const bulkModeIsActive = Object.keys(this.state.selectedCampaignIds).some(campaignId => {
+			return this.state.selectedCampaignIds[campaignId] && this.state.selectedCampaignIds[campaignId] === true;
+		});
 		return (
 			<tr key={`campaign-row-${campaign.id}`}>
 				<td>{campaign.name}</td>
+				<td>
+					{!bulkModeIsActive && (
+						<button
+							onClick={() => this.sendCampaigns(campaign.id)}
+							className="uk-button uk-button-small uk-button-primary"
+						>
+							Send invitations
+						</button>
+					)}
+				</td>
 				<td>
 					<Link href={`/admin/campaigns/${campaign.id}`}>
 						<i className="material-icons">mode_edit</i>
@@ -131,11 +150,22 @@ class Campaigns extends React.Component<{ campaigns: Campaign[] }, State> {
 		});
 	}
 
-	sendCampaigns = () => {
-		const campaignIds = Object.keys(this.state.selectedCampaignIds).filter(campaignId => this.state.selectedCampaignIds[campaignId]);
+	sendCampaigns = (campaignId?: string) => {
+		const campaignIds = !campaignId ?
+			Object.keys(this.state.selectedCampaignIds).filter(cmpgnId => this.state.selectedCampaignIds[cmpgnId]) :
+			[campaignId];
+
 		if (campaignIds.length > 0) {
-			console.log(campaignIds)
-			return sendCampaigns(campaignIds);
+			this.props.showConfirmModal({
+				title: 'Please confirm',
+				body: 'You are about to send out invites to the attendee(s) / group(s) selected. Press yes below to proceed, or cancel to return back to the previous screen',
+				primaryText: 'Yes',
+				secondaryText: 'Cancel',
+			})
+			.then(() => sendCampaigns(campaignIds))
+			.catch(() => void 0);
+		} else {
+			return null;
 		}
 	}
 
@@ -161,7 +191,7 @@ class Campaigns extends React.Component<{ campaigns: Campaign[] }, State> {
 					)}
 					bulkButtons={(
 						<button
-							onClick={this.sendCampaigns}
+							onClick={() => this.sendCampaigns()}
 							className="uk-button-small uk-float-left uk-button uk-button-primary"
 						>
 							Send invites
@@ -169,62 +199,53 @@ class Campaigns extends React.Component<{ campaigns: Campaign[] }, State> {
 					)}
 				/>
 				{this.state.createNewCampaign && (
-					<ModalBackdrop>
-						<div className="uk-custom-modal">
-							<i onClick={this.closeCreateNewCampaignModal} className="close material-icons">close</i>
-							<header className="uk-modal-header">
-								{!!this.state.newCampaignType && (
-									<i
-										onClick={() => this.setState({ newCampaignType: null})}
-										className="material-icons"
+					<Modal
+						onClose={this.closeCreateNewCampaignModal}
+						goBack={!!this.state.newCampaignType ? () => this.setState({ newCampaignType: null}) : null}
+						title={this.addCampaignModeTitle()}
+					>
+						{!this.state.newCampaignType && (
+							<React.Fragment>
+								<header className="uk-text-center">What type of email campaign would you like to create?</header>
+								<div className="uk-margin upload-buttons uk-text-center">
+									<button
+										onClick={() => this.setState({ newCampaignType: 'group' })}
+										className="uk-button uk-button-primary uk-margin-small-left uk-margin-small-right"
 									>
-										arrow_back
-									</i>
-								)}
-								<h2 className="uk-modal-title">{this.addCampaignModeTitle()}</h2>
-							</header>
-							<div className="uk-modal-body">
-								{!this.state.newCampaignType && (
-									<React.Fragment>
-										<header className="uk-text-center">What type of email campaign would you like to create?</header>
-										<div className="uk-margin upload-buttons">
-											<button
-												onClick={() => this.setState({ newCampaignType: 'group' })}
-												className="uk-button uk-button-primary"
-											>
-												Grouped invitations
-											</button>
-											<button
-												onClick={() => this.setState({ newCampaignType: 'single' })}
-												className="uk-button uk-button-primary"
-											>
-												Single invitations
-											</button>
-										</div>
-									</React.Fragment>
-								)}
-								{!!this.state.newCampaignType && (
-									<React.Fragment>
-										<div className="uk-margin">
-											<label>Enter a name for your campaign</label>
-											<input
-												type="text"
-												value={this.state.newCampaignName}
-												onChange={e => this.setState({ newCampaignName: e.target.value })}
-											/>
-										</div>
-										<div className="uk-margin uk-text-center">
-											<button onClick={this.createCampaign} className="uk-button uk-button-primary">Create</button>
-										</div>
-									</React.Fragment>
-								)}
+										Grouped invitations
+									</button>
+									<button
+										onClick={() => this.setState({ newCampaignType: 'single' })}
+										className="uk-button uk-button-primary uk-margin-small-left uk-margin-small-right"
+									>
+										Single invitations
+									</button>
+								</div>
+							</React.Fragment>
+						)}
+						{!!this.state.newCampaignType && (
+							<div className="uk-form-stacked">
+								<div className="uk-margin">
+									<label className="uk-form-label">Enter a name for your campaign</label>
+									<input
+										type="text"
+										className="uk-input"
+										value={this.state.newCampaignName}
+										onChange={e => this.setState({ newCampaignName: e.target.value })}
+									/>
+								</div>
+								<div className="uk-margin uk-text-center">
+									<button onClick={this.createCampaign} className="uk-button uk-button-primary">Create</button>
+								</div>
 							</div>
-						</div>
-					</ModalBackdrop>
+						)}
+					</Modal>
 				)}
 			</div>
 		);
 	}
 }
 
-export default withAdmin({ title: 'Campaigns'}, Campaigns);
+export default withModal(
+	withAdmin({ title: 'Campaigns'}, Campaigns),
+);

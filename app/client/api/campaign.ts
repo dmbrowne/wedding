@@ -1,7 +1,10 @@
 import { restfulRequest } from './utils';
-import { ICampaign } from '../../server/types/models';
+import Campaign from '../../server/models/campaign';
+import { RawDraftContentState } from 'draft-js';
 
-type CreateCampaignInput = Partial<ICampaign>;
+interface CreateCampaignInput extends Partial<Campaign> {
+	content: any | RawDraftContentState;
+}
 
 interface AttendeeInput {
 	attendeeIds?: string[];
