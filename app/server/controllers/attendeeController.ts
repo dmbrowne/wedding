@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { Op } from 'sequelize';
 import { NextAppRequest } from '../types';
 import models from '../models';
-import { getDesiredValuesFromRequestBody, objectToArray } from '../utils';
+import { getDesiredValuesFromRequestBody, arrayToObject } from '../utils';
 import SendGroup from '../models/sendGroup';
 import EventModel from '../models/event';
 import FoodChoice, { ChoiceTypes } from '../models/foodChoice';
@@ -200,7 +200,7 @@ export function getGroupInvitation(req: NextAppRequest, res: Response, next: Nex
 		const locals: GroupInvitationResponseLocals = {
 			invitationId: sendGroupId,
 			sendGroup,
-			bridalParties: objectToArray(bridalParties, 'value'),
+			bridalParties: arrayToObject(bridalParties, 'value'),
 			allInvitedEvents: mergedEvents.sort((a, b) => new Date(a.startTime) > new Date(b.startTime) ? 1 : 0),
 			singleInvitation: false,
 		};
@@ -224,7 +224,7 @@ export function getSingleInvitation(req: NextAppRequest, res: Response, next: Ne
 		const locals: SingleInvitationResponseLocals = {
 			invitationId: attendeeId,
 			attendee,
-			bridalParties: objectToArray(bridalParties, 'value'),
+			bridalParties: arrayToObject(bridalParties, 'value'),
 			allInvitedEvents: attendee.Events,
 			singleInvitation: true,
 		};

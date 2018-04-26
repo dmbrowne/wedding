@@ -22,9 +22,9 @@ export function asyncAwaitTryCatch(promise) {
 	.catch(err => [err]);
 }
 
-export function objectToArray(arr, keyBy: string) {
+export function arrayToObject(arr, keyBy: string) {
 	if (!Array.isArray(arr)) {
-		throw new Error('objectToArray() requires an array');
+		throw new Error('arrayToObject() requires an array');
 	}
 	return arr.reduce((parties, item) => ({
 		...parties,
