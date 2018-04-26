@@ -68,17 +68,11 @@ class SendGroups extends React.Component<{ sendGroups: ISendGroup[] }, { sendGro
 	}
 
 	onDelete = (ids) => {
-		deleteSendGroups(ids)
-		.then(() => {
-			const optimisticUpdatedAttendees = this.state.sendGroups.filter(({id}) => ids.indexOf(id) < 0);
-			this.setState(
-				{ sendGroups: optimisticUpdatedAttendees },
-				() => this.refreshList(),
-			);
-		})
-		.catch(() => {
-			alert('Something went wrong with the deletion, try again later');
-		});
+		return deleteSendGroups(ids)
+			.then(() => this.refreshList())
+			.catch(() => {
+				alert('Something went wrong with the deletion, try again later');
+			});
 	}
 
 	render() {
@@ -90,10 +84,10 @@ class SendGroups extends React.Component<{ sendGroups: ISendGroup[] }, { sendGro
 					handled by someone else who is invited, as long as they grouped together. Do that here.
 				</p>
 				<CheckboxTable
-					data={this.props.sendGroups}
+					data={this.state.sendGroups}
 					renderHeaderRow={this.renderHeader}
 					renderRow={this.renderRow}
-					onDelete={(ids) => deleteSendGroups(ids)}
+					onDelete={(ids) => this.onDelete(ids)}
 					buttons={(
 						<Link prefetch={true} href="/sendGroupsCreate" as="/admin/sendgroups/new">
 							<button className="uk-button-small uk-float-left uk-button uk-button-primary">Add</button>

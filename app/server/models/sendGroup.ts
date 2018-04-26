@@ -1,4 +1,4 @@
-import Sequelize, { Model, HasManyGetAssociationsMixin } from 'sequelize';
+import Sequelize, { Model, HasManyGetAssociationsMixin, HasManySetAssociationsMixin } from 'sequelize';
 import Attendee from './attendee';
 import GalleryImage from './galleryImage';
 import EventModel from './event';
@@ -100,6 +100,7 @@ export default class SendGroup extends Model {
 	email: string;
 	Attendees: Attendee[];
 	getAttendees: HasManyGetAssociationsMixin<Attendee>;
+	setAttendees: HasManySetAssociationsMixin<Attendee, 'id'>;
 
 	mergeEventsForSendGroupAttendees() {
 		interface MergedEvents {

@@ -46,7 +46,7 @@ export function editCampaign(campaignId: string, values: CreateCampaignInput, re
 
 export function deleteCampaigns(campaignIds: string[]) {
 	return restfulRequest({
-		route: 'admin/attendees',
+		route: 'admin/campaigns',
 		method: 'DELETE',
 		body: JSON.stringify({
 			campaignIds,

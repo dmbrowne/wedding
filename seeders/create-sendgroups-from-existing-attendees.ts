@@ -10,7 +10,7 @@ const emails = [
 ];
 
 const gmailEmail = (id) => {
-	return getRandomArbitrary(0, 1) ? `daryl.browne+${id}@gmail.com` : `yasmin.obosi+${id}@gmail.com`;
+	return getRandomArbitrary(0, 2) ? `daryl.browne+${id}@gmail.com` : `yasmin.obosi+${id}@gmail.com`;
 };
 
 module.exports = {
@@ -19,25 +19,28 @@ module.exports = {
 			.then((attendees: Attendee[]) => {
 				const sendGroups = [];
 				for (let i = 0; i < 15; i++) {
-					const numberOfMembers = getRandomArbitrary(2, 3);
+					const numberOfMembers = getRandomArbitrary(2, 4);
 					const randomUser1 = attendees.splice(getRandomInt(attendees.length - 1), 1)[0];
 					const randomUser2 = attendees.splice(getRandomInt(attendees.length - 1), 1)[0];
-					const randomUser3 = numberOfMembers === 3 ?
-							attendees.splice(getRandomInt(attendees.length - 1), 1)[0] :
-							null;
-					const members = [randomUser1, randomUser2, randomUser3].filter(user => !user);
-					const name = members.map(user => user.firstName).join(', ');
+					const randomUser3 = numberOfMembers === 3 ? attendees.splice(getRandomInt(attendees.length - 1), 1)[0] : null;
+
+					const members = [randomUser1, randomUser2, randomUser3].filter(user => !!user);
+					const name = members.map(user => user.getDataValue('firstName')).join(', ');
+					const attendeeIds = members.map(attendee => attendee.getDataValue('id'));
 
 					sendGroups.push({
 						name,
-						email: getRandomArbitrary(0, 1) ? gmailEmail(i) : emails[getRandomArbitrary(0, emails.length - 1)],
-						attendeeIds: members.map(attendee => attendee.id),
+						email: getRandomArbitrary(0, 2) ? gmailEmail(i) : emails[getRandomArbitrary(0, emails.length)],
+						attendeeIds,
 					});
 				}
 				fs.writeFileSync(path.join(__dirname, './seededSendGroups.json'), JSON.stringify({
 					sendGroups,
 				}));
-				return models.SendGroup.bulkCreate(sendGroups);
+
+				return Promise.all(sendGroups.map(sendGroup => {
+					return models.SendGroup.create(sendGroup).then(group => group.setAttendees(sendGroup.attendeeIds));
+				}));
 			});
 	},
 
