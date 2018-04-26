@@ -49,6 +49,13 @@
     "@types/express-session" "*"
     "@types/redis" "*"
 
+"@types/draft-js@^0.10.22":
+  version "0.10.22"
+  resolved "https://registry.yarnpkg.com/@types/draft-js/-/draft-js-0.10.22.tgz#1b962a9760cbda44bc16977f5e8f5950c291aaa5"
+  dependencies:
+    "@types/react" "*"
+    immutable "^3.8.1"
+
 "@types/events@*":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@types/events/-/events-1.2.0.tgz#81a6731ce4df43619e5c8c945383b3e62a89ea86"
@@ -3915,7 +3922,7 @@ ignore-loader@0.1.2, ignore-loader@^0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/ignore-loader/-/ignore-loader-0.1.2.tgz#d81f240376d0ba4f0d778972c3ad25874117a463"
 
-immutable@3.8.2, immutable@^3.7.6:
+immutable@3.8.2, immutable@^3.7.6, immutable@^3.8.1:
   version "3.8.2"
   resolved "https://registry.yarnpkg.com/immutable/-/immutable-3.8.2.tgz#c2439951455bb39913daf281376f1530e104adf3"
 
