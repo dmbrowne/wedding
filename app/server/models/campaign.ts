@@ -181,10 +181,10 @@ export default class Campaign extends Model {
 	subject?: string;
 	content?: string;
 	groupCampaign?: boolean;
-	Attendees: BelongsToManyCreateAssociationMixin<Attendee>;
+	Attendees: Attendee[];
 	getAttendees: BelongsToManyGetAssociationsMixin<Attendee>;
 	setAttendees: BelongsToManySetAssociationsMixin<Attendee, Attendee['id']>;
-	SendGroups: BelongsToManyCreateAssociationMixin<SendGroup>;
+	SendGroups: SendGroup[];
 	getSendGroups: BelongsToManyGetAssociationsMixin<SendGroup>;
 	setSendGroups: BelongsToManySetAssociationsMixin<SendGroup, SendGroup['id']>;
 
