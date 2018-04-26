@@ -60,6 +60,12 @@ export default class AttendeeGroupForm extends React.Component<Props, State> {
 	}
 
 	render() {
+		const emailSuggestions = Object.keys(this.props.selectedAttendees).reduce((accum, attendeeId) => {
+			if (!!this.props.selectedAttendees[attendeeId].email) {
+				return [...accum, this.props.selectedAttendees[attendeeId].email];
+			}
+			return accum;
+		}, []);
 		return (
 			<React.Fragment>
 				<section className="uk-section uk-padding uk-section-default">
@@ -100,13 +106,26 @@ export default class AttendeeGroupForm extends React.Component<Props, State> {
 				</section>
 				<section className="uk-section uk-padding uk-section-default">
 					<div className="uk-container uk-margin">
-						<label>Email for group</label>
-						<AutoCompleteSearch
-							placeholder="Filter for an email or type in a custom one..."
+						<h3 className="uk-margin">Correspondence email</h3>
+						{emailSuggestions.length > 0 && (
+							<div className="uk-margin">
+								<header>Suggestions</header>
+								{emailSuggestions.map(email => (
+									<button
+										onClick={e => this.props.onChange({target: {value: email }}, 'email')}
+										className="uk-button uk-button-secondary width-1-1"
+									>
+										{email}
+									</button>
+								))}
+							</div>
+						)}
+						<input
+							placeholder="Email to be used for correspondence"
+							className="uk-input"
+							type="search"
+							onChange={e => this.props.onChange(e, 'email')}
 							value={this.props.email}
-							onChange={this.searchEmailList}
-							data={this.state.emailList}
-							renderRow={this.renderEmailSelectRow}
 						/>
 					</div>
 				</section>
