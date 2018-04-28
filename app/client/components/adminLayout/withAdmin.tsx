@@ -37,7 +37,7 @@ export default (adminLayoutOptions: AdminLayoutProps, Component: NextComponent) 
 		render() {
 			const { firstName, lastName } = this.props.sessionUser;
 			return (
-				<AppLayout>
+				<AppLayout title={adminLayoutOptions.title}>
 					<AdminLayout
 						firstName={firstName}
 						lastName={lastName}

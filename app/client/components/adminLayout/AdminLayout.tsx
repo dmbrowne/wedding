@@ -59,7 +59,7 @@ export default class AdminLayout extends React.Component<InternalProps> {
 		return (
 			<div className="uk-offcanvas-content">
 				<Head>
-					<title key="document-title">{this.props.title}</title>
+					{this.props.title && <title key="document-title">{this.props.title}</title>}
 					<link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons" key="material-icons" />
 					<link
 						rel="stylesheet"
