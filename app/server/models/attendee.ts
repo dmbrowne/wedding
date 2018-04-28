@@ -11,7 +11,7 @@ import * as path from 'path';
 const { from } = mailGunVariables;
 
 interface EventWithDetailsJoin extends EventModel {
-	EventAttendee: EventAttendee;
+	EventAttendee?: EventAttendee;
 }
 
 interface GetApplicableAttendeeRecipientVars {
@@ -138,6 +138,7 @@ export default class Attendee extends Model {
 	FoodChoice: FoodChoice;
 	getEvents: BelongsToManyGetAssociationsMixin<EventWithDetailsJoin>;
 	hasEvent: HasManyHasAssociationMixin<EventWithDetailsJoin, EventWithDetailsJoin['id']>;
+	setEvents: BelongsToSetAssociationMixin<EventWithDetailsJoin, string[]>;
 	getCampaigns: BelongsToManyGetAssociationsMixin<Campaign>;
 	setFoodChoice: BelongsToSetAssociationMixin<FoodChoice, FoodChoice['attendeeId']>;
 

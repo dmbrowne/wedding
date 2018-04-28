@@ -76,6 +76,7 @@ export default class SendGroup extends Model {
 
 	static getWithAttendeesAndEvents(id) {
 		return this.findById(id, {
+			rejectOnEmpty: false,
 			order: [
 				[Attendee, { model: EventModel, as: 'Events' }, 'startTime', 'ASC'],
 			],
