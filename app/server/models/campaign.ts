@@ -161,7 +161,7 @@ export default class Campaign extends Model {
 		const data = {
 			'inline': filename,
 			'to': sendAddresses,
-			'from': `Dazza Youoo <${from}>`,
+			from,
 			'subject': subject,
 			'recipient-variables': recipientVars,
 			'html': html,

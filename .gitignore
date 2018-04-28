@@ -7,5 +7,5 @@ redis_data
 # !ecosystem.config.js
 !next.config.js
 config/database.json
-config/mailgun.json
 uploads/*
+/config/secrets

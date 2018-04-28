@@ -1,13 +1,8 @@
-export const publicKey = 'pk_test_gbZv1zKSysff7KprihcWi6ms';
-export const secretKey = 'sk_test_5g4RsDgT1Nm453sk6fFXebZm';
+import * as environments from './secrets/stripe.json';
+
+const { publicKey, secretKey } = environments as any;
 
 export default {
-	development: {
-		publicKey,
-		secretKey,
-	},
-	production: {
-		publicKey: '',
-		secretKey: '',
-	},
+	publicKey,
+	secretKey,
 };

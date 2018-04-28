@@ -174,7 +174,7 @@ export default class Attendee extends Model {
 		const data = {
 			inline: filename,
 			to: this.getDataValue('email'),
-			from: `Mr and Mrs Browne <${from}>`,
+			from,
 			subject: 'We\'ve recieved your response',
 			html: `
 <img width="150" src="cid:y&d-logo.png" />

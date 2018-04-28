@@ -3,7 +3,7 @@ import mailGunConfig from '../../../config/mailgun';
 import models from '../models';
 import * as path from 'path';
 
-const { apiKey, publicKey, domain, from } = mailGunConfig[process.env.NODE_ENV || 'development'];
+const { apiKey, publicKey, domain, from } = mailGunConfig;
 const mg = mailgun({
 	apiKey,
 	publicKey,

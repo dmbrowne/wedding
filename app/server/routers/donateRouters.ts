@@ -2,7 +2,7 @@ import * as stripeApi from 'stripe';
 import stripeApiKeys from '../../../config/stripeKeys';
 import models from '../models';
 
-const { secretKey } = stripeApiKeys[process.env.NODE_ENV || 'development'];
+const { secretKey } = stripeApiKeys;
 
 const stripe = new stripeApi(secretKey);
 
