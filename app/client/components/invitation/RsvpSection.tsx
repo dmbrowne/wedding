@@ -193,7 +193,7 @@ export default class RsvpSection extends React.Component<Props> {
 									dietFeedbackRequired ?
 										<div key={attendee.id} className={cx('rsvp')}>
 											<header>{attendee.firstName} {attendee.lastName}</header>
-											{!this.props.pristine && !foodSelections.starter || !foodSelections.main && (
+											{(!foodSelections.starter || !foodSelections.main) && (
 												<div className="error-alert">
 													<i className="material-icons">error</i>
 													<span>
