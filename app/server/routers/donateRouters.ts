@@ -1,3 +1,4 @@
+import { Request, Response } from 'express';
 import * as stripeApi from 'stripe';
 import stripeApiKeys from '../../../config/stripeKeys';
 import Donation from '../models/donation';
@@ -25,4 +26,10 @@ export async function donate(req, res, next) {
 	.catch(e => {
 		next(e);
 	});
+}
+
+export async function getAllDonations(req: Request, res: Response) {
+	const donations = await Donation.findAll();
+	res.locals.donations = donations;
+	req.nextAppRenderer.render(req, res, '/donationslisting');
 }
