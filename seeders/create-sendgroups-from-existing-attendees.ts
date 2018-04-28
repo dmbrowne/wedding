@@ -34,9 +34,6 @@ module.exports = {
 						attendeeIds,
 					});
 				}
-				fs.writeFileSync(path.join(__dirname, './seededSendGroups.json'), JSON.stringify({
-					sendGroups,
-				}));
 
 				return Promise.all(sendGroups.map(sendGroup => {
 					return models.SendGroup.create(sendGroup).then(group => group.setAttendees(sendGroup.attendeeIds));
@@ -45,12 +42,6 @@ module.exports = {
 	},
 
 	down: () => {
-		const seededSendGroups = require(path.join(__dirname, './seededSendGroups.json'));
-		const sendGroupdIds = seededSendGroups.sendGroups.map(sendGroup => sendGroup.id);
-		return models.SendGroup.destroy({
-			where: {
-				id: sendGroupdIds,
-			},
-		});
+		return true;
 	},
 };

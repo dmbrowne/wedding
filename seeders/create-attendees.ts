@@ -14,10 +14,6 @@ module.exports = {
 			});
 		}
 
-		fs.writeFileSync(path.join(__dirname, './seededUsers.json'), JSON.stringify({
-			fakeUsers,
-		}));
-
 		return models.Attendee.bulkCreate([
 			{
 				email: 'daryl.browne@gmail.com',
@@ -34,12 +30,6 @@ module.exports = {
 	},
 
 	down: () => {
-		const seededUsers = require(path.join(__dirname, './seededUsers.json'));
-		const userIds = seededUsers.fakeUsers.map(user => user.id);
-		return models.Attendee.destroy({
-			where: {
-				id: userIds,
-			},
-		});
+		return true;
 	},
 };
