@@ -144,35 +144,39 @@ class DataItemListing extends React.Component<InternalProps, State> {
 
 	render() {
 		return (
-			<div>
+			<div className="checkbox-table">
 				<div>
-					<div className="uk-clearfix uk-margin menu-bar" data-uk-sticky={true}>
-						{this.props.buttons}
-						{this.props.bulk && (
-							<div className="uk-float-right">
-								{this.state.bulkMode && this.bulkModeButtons()}
-								{!!this.props.data.length && (
-									<button
-										onClick={this.selectAll}
-										className="uk-button-small uk-button uk-button-text uk-margin-left"
-									>
-										Select all
-									</button>
-								)}
+					<div className="menu-bar" data-uk-sticky={true}>
+						<div className="uk-clearfix uk-margin">
+							<div className="uk-float-left">
+								{this.props.buttons}
 							</div>
-						)}
+							{this.props.bulk && (
+								<div className="uk-float-right">
+									{this.state.bulkMode && this.bulkModeButtons()}
+									{!!this.props.data.length && (
+										<button
+											onClick={this.selectAll}
+											className="uk-button-small uk-button uk-button-text uk-margin-left"
+										>
+											Select all
+										</button>
+									)}
+								</div>
+							)}
+						</div>
+						<div className="uk-margin">
+							<input
+								type="text"
+								className="uk-input"
+								placeholder="Filter..."
+								onChange={e => this.setState({ filterSearchTerms: e.target.value.toLowerCase() })}
+								value={this.state.filterSearchTerms}
+							/>
+						</div>
 					</div>
 				</div>
 				<div className="uk-overflow-auto">
-					<div className="uk-margin">
-						<input
-							type="text"
-							className="uk-input"
-							placeholder="Filter..."
-							onChange={e => this.setState({ filterSearchTerms: e.target.value.toLowerCase() })}
-							value={this.state.filterSearchTerms}
-						/>
-					</div>
 					<table className="uk-table uk-table-justify uk-table-divider">
 						{this.props.renderHeaderRow &&
 							<thead>
