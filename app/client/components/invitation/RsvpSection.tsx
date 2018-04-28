@@ -42,7 +42,6 @@ interface Props {
 		},
 	};
 	disabled: boolean;
-	pristine: boolean;
 	onSubmit: () => any;
 	onEnable: () => any;
 	onSelectEvent: (attendeeId: string, eventId: string, value: boolean) => any;
@@ -183,7 +182,7 @@ export default class RsvpSection extends React.Component<Props> {
 								</div>
 								))}
 						</div>
-						<div className="row dietry-feedback">
+						<div className="row rsvps dietry-feedback">
 							{this.props.attendees.map(attendee => {
 								const dietFeedbackRequired = this.props.dietryRequiredEvents.some(eventId => {
 									return this.props.selectedEvents[attendee.id][eventId];

@@ -36,7 +36,6 @@ interface State {
 	dietEvents: string[];
 	rsvpDisabled: boolean;
 	showRsvpConfirmModal: boolean;
-	rsvpFormIsPristine: boolean;
 }
 
 interface Props {
@@ -108,7 +107,6 @@ export default class Invitation extends React.Component<Props, State> {
 			dietEvents: props.allInvitedEvents.filter(service => service.dietFeedback).map(event => event.id),
 			rsvpDisabled: props.previouslyConfirmed,
 			showRsvpConfirmModal: false,
-			rsvpFormIsPristine: true,
 		};
 	}
 
@@ -198,9 +196,7 @@ export default class Invitation extends React.Component<Props, State> {
 	onSubmit = () => {
 		const inValidAttendees = this.isRsvpValid();
 		if (inValidAttendees.length > 0) {
-			return this.setState({ rsvpFormIsPristine: false }, () =>
-				alert('Please fill out the food choices before sending your response'),
-			);
+			return alert('Please fill out the food choices before sending your response');
 		}
 
 		let body;
@@ -305,7 +301,6 @@ export default class Invitation extends React.Component<Props, State> {
 								<div className="uk-margin">
 									<a href={`${this.props.url.asPath}/donate`} target="_blank">
 										<Pig />
-										{/* <img src="/assets/pig-bank.png" style={{ width: 200 }} /> */}
 									</a>
 								</div>
 							</div>
@@ -324,7 +319,6 @@ export default class Invitation extends React.Component<Props, State> {
 								dietryRequiredEvents={this.state.dietEvents}
 								disabled={this.state.rsvpDisabled}
 								onEnable={() => this.setState({ rsvpDisabled: false })}
-								pristine={this.state.rsvpFormIsPristine}
 							/>
 						</div>
 						{this.state.showRsvpConfirmModal && (
