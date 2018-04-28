@@ -1,6 +1,6 @@
 import * as stripeApi from 'stripe';
 import stripeApiKeys from '../../../config/stripeKeys';
-import models from '../models';
+import Donation from '../models/donation';
 
 const { secretKey } = stripeApiKeys;
 
@@ -9,10 +9,6 @@ const stripe = new stripeApi(secretKey);
 export async function donate(req, res, next) {
 	const { amount, token, description, message, email } = req.body;
 
-	if (message) {
-		await models.Donation.create({ message, amount });
-	}
-
 	stripe.charges.create({
 		amount,
 		description,
@@ -20,7 +16,10 @@ export async function donate(req, res, next) {
 		source: token,
 		receipt_email: email,
 	})
-	.then(charge => {
+	.then(async charge => {
+		if (message) {
+			await Donation.create({ message, amount });
+		}
 		res.send(charge);
 	})
 	.catch(e => {
