@@ -101,7 +101,7 @@ export const WeddingBreakfastCardContent = ({ selected, starterSelect, mainSelec
 							<figure className="custom-checkbox">
 								<Cow />
 							</figure>
-							<p>Corn fed chicken terrine, with apple puree, red chicory and onion rings</p>
+							<p>Oriental beef salad</p>
 						</div>
 						<div
 							onClick={() => starterSelect('fish')}
@@ -115,7 +115,7 @@ export const WeddingBreakfastCardContent = ({ selected, starterSelect, mainSelec
 							<figure className="custom-checkbox">
 								<Fish />
 							</figure>
-							<p>Smoked salmon with pickled beetroot, horseradish abd seaweed cracker</p>
+							<p>Prawns and avacados Tian with mango salsa and sweet chilli sauce</p>
 						</div>
 					</div>
 				</div>
@@ -129,7 +129,7 @@ export const WeddingBreakfastCardContent = ({ selected, starterSelect, mainSelec
 							<figure className="custom-checkbox">
 								<Cow />
 							</figure>
-							<p>Corn feed chicken with mushrooms, sweet potato puree and tarragon suce</p>
+							<p>Braised lamb shank with creamy mash, roasted shallots and jus</p>
 						</div>
 						<div
 							onClick={() => mainSelect('fish')}
@@ -138,7 +138,7 @@ export const WeddingBreakfastCardContent = ({ selected, starterSelect, mainSelec
 							<figure className="custom-checkbox">
 								<Fish />
 							</figure>
-							<p>Roast salmon with red pepper compote and pomegranate vinaigrette</p>
+							<p>Stone bass with herbs crushed potatoes and fennel salads</p>
 						</div>
 					</div>
 				</div>
