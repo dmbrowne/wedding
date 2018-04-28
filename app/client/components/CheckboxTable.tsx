@@ -134,7 +134,7 @@ class DataItemListing extends React.Component<InternalProps, State> {
 					.map(key => dataItem[key].toLowerCase())
 					.join(' ').trim();
 
-				return this.state.filterSearchTerms ?
+				return !!this.state.filterSearchTerms ?
 					searchField.indexOf(this.state.filterSearchTerms) >= 0 :
 					true;
 			});
