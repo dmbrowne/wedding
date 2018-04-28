@@ -257,18 +257,11 @@ class Attendees extends React.Component<Props, State> {
 		return (
 			<div className="uk-container">
 				<h2>Everyone that you would like to come.</h2>
-				<p className="uk-margin-large-bottom">No matter which events you would like them to attend, this list represents
+				<p className="uk-margin-bottom">No matter which events you would like them to attend, this list represents
 					the total people you would like to attend throughout the day</p>
-				<div className="uk-margin">
-					<label>
-						<input
-							type="checkbox"
-							className="uk-checkbox"
-							checked={onlyShowEmailableAttendees}
-							onClick={this.filterEmailable}
-						/> Only show attendees with email addresses
-					</label>
-				</div>
+				<header className="uk-margin">
+					There are currently <span className="uk-text-lead">{this.props.attendees.length}</span> total Attendees
+				</header>
 				<CheckboxTable
 					data={attendeesOrder.map(attendeeId => attendees[attendeeId])}
 					renderHeaderRow={this.renderHeader}
@@ -276,9 +269,19 @@ class Attendees extends React.Component<Props, State> {
 					onDelete={this.onDelete}
 					onSelect={select => this.onSelect(select)}
 					buttons={(
-						<Link prefetch={true} href="/attendeeCreate" as="/admin/attendees/new">
-							<button className="uk-button-small uk-float-left uk-button uk-button-primary">Add</button>
-						</Link>
+						<React.Fragment>
+							<Link prefetch={true} href="/attendeeCreate" as="/admin/attendees/new">
+								<button className="uk-button-small uk-float-left uk-button uk-button-primary">Add</button>
+							</Link>
+							<label className="uk-margin-left">
+								<input
+									type="checkbox"
+									className="uk-checkbox"
+									checked={onlyShowEmailableAttendees}
+									onClick={this.filterEmailable}
+								/> Only show attendees with email addresses
+							</label>
+						</React.Fragment>
 					)}
 					bulkButtons={(
 						Object.keys(selected).length > 1 && (

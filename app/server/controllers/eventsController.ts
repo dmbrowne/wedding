@@ -2,12 +2,15 @@ import { Request, Response, NextFunction } from 'express';
 import models from '../models';
 import { NextAppRequest } from '../types';
 import { getDesiredValuesFromRequestBody } from '../utils';
+import Attendee from '../models/attendee';
 
 export function getAllEvents(req: NextAppRequest, res: Response) {
 	models.Event.findAll({
 		include: [{
 			model: models.GalleryImage,
 			as: 'featureImage',
+		}, {
+			model: Attendee, as: 'Guests', attributes: ['id'],
 		}],
 	}).then(events => {
 		if (req.xhr) {
@@ -126,6 +129,9 @@ export function getEventAttendees(req: NextAppRequest, res: Response, next: Next
 	const { eventId } = req.params;
 
 	models.Event.findById(eventId, {
+		order: [
+			[{ model: Attendee, as: 'Guests' }, 'firstName', 'ASC'],
+		],
 		include: [{
 			model: models.Attendee,
 			as: 'Guests',

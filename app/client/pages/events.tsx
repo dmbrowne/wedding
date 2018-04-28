@@ -23,8 +23,8 @@ class Events extends React.Component<Props> {
 			<tr>
 				<th>Name</th>
 				<th className="uk-table-expand">Description</th>
-				<th style={{width: 50, boxSizing: 'border-box' }} />
-				<th style={{width: 50, boxSizing: 'border-box' }} />
+				<th className="uk-table-shrink" colspan="2">Guests</th>
+				<th style={{width: 50, boxSizing: 'border-box' }}>Edit</th>
 			</tr>
 		);
 	}
@@ -34,6 +34,7 @@ class Events extends React.Component<Props> {
 			<tr key={`eventItem-row-${eventItem.id}`}>
 				<td>{eventItem.name}</td>
 				<td>{eventItem.description}</td>
+				<td className="uk-text-center">{eventItem.Guests.length}</td>
 				<td>
 					<Link href={`/admin/events/${eventItem.id}/attendees`}>
 						<i className="material-icons">group_add</i>
@@ -66,6 +67,7 @@ class Events extends React.Component<Props> {
 						</Link>
 					)}
 				/>
+				<div className="uk-margin-large" />
 			</div>
 		);
 	}
