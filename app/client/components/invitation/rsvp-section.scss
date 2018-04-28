@@ -51,6 +51,7 @@
 	text-indent: -100px;
 	display: inline-block;
 	width: 30px;
+	min-width: 30px;
 	height: 30px;
 	background: #fff;
 	border-radius: 50%;
@@ -114,7 +115,7 @@
 		i { margin-right: 5px; }
 	}
 	.rsvps {
-		justify-content: flex-start;
+		justify-content: center;
 	}
 	.rsvp {
 		min-width: 300px;
