@@ -33,3 +33,9 @@ export async function getAllDonations(req: Request, res: Response) {
 	res.locals.donations = donations;
 	req.nextAppRenderer.render(req, res, '/donationslisting');
 }
+
+export function donationConfirmation(req: Request, res: Response) {
+	const { amount } = req.query;
+	res.locals.amount = amount;
+	req.nextAppRenderer.render(req, res, `/donateThankYou`);
+}

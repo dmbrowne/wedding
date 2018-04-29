@@ -2,6 +2,7 @@ import './donate.scss';
 import * as React from 'react';
 import AppLayout from '../components/AppLayout';
 import Head from 'next/head';
+import Router from 'next/router';
 import { StripeProvider, Elements, ReactStripeElements } from 'react-stripe-elements';
 import PaymentForm from '../components/stripeElements/Form';
 import TopUp from '../components/stripeElements/TopUp';
@@ -63,7 +64,9 @@ export default class StripeTestPage extends React.Component<Props, State> {
 				email: this.state.email,
 			}),
 		})
-		.then(() => this.setState({ donationSuccessful : true }))
+		.then(() => {
+			Router.push(`/donations/thankyou?amount=${this.state.donateAmount * 100}`);
+		})
 		.catch(res => {
 			res.json().then(error => {
 				alert(error.message);
@@ -87,7 +90,6 @@ export default class StripeTestPage extends React.Component<Props, State> {
 		setTimeout(() => {
 			this.setState({
 				stripe: window.Stripe(this.props.stripePublishableKey),
-				windowHeight: document.body.clientHeight,
 			});
 		}, 500);
 	}
@@ -125,85 +127,71 @@ export default class StripeTestPage extends React.Component<Props, State> {
 					/>
 				</Head>
 				<div className="donation-page">
-					{this.state.donationSuccessful ?
-					(
-						<div className="thank-you-screen" style={{height: this.state.windowHeight }}>
-							<main>
-								<header>
-									<i className="material-icons">check</i>
-									<h1>Thank you</h1>
-								</header>
-								<p>Thank you very much for your donation, it means a lot to us and hope you enjoy your time at our wedding</p>
-							</main>
-						</div>
-					) :
-					(
-						<div className="donate-screen uk-padding-small">
-							<header className="donation-header uk-margin">
-								<img src="/assets/y&d-logo.png" />
-								<h1>Honeymoon Fund</h1>
-							</header>
-							<p className="message">
-								Many kisses we've shared, and many things we've got.<br/>
-								In lieu of a present, a monetary gift would help a lot.<br/>
-								A special honeymoon is our wish,<br/>
-								A wonderful experience together is worth more than a wish.
-							</p>
-							<p className="message footer-message uk-text-muted">
-								With lots and lots of love<br/>
-								Yasmin & Daryl xx
-							</p>
-							<StripeProvider stripe={this.state.stripe}>
-								<div style={{maxWidth: 600, padding: 30, margin: 'auto'}}>
-									<div className="uk-margin uk-text-center">
-										<label>Donation amont</label>
-										<TopUp
-											minValue={30}
-											value={this.state.donateAmount}
-											onChange={value => this.setState({ donateAmount: value })}
-										/>
-									</div>
-									<div className="uk-margin uk-text-left uk-margin-large-top">
-										<label className="uk-form-label">Enter an email address</label>
-										<input
-											type="email"
-											className="uk-input"
-											value={this.state.email}
-											placeholder="Your email address"
-											onChange={e => this.setState({ email: e.target.value })}
-										/>
-										<small>A payment receipt will be sent to the email address given above</small>
-									</div>
-									<div className="uk-margin uk-text-left">
-										<label className="">Your message to the bride and groom</label>
-										<textarea
-											className="uk-textarea"
-											placeholder="Enter your message here"
-											value={this.props.personalMessage}
-											onChange={this.onTextAreaChange}
-											ref={ref => this.textArea = ref}
-										/>
-									</div>
-									<Elements>
-										<PaymentForm
-											onSubmit={this.confirmOrder}
-											amount={this.state.donateAmount * 100}
-										/>
-									</Elements>
+					<div className="donate-screen uk-padding-small">
+						<header className="donation-header uk-margin">
+							<img src="/assets/y&d-logo.png" />
+							<h1>Honeymoon Fund</h1>
+						</header>
+						<p className="message">
+							Many kisses we've shared, and many things we've got.<br/>
+							In lieu of a present, a monetary gift would help a lot.<br/>
+							A special honeymoon is our wish,<br/>
+							A wonderful experience together is worth more than a wish.
+						</p>
+						<p className="message footer-message uk-text-muted">
+							With lots and lots of love<br/>
+							Yasmin & Daryl xx
+						</p>
+						<StripeProvider stripe={this.state.stripe}>
+							<div style={{maxWidth: 600, padding: 30, margin: 'auto'}}>
+								<div className="uk-margin uk-text-center">
+									<label>Donation amont</label>
+									<TopUp
+										minValue={30}
+										value={this.state.donateAmount}
+										onChange={value => this.setState({ donateAmount: value })}
+									/>
 								</div>
-							</StripeProvider>
-							<div ref={ref => this.confirmModal = ref} data-uk-modal={true}>
-								<div className="uk-modal-dialog uk-modal-body">
-									<h2 className="uk-modal-title">Please confirm</h2>
-									<p>A donation of £{this.state.donateAmount} will be charged to the card provided. press ok to confirm.</p>
-									<p className="uk-text-right">
-										<button className="uk-button uk-button-default uk-modal-close" type="button">Cancel</button>
-										<button className="uk-button uk-button-primary" type="button">Confirm</button>
-									</p>
+								<div className="uk-margin uk-text-left uk-margin-large-top">
+									<label className="uk-form-label">Enter an email address</label>
+									<input
+										type="email"
+										className="uk-input"
+										value={this.state.email}
+										placeholder="Your email address"
+										onChange={e => this.setState({ email: e.target.value })}
+									/>
+									<small>A payment receipt will be sent to the email address given above</small>
 								</div>
+								<div className="uk-margin uk-text-left">
+									<label className="">Your message to the bride and groom</label>
+									<textarea
+										className="uk-textarea"
+										placeholder="Enter your message here"
+										value={this.props.personalMessage}
+										onChange={this.onTextAreaChange}
+										ref={ref => this.textArea = ref}
+									/>
+								</div>
+								<Elements>
+									<PaymentForm
+										onSubmit={this.confirmOrder}
+										amount={this.state.donateAmount * 100}
+									/>
+								</Elements>
+							</div>
+						</StripeProvider>
+						<div ref={ref => this.confirmModal = ref} data-uk-modal={true}>
+							<div className="uk-modal-dialog uk-modal-body">
+								<h2 className="uk-modal-title">Please confirm</h2>
+								<p>A donation of £{this.state.donateAmount} will be charged to the card provided. press ok to confirm.</p>
+								<p className="uk-text-right">
+									<button className="uk-button uk-button-default uk-modal-close" type="button">Cancel</button>
+									<button className="uk-button uk-button-primary" type="button">Confirm</button>
+								</p>
 							</div>
 						</div>
-					)}
+					</div>
 				</div>
 			</AppLayout>
 		);

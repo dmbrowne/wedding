@@ -15,7 +15,7 @@ import invitationRoutes from './routers/invitationRoutes';
 import galleryRoutes from './routers/galleryRoutes';
 import campaignRoutes from './routers/campaignRoutes';
 import bridalPartyRoutes from './routers/bridalPartyRoutes';
-import { donate, getAllDonations } from './routers/donateRouters';
+import { donate, getAllDonations, donationConfirmation } from './routers/donateRouters';
 import { sendMail } from './controllers/emailController';
 import { NextAppRequest } from './types';
 import { verifyUser } from './utils/express';
@@ -74,6 +74,7 @@ function configureRoutes(server) {
 	server.get('/admin/sendInvites', verifyUser, (req, res) => req.nextAppRenderer.render(req, res, '/sendInvites'));
 	server.get('/admin/donations', verifyUser, getAllDonations);
 	server.get('/donations', (req, res) => req.nextAppRenderer.render(req, res, '/donate'));
+	server.get('/donations/thankyou', donationConfirmation);
 	server.get('*', (req, res) => handler(req, res));
 
 	server.post('/charge', donate);
