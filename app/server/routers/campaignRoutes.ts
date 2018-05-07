@@ -49,8 +49,8 @@ router.post('/send', xhrOnly, (req, res) => {
 			res.send(result);
 		})
 		.catch(e => {
-			console.error(e)
-			res.status(500).json({ error: e });
+			console.error(e);
+			res.status(500).json({ error: e.message });
 		});
 });
 

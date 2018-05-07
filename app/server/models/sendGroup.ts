@@ -38,6 +38,12 @@ export default class SendGroup extends Model {
 	}
 
 	static async getApplicableRecipientVars(options: GetApplicableSendGroupRecipientVars) {
+		interface RecipientVars {
+			[email: string]: {
+				name: string;
+				invitationlink: string;
+			};
+		}
 		if (!options.sendGroupIds && !options.sendGroups) {
 			throw Error('sendGroups or sendGroupsId required');
 		}
@@ -55,7 +61,7 @@ export default class SendGroup extends Model {
 		}
 		const applicableSendees = sendGroupIds ? sendGroups : sendGroups.filter(group => group.getDataValue('email'));
 		const sendAddresses = applicableSendees.map(group => group.getDataValue('email'));
-		const recipientVars = applicableSendees.reduce((accum, group) => {
+		const recipientVars: RecipientVars = applicableSendees.reduce((accum, group) => {
 			return {
 				...accum,
 				[group.getDataValue('email')]: {
