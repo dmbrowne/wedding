@@ -21,7 +21,7 @@ export default class BridalPartyRole extends Model {
 		this.hasMany(models.BridalParty, {
 			as: 'BridalParties',
 			foreignKey: 'partyRoleId',
-			onDelete: 'CASCADE',
+			onDelete: 'SET NULL',
 		});
 	}
 

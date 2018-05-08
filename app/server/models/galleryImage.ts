@@ -84,7 +84,7 @@ export default class GalleryImage extends Model {
 	static associate(models) {
 		this.hasOne(models.Event, {
 			foreignKey: 'imageId',
-			onDelete: 'CASCADE',
+			onDelete: 'SET NULL',
 		});
 	}
 

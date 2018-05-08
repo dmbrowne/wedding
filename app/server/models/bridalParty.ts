@@ -34,12 +34,12 @@ export default class BridalParty extends Model {
 		this.belongsTo(models.GalleryImage, {
 			as: 'Image',
 			foreignKey: 'imageId',
-			onDelete: 'CASCADE',
+			onDelete: 'SET NULL',
 		});
 		this.belongsTo(models.BridalPartyRole, {
 			as: 'WeddingRole',
 			foreignKey: 'partyRoleId',
-			onDelete: 'CASCADE',
+			onDelete: 'SET NULL',
 		});
 	}
 

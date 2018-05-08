@@ -40,7 +40,7 @@ export default class Event extends Model {
 		this.belongsTo(models.GalleryImage, {
 			as: 'featureImage',
 			foreignKey: 'imageId',
-			onDelete: 'CASCADE',
+			onDelete: 'SET NULL',
 		});
 	}
 

@@ -29,11 +29,11 @@ export default class SendGroup extends Model {
 	}
 
 	static associate(models) {
-		this.hasMany(models.Attendee, { foreignKey: 'sendGroupId', onDelete: 'CASCADE' });
+		this.hasMany(models.Attendee, { foreignKey: 'sendGroupId', onDelete: 'SET NULL' });
 		this.belongsToMany(models.Campaign, {
 			through: models.CampaignSendGroup,
 			foreignKey: 'sendGroupId',
-			onDelete: 'CASCADE',
+			onDelete: 'SET NULL',
 		});
 	}
 

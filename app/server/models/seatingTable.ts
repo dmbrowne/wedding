@@ -12,6 +12,6 @@ export default class SeatingTable extends Model {
 	}
 
 	static associate(models) {
-		this.hasMany(models.Attendee, { as: 'TableGuest', foreignKey: 'tableId', onDelete: 'CASCADE' });
+		this.hasMany(models.Attendee, { as: 'TableGuest', foreignKey: 'tableId', onDelete: 'SET NULL' });
 	}
 }

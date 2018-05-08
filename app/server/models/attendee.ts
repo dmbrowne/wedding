@@ -55,8 +55,8 @@ export default class Attendee extends Model {
 			foreignKey: 'attendeeId',
 			onDelete: 'CASCADE',
 		});
-		this.belongsTo(models.SeatingTable, { foreignKey: 'tableId', onDelete: 'CASCADE' });
-		this.belongsTo(models.SendGroup, { foreignKey: 'sendGroupId', onDelete: 'CASCADE' });
+		this.belongsTo(models.SeatingTable, { foreignKey: 'tableId', onDelete: 'SET NULL' });
+		this.belongsTo(models.SendGroup, { foreignKey: 'sendGroupId', onDelete: 'SET NULL' });
 		this.belongsToMany(models.Campaign, {
 			through: models.CampaignAttendee,
 			foreignKey: 'attendeeId',
