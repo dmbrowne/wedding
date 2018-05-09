@@ -25,7 +25,7 @@ class DonationsListing extends React.Component<Props> {
 				{this.props.donations && this.props.donations.length ?
 					<div className="uk-grid uk-grid-small uk-child-width-1-1 uk-child-width-1-2@s uk-child-width-1-3@m uk-child-width-1-4@xl">
 						{this.props.donations.map(donation => (
-							<div key={donation.id}>
+							<div key={donation.id} className="uk-margin-top uk-margin-bottom">
 								<div className="uk-card uk-card-default uk-card-small uk-card-body uk-margin">
 									<h3 className="uk-card-title">£{(donation.amount / 100).toFixed(2)}</h3>
 									<p style={{whiteSpace: 'pre-line'}}>{donation.message}</p>
