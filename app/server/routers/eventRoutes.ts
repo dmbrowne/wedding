@@ -6,11 +6,13 @@ import {
 	editEvent,
 	deleteEvent,
 	setEventAttendees,
-	// removeAttendeesFromEvent,
+	addEventGuest,
 	getEventAttendees,
 } from '../controllers/eventsController';
 import { NextAppRequest } from '../types';
 import { verifyUser } from '../utils/express';
+import Attendee from '../models/attendee';
+import FoodChoice from '../models/foodChoice';
 
 const router = Router();
 
@@ -29,6 +31,19 @@ router.route('/:eventId')
 
 router.route('/:eventId/attendees')
 	.get(getEventAttendees)
+	.put(addEventGuest)
 	.post(setEventAttendees);
+
+router.route('/:eventId/foodchoices')
+	.get((req, res) => {
+		Attendee.findAll({
+			order: [['firstName', 'ASC']],
+			where: { eventId: req.params.eventId },
+			include: [{ model: FoodChoice }],
+		})
+		.then(attendees => {
+			//
+		});
+	});
 
 export default router;

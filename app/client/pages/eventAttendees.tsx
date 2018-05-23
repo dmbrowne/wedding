@@ -1,14 +1,21 @@
 import * as React from 'react';
-import Router from 'next/router';
 import AttendeeSearch from '../components/AttendeeSearch';
 import { searchForAttendee } from '../api/attendee';
-import { getEventAttendees, setEventAttendees } from '../api/event';
+import { getEventAttendees, setEventAttendees, addEventAttendee } from '../api/event';
 import withModal from '../components/withModal';
 import { withAdmin } from '../components/adminLayout';
-import { IEvent } from '../../server/types/models';
-import FilterList from '../components/FilterList';
+import cx from 'classnames';
+import Attendee from '../../server/models/attendee';
+import EventModel from '../../server/models/event';
+import CheckboxTable from '../components/CheckboxTable';
 
-class EventAttendeesPage extends React.Component<{event: IEvent}> {
+interface IEventAttendeesPage {
+	event: EventModel;
+	attendees: Attendee[];
+	refreshAttendees: () => Promise<any>;
+}
+
+class EventAttendeesContainer extends React.Component<{event: EventModel}> {
 	static getInitialProps = async ({ res, query }) => {
 		const event = (!res && query && query.eventId ?
 			await getEventAttendees(query.eventId) :
@@ -19,19 +26,40 @@ class EventAttendeesPage extends React.Component<{event: IEvent}> {
 	}
 
 	state = {
-		attendees: [],
-		selectedAttendees: {},
-		filterSearchTerms: '',
+		guests: [],
 	};
 
 	componentWillMount() {
-		if (Array.isArray(this.props.event.Guests)) {
-			const selectedAttendees = this.props.event.Guests.reduce((accum, attendee) => ({
-				...accum,
-				[attendee.id]: attendee,
-			}), {});
-			this.setState({ selectedAttendees });
-		}
+		this.setState({ guests: this.props.event.Guests });
+	}
+
+	refreshGuestlist = () => {
+		return getEventAttendees(this.props.url.query.eventId).then(event => {
+			this.setState({ guests: event.Guests });
+		});
+	}
+
+	render() {
+		return (
+			<EventAttendeesPage
+				event={this.props.event}
+				attendees={this.state.guests}
+				refreshAttendees={this.refreshGuestlist}
+			/>
+		);
+	}
+}
+
+class EventAttendeesPage extends React.Component<IEventAttendeesPage> {
+	state = {
+		guests: [],
+		filter: null,
+		attendees: [],
+		selectedAttendees: {},
+	};
+
+	componentDidMount() {
+		this.setFilterDisplay();
 	}
 
 	attendeeSearch = (e) => {
@@ -44,29 +72,150 @@ class EventAttendeesPage extends React.Component<{event: IEvent}> {
 		return this.setState({ attendees: [] });
 	}
 
-	selectAttendee = (attendee) => {
-		this.setState({
-			selectedAttendees: {
-				...this.state.selectedAttendees,
-				[attendee.id]: attendee,
-			},
-		});
+	addAttendee = async (attendee) => {
+		await addEventAttendee(this.props.event.id, attendee.id);
+		await this.props.refreshAttendees();
 	}
 
-	removeAttendee = (attendeeId) => {
-		const newSelectedAttendees = { ...this.state.selectedAttendees };
-		delete newSelectedAttendees[attendeeId];
-		this.setState({ selectedAttendees: newSelectedAttendees });
-	}
+	removeAttendees = (attendeeIds: string[]) => {
+		const attendeesStillInvitedToEvent = this.props.attendees.reduce((guests, attendee) => {
+			return attendeeIds.indexOf(attendee.id) >= 0 ? guests : [...guests, attendee.id];
+		}, [] as string[]);
 
-	onSave = () => {
-		setEventAttendees(this.props.event.id, Object.keys(this.state.selectedAttendees))
-			.then(() => Router.push('/admin/events'))
+		setEventAttendees(this.props.event.id, attendeesStillInvitedToEvent)
+			.then(() => this.props.refreshAttendees())
 			.catch(() => alert('Ooops, something went wrong, try again later'));
 	}
 
+	renderHeader = () => {
+		return (
+			<tr>
+				<th>Name</th>
+				<th>Email</th>
+				{this.state.filter === 'food' ?
+					(
+						<React.Fragment>
+							<th>Starter</th>
+							<th>Main</th>
+						</React.Fragment>
+					) :
+					(
+						<React.Fragment>
+							<th>Attending</th>
+							<th>RSVP confirmed</th>
+						</React.Fragment>
+					)
+				}
+				<th style={{width: 50, boxSizing: 'border-box' }} />
+			</tr>
+		);
+	}
+
+	renderRow = (guest, onCheckboxTick, itemIsChecked) => {
+		const food = guest.FoodChoice;
+		return (
+			<tr key={guest.id}>
+				<td>{guest.firstName} {guest.lastName}</td>
+				<td>{guest.email}</td>
+				{this.state.filter === 'food' ?
+					(
+						<React.Fragment>
+							<td>{food && food.starter || '-'}</td>
+							<td>{food && food.main || '-'}</td>
+						</React.Fragment>
+					) :
+					(
+						<React.Fragment>
+							<td>{guest.EventAttendee.attending.toString()}</td>
+							<td>{guest.EventAttendee.confirmed.toString()}</td>
+						</React.Fragment>
+					)
+				}
+				<td>
+					<input
+						type="checkbox"
+						className="uk-checkbox"
+						checked={itemIsChecked}
+						onChange={(e) => onCheckboxTick(e)}
+					/>
+				</td>
+			</tr>
+		);
+	}
+
+	setFilterDisplay(filter?: 'confirmed' | 'attending' | 'notAttending' | 'food' | null) {
+		this.setState({ filter });
+		this.setState({ guests: this.filterListing(filter) });
+	}
+
+	filterListing(filter?: 'confirmed' | 'attending' | 'notAttending' | 'food') {
+		switch (filter) {
+			case 'confirmed':
+				return this.props.attendees.filter(attendee => attendee.EventAttendee.confirmed);
+			case 'food':
+			case 'attending':
+				return this.props.attendees.filter(attendee => attendee.EventAttendee.confirmed && attendee.EventAttendee.attending);
+			case 'notAttending':
+				return this.props.attendees.filter(attendee => attendee.EventAttendee.confirmed && !attendee.EventAttendee.attending);
+			default:
+				return this.props.attendees;
+		}
+	}
+
+	downloadCurrentListView() {
+		const rows = this.state.guests.map(guest => {
+			const row = [
+				guest.firstName + '' + guest.lastName,
+				guest.EventAttendee.attending,
+				guest.FoodChoice && guest.FoodChoice.starter || '-',
+				guest.FoodChoice && guest.FoodChoice.main || '-',
+			];
+			return row.join(',');
+		});
+		const csvContent = encodeURI("data:text/csv;charset=utf-8," + rows.map(row => row + "\r\n").join(''));
+		this.setState({ csvContent });
+	}
+
+	filterButtons() {
+		return (
+			<React.Fragment>
+				<button
+					onClick={() => this.setFilterDisplay(this.state.filter === 'confirmed' ? null : 'confirmed')}
+					className={cx("uk-margin-small-right uk-button uk-button-small", {
+						'uk-button-secondary': !!this.state.filter,
+					})}
+				>
+					Confirmed
+				</button>
+				<button
+					onClick={() => this.setFilterDisplay(this.state.filter === 'attending' ? null : 'attending')}
+					className={cx("uk-margin-small-right uk-button uk-button-small", {
+						'uk-button-secondary': this.state.filter === 'attending',
+					})}
+				>
+					Attending
+				</button>
+				<button
+					onClick={() => this.setFilterDisplay(this.state.filter === 'notAttending' ? null : 'notAttending')}
+					className={cx("uk-margin-small-right uk-button uk-button-small", {
+						'uk-button-secondary': this.state.filter === 'notAttending',
+					})}
+				>
+					Not attending
+				</button>
+				<button
+					onClick={() => this.setFilterDisplay(this.state.filter === 'food' ? null : 'food')}
+					className={cx("uk-margin-small-right uk-button uk-button-small", {
+						'uk-button-secondary': this.state.filter === 'food',
+					})}
+				>
+					Foods
+				</button>
+			</React.Fragment>
+		);
+	}
+
 	render() {
-		const { selectedAttendees } = this.state;
 		return (
 			<div>
 				<h1 className="uk-container">{this.props.event.name}</h1>
@@ -75,30 +224,18 @@ class EventAttendeesPage extends React.Component<{event: IEvent}> {
 					<p>Search for an attendee, to add them to this event</p>
 					<AttendeeSearch
 						data={this.state.attendees}
-						onClick={this.selectAttendee}
+						onClick={this.addAttendee}
 						onChange={this.attendeeSearch}
 					/>
 				</div>
-				{!!Object.keys(selectedAttendees).length &&
-					<div className="uk-section uk-section-muted uk-section-xsmall">
-						<div className="uk-container">
-							<h3>Guests</h3>
-							<FilterList
-								data={selectedAttendees}
-								headerFields={['firstName', 'lastName']}
-								bodyFields={['email']}
-								onRemove={this.removeAttendee}
-							/>
-						</div>
-					</div>
-				}
-				<div className="uk-clearfix uk-margin uk-container">
-					<button
-						className="uk-button uk-button-primary uk-float-right"
-						onClick={this.onSave}
-					>
-						Save
-					</button>
+				<div className="uk-section uk-section-xsmall uk-container">
+					<CheckboxTable
+						buttons={this.filterButtons()}
+						data={this.state.guests}
+						renderHeaderRow={this.renderHeader}
+						renderRow={this.renderRow}
+						onDelete={this.removeAttendees}
+					/>
 				</div>
 			</div>
 		);
@@ -106,5 +243,5 @@ class EventAttendeesPage extends React.Component<{event: IEvent}> {
 }
 
 export default withModal(
-	withAdmin({ title: 'Events' }, EventAttendeesPage),
+	withAdmin({ title: 'Events' }, EventAttendeesContainer),
 );

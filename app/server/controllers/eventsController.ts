@@ -3,6 +3,7 @@ import models from '../models';
 import { NextAppRequest } from '../types';
 import { getDesiredValuesFromRequestBody } from '../utils';
 import Attendee from '../models/attendee';
+import FoodChoice from '../models/foodChoice';
 
 export function getAllEvents(req: NextAppRequest, res: Response) {
 	models.Event.findAll({
@@ -135,6 +136,9 @@ export function getEventAttendees(req: NextAppRequest, res: Response, next: Next
 		include: [{
 			model: models.Attendee,
 			as: 'Guests',
+			include: [{
+				model: FoodChoice,
+			}],
 		}],
 	}).then(event => {
 		if (req.xhr) {
@@ -142,7 +146,9 @@ export function getEventAttendees(req: NextAppRequest, res: Response, next: Next
 			return;
 		}
 		res.locals.event = event;
-		req.nextAppRenderer.render(req, res, '/eventAttendees');
+		req.nextAppRenderer.render(req, res, '/eventAttendees', {
+			eventId,
+		});
 		return;
 	})
 	.catch(err => next(err));
@@ -164,6 +170,12 @@ const addOrRemoveGuestsSanityCheck = (req: Request) => new Promise((resolve, rej
 		return resolve({event, attendeeIds});
 	});
 });
+
+export async function addEventGuest(req, res) {
+	const eventDAO = await models.Event.findById(eventId)
+	await eventDAO.addGuest(req.body.attendeeId);
+	res.send({ success: 'ok' });
+}
 
 export function setEventAttendees(req: Request, res: Response) {
 	addOrRemoveGuestsSanityCheck(req)
