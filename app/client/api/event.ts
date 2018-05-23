@@ -47,3 +47,11 @@ export function setEventAttendees(eventId, attendeeIds) {
 		body: JSON.stringify({attendeeIds}),
 	});
 }
+
+export function addEventAttendee(eventId, attendeeId) {
+	return restfulRequest({
+		route: `admin/events/${eventId}/attendees`,
+		method: 'PUT',
+		body: JSON.stringify({attendeeId}),
+	});
+}

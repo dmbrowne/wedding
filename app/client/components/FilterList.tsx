@@ -51,6 +51,10 @@ export default class FilterList extends React.Component<Props, State> {
 				/>
 				<dl className="uk-description-list uk-description-list-divider uk-margin">
 					{items.map(item => {
+						if (this.props.renderRow) {
+							return this.props.renderRow(item);
+						}
+
 						return (
 							<React.Fragment key={item.id}>
 								<dt className="uk-flex uk-flex-middle uk-flex-between">

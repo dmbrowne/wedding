@@ -111,13 +111,7 @@ class DataItemListing extends React.Component<InternalProps, State> {
 			<React.Fragment>
 				{!!this.props.bulkButtons && this.props.bulkButtons}
 				<button
-					onClick={this.exitBulkMode}
-					className="uk-button-small uk-button uk-button-default uk-margin-left"
-				>
-					Cancel
-				</button>
-				<button
-					className="uk-button-small uk-button uk-button-danger uk-margin-left"
+					className="uk-button-small uk-button uk-button-danger uk-margin-small-left"
 					onClick={this.confirmDelete}
 				>
 					Delete
@@ -156,10 +150,10 @@ class DataItemListing extends React.Component<InternalProps, State> {
 									{this.state.bulkMode && this.bulkModeButtons()}
 									{!!this.props.data.length && (
 										<button
-											onClick={this.selectAll}
+											onClick={this.state.bulkMode ? this.exitBulkMode : this.selectAll}
 											className="uk-button-small uk-button uk-button-text uk-margin-left"
 										>
-											Select all
+											{this.state.bulkMode ? 'Deselect all' : 'Select all'}
 										</button>
 									)}
 								</div>
