@@ -156,6 +156,16 @@ export default class Campaign extends Model {
 		const { sendAddresses, recipientVars } = recipientVariables;
 		const { subject, content } = campaign;
 		let html = draftToHtml(JSON.parse(content));
+		html = '\
+		<style type="text/css">\
+			body {\
+				padding: 15px;\
+				-webkit-font-smoothing: antialiased;\
+				-webkit-text-size-adjust: none;\
+				background-color: #f6f6f6;\
+				font-family: Helvetica, Verdana, sans-serif;\
+			}\
+		</script>' + html;
 		html = html.replace('%logo%', '<img width="150" src="cid:y&d-logo.png"/>');
 
 		const data = {
