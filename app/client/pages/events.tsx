@@ -23,8 +23,9 @@ class Events extends React.Component<Props> {
 			<tr>
 				<th>Name</th>
 				<th className="uk-table-expand">Description</th>
-				<th className="uk-table-shrink" colspan="2">Guests</th>
-				<th style={{width: 50, boxSizing: 'border-box' }}>Edit</th>
+				<th className="uk-table-shrink uk-text-center">Total Guests</th>
+				<th style={{width: 120, boxSizing: 'border-box' }} className="uk-text-center">View / Edit Guests</th>
+				<th className="uk-table-shrink uk-text-center">Edit event</th>
 			</tr>
 		);
 	}
@@ -35,12 +36,12 @@ class Events extends React.Component<Props> {
 				<td>{eventItem.name}</td>
 				<td>{eventItem.description}</td>
 				<td className="uk-text-center">{eventItem.Guests.length}</td>
-				<td>
+				<td className="uk-text-center">
 					<Link href={`/admin/events/${eventItem.id}/attendees`}>
 						<i className="material-icons">group_add</i>
 					</Link>
 				</td>
-				<td>
+				<td className="uk-text-center">
 					<Link href={`/admin/events/${eventItem.id}`}>
 						<i className="material-icons">mode_edit</i>
 					</Link>
