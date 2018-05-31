@@ -166,7 +166,7 @@ export default class RsvpSection extends React.Component<Props> {
 					</div> :
 					<React.Fragment>
 						<h2 className="section-title"><span>Please reply</span> Répondez s'il vous plaît</h2>
-						<p>Please send your response by<br/><strong>May 31st</strong><br/>Responses after this date has passed will not be counted and your place will not be guaranteed.</p>
+						<p>Please send your response by<br/><strong>July 31st</strong><br/>Responses after this date has passed will not be counted and your place will not be guaranteed.</p>
 						<div className="row rsvps">
 							{this.props.attendees.map(attendee =>  (
 								<div key={attendee.id} className="rsvp">

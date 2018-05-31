@@ -1,7 +1,7 @@
 import { Router, Request } from 'express';
 import {
 	getAllAttendees,
-	getAttendee,
+	getNonGroupedAttendees,
 	createNewAttendees,
 	editAttendee,
 	deleteAttendee,
@@ -24,6 +24,8 @@ router.route('/')
 	.get(getAllAttendees)
 	.post(createNewAttendees)
 	.delete(deleteAttendee);
+
+router.get('/nongrouped', getNonGroupedAttendees);
 
 router.get('/new', (req: Request, res) => req.nextAppRenderer.render(req, res, '/attendeeCreate'));
 

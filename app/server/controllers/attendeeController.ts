@@ -40,8 +40,22 @@ export interface GroupInvitationResponseLocals extends IniviteResponseLocals {
 	singleInvitation?: false;
 }
 
-export async function getAllAttendees(req: NextAppRequest, res: Response, next) {
-	const { search, emailable } = req.query;
+export async function getNonGroupedAttendees(req, res) {
+	return models.Attendee.findAll({
+		order: [
+			['firstName', 'ASC'],
+		],
+		where: { sendGroupId: null },
+		include: [{
+			model: models.SendGroup,
+		}],
+	}).then(attendees => {
+		res.send(attendees);
+	});
+}
+
+export async function getAllAttendees(req: NextAppRequest, res: Response) {
+	const { search, emailable, grouped } = req.query;
 
 	let attendees;
 

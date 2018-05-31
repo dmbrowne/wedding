@@ -51,3 +51,9 @@ export function getAllAttendees(emailable?: boolean) {
 		route: `admin/attendees${emailable ? '?emailable=true' : ''}`,
 	});
 }
+
+export function getNonGroupedAttendees() {
+	return restfulRequest({
+		route: `admin/attendees/nongrouped`,
+	});
+}
