@@ -44,19 +44,6 @@ export default class InvitedSection extends React.Component<Props> {
 					<p>invite you to join them at the celebration of their marriage.</p>
 					<br/>
 					{this.props.singleInvitation ? this.singleMessage() : this.groupMessage()}
-					{!this.props.confirmed && (
-						<React.Fragment>
-							<p>Click the button below to confirm your attendance / absence now,</p>
-							<button
-								ref={ref => this.goToRsvp = ref}
-								className="go-to-rsvp"
-								onClick={() => this.props.onGoToRsvp(this.goToRsvp)}
-							>
-								RSVP
-							</button>
-							<p>... Or read on for more details...</p>
-						</React.Fragment>
-					)}
 				</div>
 			</div>
 		);
