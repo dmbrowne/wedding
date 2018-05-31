@@ -9,7 +9,7 @@ import Attendee from '../../server/models/attendee';
 import Campaign from '../../server/models/campaign';
 import cx from 'classnames';
 import { getCampaign, editCampaign } from '../api/campaign';
-import { getAllAttendees } from '../api/attendee';
+import { getNonGroupedAttendees } from '../api/attendee';
 import { getSendGroups } from '../api/sendGroup';
 import Modal from '../components/Modal';
 import { arrayToObject } from '../../server/utils';
@@ -169,10 +169,9 @@ class SendInvites extends React.Component<Props, State> {
 	}
 
 	getAttendees = async () =>  {
-		const emailable = true;
 		const attendees = this.props.campaign.groupCampaign ?
 			await getSendGroups() :
-			await getAllAttendees(emailable);
+			await getNonGroupedAttendees();
 		this.setState({ attendeesSearchList: arrayToObject(attendees, 'id') });
 	}
 
