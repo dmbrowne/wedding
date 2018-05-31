@@ -90,13 +90,13 @@ const getEventComponent = (eventSlug) => {
 
 export default function AddressSection(props) {
 	const eventSlugs = props.events && !!props.events.length && props.events.map(event => event.slug);
-	const breakfastInvited = eventSlugs.indexOf('wedding-breakfast') !== -1;
+	const breakfastInvited = eventSlugs.indexOf('wedding-breakfast') > -1 || eventSlugs.indexOf('breakfast') > -1;
 	return (
 		<React.Fragment>
 			{props.events && !!props.events.length && props.events.map(event => {
 				const EventComponent = getEventComponent(event.slug);
 				const weddingBreakfast = breakfastInvited ?
-					props.events.filter(evnt => evnt.slug === 'wedding-breakfast')[0] :
+					props.events.filter(evnt => evnt.slug === 'wedding-breakfast' || evnt.slug === 'breakfast')[0] :
 					false;
 				return (
 					<EventComponent key={event.id} weddingBreakfast={weddingBreakfast} {...event} />
