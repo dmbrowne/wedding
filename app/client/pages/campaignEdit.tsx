@@ -184,15 +184,11 @@ class SendInvites extends React.Component<Props, State> {
 		this.setState({ addAttendeesModal: false });
 	}
 
-	isGroupCampaign(attendeeOrGroup: Attendee | SendGroup, isGroup?: boolean): attendeeOrGroup is SendGroup {
-		if (isGroup !== undefined) {
-			if (isGroup) {
-				return true;
-			}
+	isSendGroup(attendeeOrGroup: Attendee | SendGroup) {
+		if ((attendeeOrGroup as Attendee).firstName) {
 			return false;
-		} else {
-			return !!(attendeeOrGroup as SendGroup).name;
 		}
+		return true;
 	}
 
 	toggleSelectedGroupOrAttendee(attendeeOrGroup: Attendee | SendGroup) {
@@ -277,7 +273,7 @@ class SendInvites extends React.Component<Props, State> {
 				<ul className="uk-list uk-list-divider">
 					{this.state.selectedAttendeeList.map(attendeeId => {
 						const attendeeOrGroup: Attendee | SendGroup = this.state.attendeesSearchList[attendeeId];
-						const label = this.isGroupCampaign(attendeeOrGroup) ?
+						const label = this.isSendGroup(attendeeOrGroup) ?
 							attendeeOrGroup.name :
 							`${attendeeOrGroup.firstName} ${attendeeOrGroup.lastName}`;
 
@@ -375,9 +371,9 @@ class SendInvites extends React.Component<Props, State> {
 								'uk-description-list-divider': groupCampaign,
 							})}
 						>
-							{Object.keys(attendeesSearchList).length >= 0 && Object.keys(attendeesSearchList).map(attendeeOrCampaignId => {
-								const attendeeOrCampaign = attendeesSearchList[attendeeOrCampaignId];
-								return this.renderAttendeeOrGroupSearchListRow(attendeeOrCampaign);
+							{Object.keys(attendeesSearchList).length >= 0 && Object.keys(attendeesSearchList).map(attendeeOrSendGroupId => {
+								const attendeeOrSendGroup = attendeesSearchList[attendeeOrSendGroupId];
+								return this.renderAttendeeOrGroupSearchListRow(attendeeOrSendGroup);
 							})}
 						</ul>
 					</Modal>
