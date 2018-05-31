@@ -45,7 +45,7 @@ export async function getNonGroupedAttendees(req, res) {
 		order: [
 			['firstName', 'ASC'],
 		],
-		where: { sendGroupId: null },
+		where: { sendGroupId: null, email: {[Op.not]: null} },
 		include: [{
 			model: models.SendGroup,
 		}],
