@@ -59,7 +59,7 @@ export default class StripeTestPage extends React.Component<Props, State> {
 			body: JSON.stringify({
 				amount: this.state.donateAmount * 100,
 				token: token.id,
-				description: 'Test Charge!!',
+				description: 'Wedding donation for Yasmin and Daryl',
 				message: this.state.personalMessage,
 				email: this.state.email,
 			}),
