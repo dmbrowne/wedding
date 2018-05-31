@@ -217,7 +217,7 @@ export default class RsvpSection extends React.Component<Props> {
 							})}
 						</div>
 						<button className="btn btn-lg" onClick={this.props.onSubmit}>
-							{this.props.isAnUpdate ?  'Update' : 'Send'} Response
+							{this.props.isAnUpdate ?  'Update' : 'Send'} your RSVP
 						</button>
 					</React.Fragment>
 				}
