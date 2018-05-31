@@ -18,7 +18,7 @@ const LocationAddress = event => (
 	</address>
 );
 
-const CeremonySection = (event) => (
+const CeremonySection = ({weddingBreakfast, ...event}) => ( 
 	<div className="section section-where" style={event.featureImage ? {backgroundImage: event.featureImage} : {}}>
 		<h2 className="section-title"><span>where &</span>When</h2>
 		<div className="ornate-divider">
@@ -32,10 +32,15 @@ const CeremonySection = (event) => (
 		<time>
 			Please arrive by: <span>{moment(event.entryTime).format('h:mm a')}</span>
 		</time>
+		{!!weddingBreakfast && (
+			<p className="transport-info">
+				<strong>Please note: For those that have been invited to, and are attending the wedding breakfast, transport will be provided to take you to the wedding breakfast venue.</strong>
+			</p>
+		)}
 	</div>
 );
 
-const ReceptionSection = (event, weddingBreakfast) => {
+const ReceptionSection = ({weddingBreakfast, ...event}) => {
 	return (
 		<div className="section section-reception">
 			<h2 className="section-title"><span>where &</span>When</h2>
@@ -84,12 +89,12 @@ const getEventComponent = (eventSlug) => {
 };
 
 export default function AddressSection(props) {
-	const events = props.events && !!props.events.length && props.events.map(event => event.slug);
+	const eventSlugs = props.events && !!props.events.length && props.events.map(event => event.slug);
+	const breakfastInvited = eventSlugs.indexOf('wedding-breakfast') !== -1;
 	return (
 		<React.Fragment>
 			{props.events && !!props.events.length && props.events.map(event => {
 				const EventComponent = getEventComponent(event.slug);
-				const breakfastInvited = event.slug === 'reception' && events.indexOf('wedding-breakfast');
 				const weddingBreakfast = breakfastInvited ?
 					props.events.filter(evnt => evnt.slug === 'wedding-breakfast')[0] :
 					false;

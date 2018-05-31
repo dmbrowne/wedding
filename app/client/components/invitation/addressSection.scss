@@ -74,6 +74,15 @@
     border-radius: 40px;
 	}
 
+	.transport-info {
+		// font-size: 19;
+		max-width: 600px;
+		margin: 25px auto 15px;
+		border-radius: 20px;
+		background: rgba(255,255,255,0.35);
+		box-shadow: 0 0 80px 10px rgba(255, 255, 255, 0.555);
+	}
+
 	time span {
 		padding-left: 10px;
 		// color: darken(#d8ab73, 10%);
