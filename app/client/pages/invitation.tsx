@@ -296,8 +296,9 @@ export default class Invitation extends React.Component<Props, State> {
 							<div className="yd-container">
 								<p><span className="fancy">T</span>he most important gift to us is having you share our special day</p>
 								<p><span className="fancy">B</span>ut if you wish to contribute in some other way, we would love a few pennies to put in our pot, for our honeymoon trip after tying the knot!</p>
-								<p>If you would like to put in a penny or two - you can donate by clicking the piggy bank below,</p>
+								<p>If you would like to put in a penny or two - you can donate by clicking the piggy bank below,*</p>
 								<p className="fancy">Thank You x</p>
+								<small style={{margin: '15px 0 30px', display: 'block'}}>*Donations can be given at anytime, you can donate now; or comeback later (even if you've already confirmed your attendance); you can also donate on the day in person if you prefer!</small>
 								<div className="uk-margin">
 									<a href={`${this.props.url.asPath}/donate`} target="_blank">
 										<Pig />
