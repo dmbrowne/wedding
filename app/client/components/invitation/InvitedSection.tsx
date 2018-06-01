@@ -44,6 +44,9 @@ export default class InvitedSection extends React.Component<Props> {
 					<p>invite you to join them at the celebration of their marriage.</p>
 					<br/>
 					{this.props.singleInvitation ? this.singleMessage() : this.groupMessage()}
+						<div className="cta">
+							<div>Scroll to the bottom to confirm your attendance / absence now – or read on for more details</div>
+						</div>
 				</div>
 			</div>
 		);
