@@ -1,0 +1,61 @@
+@import './yd-variables.scss';
+
+#get-invitation {
+	::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */ font-family: "Roboto Condensed", sans-serif; }
+	:-ms-input-placeholder { /* Internet Explorer 10-11 */ font-family: "Roboto Condensed", sans-serif; }
+	::-ms-input-placeholder { /* Microsoft Edge */ font-family: "Roboto Condensed", sans-serif; }
+	.bg {
+		position: relative;
+		width: 100%;
+		height: 100%;
+		background: url('/assets/emptycliff.jpg') no-repeat center;
+		background-size: cover;
+		filter: blur(13px);
+	}
+	.content {
+		position: fixed;
+		top: 25vh;
+		width: 100%;
+		z-index: 1;
+	}
+	form { text-align: center; }
+	input[type=text] {
+		background: rgba(#fff, 0.1);
+		text-align: center;
+		border: 1px solid #f1f1f1;
+		max-width: 70%;
+		margin: auto;
+		color: #000;
+		&::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */ color: #ccc; }
+		&:-ms-input-placeholder { /* Internet Explorer 10-11 */ color: #ccc; }
+		&::-ms-input-placeholder { /* Microsoft Edge */ color: #ccc; }
+		&:focus {
+			background: rgba(#fff, 0.6);
+		}
+	}
+	button {
+		background: darken($secondary-hover, 5%);
+		border: 2px solid darken($secondary-hover, 10%);
+		&:hover {
+			background: darken($secondary-hover, 15%);
+		}
+	}
+	.alert {
+		margin: auto;
+		max-width: 70%;
+		font-family: "Roboto Condensed", sans-serif;
+		font-weight: 300;
+		padding: 15px;
+		background: lighten($primary, 22%);
+		color: darken($primary-selected, 20%);
+	}
+	.rotating {
+		margin-left: 10px;
+		animation: rotating 1s linear infinite;
+		vertical-align: middle;
+	}
+	@keyframes rotating {
+		from { transform: rotate(0deg); }
+		to { transform: rotate(360deg); }
+	}
+}
