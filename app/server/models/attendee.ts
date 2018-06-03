@@ -165,6 +165,21 @@ export default class Attendee extends Model {
 		});
 	}
 
+	getInvite = async () => {
+		const id = this.sendGroupId ?
+			await SendGroup.findById(this.sendGroupId).then(({ id: sid }) => sid) :
+			this.id;
+		return {
+			group: !!this.sendGroupId,
+			id,
+		};
+	}
+
+	async getInviteLink() {
+		const inviteLink = await this.getInvite().then(({ group, id }) => `/invitation/${group ? 'g/' : 'a/'}` + id);
+		return inviteLink;
+	}
+
 	async sendRsvpConfirmationEmail() {
 		const filename = path.join(__dirname, '../../client/assets/y&d-logo.png');
 		const name = this.getDataValue('firstName');
