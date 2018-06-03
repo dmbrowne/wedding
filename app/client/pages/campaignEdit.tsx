@@ -278,11 +278,20 @@ class SendInvites extends React.Component<Props, State> {
 	}
 
 	renderAttendeeSearchListRow(attendee) {
+		const disabled = !attendee.email;
+		const removeDisabledAttendee = this.state.selectedAttendeeList.indexOf(attendee.id) > -1 ?
+			this.removeAttendeeFromSelectedList :
+			null;
+
+		const onClick = () => disabled ?
+			removeDisabledAttendee(attendee) :
+			this.toggleSelectedGroupOrAttendee(attendee);
+
 		return (
 			<li
 				key={attendee.id}
-				className="uk-clearfix"
-				onClick={() => this.toggleSelectedGroupOrAttendee(attendee)}
+				className={`uk-clearfix${disabled ? ' uk-text-muted' : ''}`}
+				onClick={onClick}
 			>
 				<span>
 					{`${attendee.firstName} ${attendee.lastName}`}
@@ -290,6 +299,7 @@ class SendInvites extends React.Component<Props, State> {
 				{this.state.selectedAttendeeList.indexOf(attendee.id) >= 0 && (
 					<i className="material-icons uk-float-right">check</i>
 				)}
+				{disabled && <small style={{display: 'block'}}>Disabled because attendee does not have an email address</small>}
 			</li>
 		);
 	}
