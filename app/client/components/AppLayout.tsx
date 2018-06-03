@@ -1,8 +1,8 @@
 import * as React from 'react';
 import Head from 'next/head';
 
-export default ({ children, title }) => (
-	<div>
+export default ({ children, title, ...props }) => (
+	<div {...props}>
 		{children}
 		<Head>
 			<title key="document-title">{title || 'Mr and Mrs Browne 2018'}</title>
