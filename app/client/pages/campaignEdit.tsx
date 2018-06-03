@@ -9,7 +9,7 @@ import Attendee from '../../server/models/attendee';
 import Campaign from '../../server/models/campaign';
 import cx from 'classnames';
 import { getCampaign, editCampaign } from '../api/campaign';
-import { getNonGroupedAttendees } from '../api/attendee';
+import { getAllAttendees } from '../api/attendee';
 import { getSendGroups } from '../api/sendGroup';
 import Modal from '../components/Modal';
 import { arrayToObject } from '../../server/utils';
@@ -21,11 +21,12 @@ interface State {
 	campaignName: string;
 	subject: string;
 	addAttendeesModal: boolean;
-	// selectedAttendeeMap: attendeeMap;
+	hideGroupedAttendees: boolean;
 	selectedAttendeeList: Array<Attendee['id']>;
 	attendeesSearchList: {
 		[attendeeId: string]: Attendee;
 	};
+	filterSearchTerms: string;
 }
 
 interface Props {
@@ -93,25 +94,24 @@ class SendInvites extends React.Component<Props, State> {
 			createEditorState();
 
 		const attendeesOrGroups = campaign.groupCampaign ? campaign.SendGroups : campaign.Attendees;
-		const { map: attendeesSearchList, list: selectedAttendeeList } = attendeesOrGroups.reduce(
-			(accum, attendeeOrSendGroup) => ({
-				list: [...accum.list, attendeeOrSendGroup.id],
-				map: {
-					...accum.map,
-					[attendeeOrSendGroup.id]: attendeeOrSendGroup,
-				},
-			}),
-			{ list: [], map: {} }
-		);
+		const campaignRecipients = attendeesOrGroups.reduce((accum, attendeeOrSendGroup: Attendee | SendGroup) => ({
+			list: [...accum.list, attendeeOrSendGroup.id],
+			map: {
+				...accum.map,
+				[attendeeOrSendGroup.id]: attendeeOrSendGroup,
+			},
+		}), { list: [], map: {} });
 
 		this.state = {
 			client: false,
 			editorState,
 			campaignName: campaign.name,
 			subject: campaign.subject || '',
-			selectedAttendeeList,
-			attendeesSearchList,
+			selectedAttendeeList: campaignRecipients.list,
+			attendeesSearchList: campaignRecipients.map,
 			addAttendeesModal: false,
+			hideGroupedAttendees: true,
+			filterSearchTerms: '',
 		};
 	}
 
@@ -169,9 +169,10 @@ class SendInvites extends React.Component<Props, State> {
 	}
 
 	getAttendees = async () =>  {
-		const attendees = this.props.campaign.groupCampaign ?
+		const campaignIsGroupCampaign = this.props.campaign.groupCampaign;
+		const attendees = campaignIsGroupCampaign ?
 			await getSendGroups() :
-			await getNonGroupedAttendees();
+			await getAllAttendees();
 		this.setState({ attendeesSearchList: arrayToObject(attendees, 'id') });
 	}
 
@@ -228,12 +229,52 @@ class SendInvites extends React.Component<Props, State> {
 		});
 	}
 
-	renderAttendeeOrGroupSearchListRow(attendeeOrGroup) {
-		if (this.props.campaign.groupCampaign) {
-			return this.renderSendGroupSearchListRow(attendeeOrGroup);
-		} else {
-			return this.renderAttendeeSearchListRow(attendeeOrGroup);
-		}
+	filteredItems(modalAttendeeIds?) {
+		const  { attendeesSearchList } = this.state;
+		modalAttendeeIds = modalAttendeeIds ? modalAttendeeIds : Object.keys(attendeesSearchList);
+		return modalAttendeeIds.filter(attendeeOrSendGroupId => {
+			const attendeeOrSendGroup = attendeesSearchList[attendeeOrSendGroupId];
+			const searchField = Object.keys(attendeeOrSendGroup)
+				.filter(key => typeof attendeeOrSendGroup[key] === 'string')
+				.map(key => attendeeOrSendGroup[key].toLowerCase())
+				.join(' ').trim();
+
+			return !!this.state.filterSearchTerms ?
+				searchField.indexOf(this.state.filterSearchTerms) >= 0 :
+				true;
+		});
+	}
+
+	renderModalAttendeeList() {
+		const { groupCampaign } = this.props.campaign;
+		const  { attendeesSearchList } = this.state;
+
+		const attendeeIds = this.filteredItems(
+			(this.state.hideGroupedAttendees && !groupCampaign ?
+				Object.keys(attendeesSearchList).filter(attendeeId => !attendeesSearchList[attendeeId].sendGroupId) :
+				Object.keys(attendeesSearchList)
+			),
+		);
+
+		return (
+			<ul
+				className={cx({
+					'uk-list': !groupCampaign,
+					'uk-list-striped': !groupCampaign,
+					'uk-description-list': groupCampaign,
+					'uk-description-list-divider': groupCampaign,
+				})}
+			>
+				{attendeeIds.length >= 0 && attendeeIds.map(attendeeOrSendGroupId => {
+					const attendeeOrSendGroup = attendeesSearchList[attendeeOrSendGroupId];
+					if (this.props.campaign.groupCampaign) {
+						return this.renderSendGroupSearchListRow(attendeeOrSendGroup);
+					} else {
+						return this.renderAttendeeSearchListRow(attendeeOrSendGroup);
+					}
+				})}
+			</ul>
+		);
 	}
 
 	renderAttendeeSearchListRow(attendee) {
@@ -363,19 +404,25 @@ class SendInvites extends React.Component<Props, State> {
 							</div>
 						)}
 					>
-						<ul
-							className={cx({
-								'uk-list': !groupCampaign,
-								'uk-list-striped': !groupCampaign,
-								'uk-description-list': groupCampaign,
-								'uk-description-list-divider': groupCampaign,
-							})}
-						>
-							{Object.keys(attendeesSearchList).length >= 0 && Object.keys(attendeesSearchList).map(attendeeOrSendGroupId => {
-								const attendeeOrSendGroup = attendeesSearchList[attendeeOrSendGroupId];
-								return this.renderAttendeeOrGroupSearchListRow(attendeeOrSendGroup);
-							})}
-						</ul>
+						{!groupCampaign &&
+							<div>
+								<input
+									type="checkbox"
+									checked={this.state.hideGroupedAttendees}
+									onChange={e => this.setState({ hideGroupedAttendees: e.target.checked})}
+								/>{' '}
+								<label>Hide attendees that are in a send group</label>
+							</div>
+						}
+						<div className="uk-margin-bottom">
+							<input
+								type="text"
+								value={this.state.filterSearchTerms}
+								className="uk-input"
+								onChange={e => this.setState({ filterSearchTerms: e.target.value})}
+							/>
+						</div>
+						{this.renderModalAttendeeList()}
 					</Modal>
 				)}
 			</div>
