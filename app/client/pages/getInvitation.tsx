@@ -45,6 +45,7 @@ class GetInvite extends React.Component<Props, State> {
 
 				<div className="bg" />
 				<div className="content">
+					<p>Enter the email you gave to Daryl or Yasmin to be taken to your personal invite</p>
 					<div className="uk-container">
 						{!!this.props.invalidEmail &&
 							<div className="alert">

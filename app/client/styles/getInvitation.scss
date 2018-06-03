@@ -1,9 +1,13 @@
 @import './yd-variables.scss';
 
 #get-invitation {
-	::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */ font-family: "Roboto Condensed", sans-serif; }
-	:-ms-input-placeholder { /* Internet Explorer 10-11 */ font-family: "Roboto Condensed", sans-serif; }
-	::-ms-input-placeholder { /* Microsoft Edge */ font-family: "Roboto Condensed", sans-serif; }
+	font-family: "Roboto Condensed", sans-serif;
+	color: #111;
+
+	::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */ font-family: "Roboto Condensed", sans-serif; font-weight: 300; }
+	:-ms-input-placeholder { /* Internet Explorer 10-11 */ font-family: "Roboto Condensed", sans-serif; font-weight: 300; }
+	::-ms-input-placeholder { /* Microsoft Edge */ font-family: "Roboto Condensed", sans-serif; font-weight: 300; }
+
 	.bg {
 		position: relative;
 		width: 100%;
@@ -17,6 +21,7 @@
 		top: 25vh;
 		width: 100%;
 		z-index: 1;
+		text-align: center;
 	}
 	form { text-align: center; }
 	input[type=text] {
