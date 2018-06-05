@@ -15,6 +15,15 @@ interface IEventAttendeesPage {
 	refreshAttendees: () => Promise<any>;
 }
 
+interface State {
+	guests: EventModel['Guests'];
+	filter: 'confirmed' | 'attending' | 'notAttending' | 'food' | null
+	attendees: Attendee[];
+	selectedAttendees: {
+		[id: string]: Attendee;
+	};
+}
+
 class EventAttendeesContainer extends React.Component<{event: EventModel}> {
 	static getInitialProps = async ({ res, query }) => {
 		const event = (!res && query && query.eventId ?
@@ -50,13 +59,15 @@ class EventAttendeesContainer extends React.Component<{event: EventModel}> {
 	}
 }
 
-class EventAttendeesPage extends React.Component<IEventAttendeesPage> {
-	state = {
+class EventAttendeesPage extends React.Component<IEventAttendeesPage, State> {
+	state: State  = {
 		guests: [],
 		filter: null,
 		attendees: [],
 		selectedAttendees: {},
 	};
+
+	download: HTMLAnchorElement;
 
 	componentDidMount() {
 		this.setFilterDisplay();
@@ -203,16 +214,49 @@ class EventAttendeesPage extends React.Component<IEventAttendeesPage> {
 				>
 					Not attending
 				</button>
-				<button
-					onClick={() => this.setFilterDisplay(this.state.filter === 'food' ? null : 'food')}
-					className={cx("uk-margin-small-right uk-button uk-button-small", {
-						'uk-button-secondary': this.state.filter === 'food',
-					})}
-				>
-					Foods
-				</button>
+				{this.props.event.dietFeedback &&
+					<button
+						onClick={() => this.setFilterDisplay(this.state.filter === 'food' ? null : 'food')}
+						className={cx("uk-margin-small-right uk-button uk-button-small", {
+							'uk-button-secondary': this.state.filter === 'food',
+						})}
+					>
+						Foods
+					</button>
+				}
 			</React.Fragment>
 		);
+	}
+
+	downloadCSV() {
+		let csvHeader = 'name,email,attending';
+		csvHeader = csvHeader + (this.props.event.dietFeedback ? ',starter,main,allergies' : '');
+		csvHeader = csvHeader + '\r\n';
+
+		const rows = this.state.guests.map(guest => {
+			const foodChoice = this.props.event.dietFeedback ?
+				(!!guest.FoodChoice ?
+					`${guest.FoodChoice.starter},${guest.FoodChoice.main},${guest.FoodChoice.allergies},` :
+					''
+				) :
+				'';
+
+			return (
+				`${(guest.firstName + ' ' + guest.lastName).trim()},` +
+				`${guest.email},` +
+				`${guest.EventAttendee.attending},` +
+				foodChoice
+			);
+		});
+
+		const data = rows.join('\r\n') + '\r\n';
+		const csvContent = 'data:text/csv;charset=utf-8,' + csvHeader + data;
+		this.download.setAttribute('href', csvContent);
+		this.download.setAttribute(
+			'download',
+			this.props.event.name.toLowerCase().split(' ').join('_') + '_guests.csv',
+		);
+		this.download.click();
 	}
 
 	render() {
@@ -227,6 +271,15 @@ class EventAttendeesPage extends React.Component<IEventAttendeesPage> {
 						onClick={this.addAttendee}
 						onChange={this.attendeeSearch}
 					/>
+				</div>
+				<div className="uk-section uk-section-xsmall uk-container uk-text-right">
+					<button
+						onClick={() => this.downloadCSV()}
+						className="uk-button uk-button-primary"
+					>
+						Download guest list
+					</button>
+					<a ref={ref => this.download = ref} style={{ display: 'none' }} />
 				</div>
 				<div className="uk-section uk-section-xsmall uk-container">
 					<CheckboxTable
