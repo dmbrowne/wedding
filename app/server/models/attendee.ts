@@ -10,7 +10,7 @@ import * as path from 'path';
 
 const { from } = mailGunVariables;
 
-interface EventWithDetailsJoin extends EventModel {
+export interface EventWithDetailsJoin extends EventModel {
 	EventAttendee?: EventAttendee;
 }
 

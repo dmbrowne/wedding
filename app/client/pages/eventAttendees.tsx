@@ -5,14 +5,23 @@ import { getEventAttendees, setEventAttendees, addEventAttendee } from '../api/e
 import withModal from '../components/withModal';
 import { withAdmin } from '../components/adminLayout';
 import cx from 'classnames';
-import Attendee from '../../server/models/attendee';
+import Attendee, { EventWithDetailsJoin } from '../../server/models/attendee';
 import EventModel from '../../server/models/event';
 import CheckboxTable from '../components/CheckboxTable';
 
 interface IEventAttendeesPage {
 	event: EventModel;
-	attendees: Attendee[];
+	attendees: EventWithDetailsJoin[];
 	refreshAttendees: () => Promise<any>;
+}
+
+interface State {
+	guests: EventModel['Guests'];
+	filter: 'confirmed' | 'attending' | 'notAttending' | 'food' | 'unconfirmed' | null;
+	attendees: Attendee[];
+	selectedAttendees: {
+		[id: string]: Attendee;
+	};
 }
 
 class EventAttendeesContainer extends React.Component<{event: EventModel}> {
@@ -50,13 +59,15 @@ class EventAttendeesContainer extends React.Component<{event: EventModel}> {
 	}
 }
 
-class EventAttendeesPage extends React.Component<IEventAttendeesPage> {
-	state = {
+class EventAttendeesPage extends React.Component<IEventAttendeesPage, State> {
+	state: State  = {
 		guests: [],
 		filter: null,
 		attendees: [],
 		selectedAttendees: {},
 	};
+
+	download: HTMLAnchorElement;
 
 	componentDidMount() {
 		this.setFilterDisplay();
@@ -143,15 +154,17 @@ class EventAttendeesPage extends React.Component<IEventAttendeesPage> {
 		);
 	}
 
-	setFilterDisplay(filter?: 'confirmed' | 'attending' | 'notAttending' | 'food' | null) {
+	setFilterDisplay(filter?: 'confirmed' | 'attending' | 'notAttending' | 'food' | 'unconfirmed' | null) {
 		this.setState({ filter });
 		this.setState({ guests: this.filterListing(filter) });
 	}
 
-	filterListing(filter?: 'confirmed' | 'attending' | 'notAttending' | 'food') {
+	filterListing(filter?: 'confirmed' | 'attending' | 'notAttending' | 'food' | 'unconfirmed') {
 		switch (filter) {
 			case 'confirmed':
 				return this.props.attendees.filter(attendee => attendee.EventAttendee.confirmed);
+			case 'unconfirmed':
+				return this.props.attendees.filter(attendee => !!attendee.EventAttendee.confirmed);
 			case 'food':
 			case 'attending':
 				return this.props.attendees.filter(attendee => attendee.EventAttendee.confirmed && attendee.EventAttendee.attending);
@@ -182,10 +195,18 @@ class EventAttendeesPage extends React.Component<IEventAttendeesPage> {
 				<button
 					onClick={() => this.setFilterDisplay(this.state.filter === 'confirmed' ? null : 'confirmed')}
 					className={cx("uk-margin-small-right uk-button uk-button-small", {
-						'uk-button-secondary': !!this.state.filter,
+						'uk-button-secondary': this.state.filter !== 'unconfirmed',
 					})}
 				>
 					Confirmed
+				</button>
+				<button
+					onClick={() => this.setFilterDisplay(this.state.filter === 'unconfirmed' ? null : 'unconfirmed')}
+					className={cx("uk-margin-small-right uk-button uk-button-small", {
+						'uk-button-secondary': this.state.filter === 'unconfirmed',
+					})}
+				>
+					Not responded
 				</button>
 				<button
 					onClick={() => this.setFilterDisplay(this.state.filter === 'attending' ? null : 'attending')}
@@ -203,19 +224,54 @@ class EventAttendeesPage extends React.Component<IEventAttendeesPage> {
 				>
 					Not attending
 				</button>
-				<button
-					onClick={() => this.setFilterDisplay(this.state.filter === 'food' ? null : 'food')}
-					className={cx("uk-margin-small-right uk-button uk-button-small", {
-						'uk-button-secondary': this.state.filter === 'food',
-					})}
-				>
-					Foods
-				</button>
+				{this.props.event.dietFeedback &&
+					<button
+						onClick={() => this.setFilterDisplay(this.state.filter === 'food' ? null : 'food')}
+						className={cx("uk-margin-small-right uk-button uk-button-small", {
+							'uk-button-secondary': this.state.filter === 'food',
+						})}
+					>
+						Foods
+					</button>
+				}
 			</React.Fragment>
 		);
 	}
 
+	downloadCSV() {
+		let csvHeader = 'name,email,attending';
+		csvHeader = csvHeader + (this.props.event.dietFeedback ? ',starter,main,allergies' : '');
+		csvHeader = csvHeader + '\r\n';
+
+		const rows = this.state.guests.map(guest => {
+			const foodChoice = this.props.event.dietFeedback ?
+				(!!guest.FoodChoice ?
+					`${guest.FoodChoice.starter},${guest.FoodChoice.main},${guest.FoodChoice.allergies},` :
+					''
+				) :
+				'';
+
+			return (
+				`${(guest.firstName + ' ' + guest.lastName).trim()},` +
+				`${guest.email},` +
+				`${guest.EventAttendee.attending},` +
+				foodChoice
+			);
+		});
+
+		const data = rows.join('\r\n') + '\r\n';
+		const csvContent = 'data:text/csv;charset=utf-8,' + csvHeader + data;
+		this.download.setAttribute('href', csvContent);
+		this.download.setAttribute(
+			'download',
+			this.props.event.name.toLowerCase().split(' ').join('_') + '_guests.csv',
+		);
+		this.download.click();
+	}
+
 	render() {
+		const attendingGuests = this.props.attendees.filter(({ EventAttendee }) => EventAttendee.attending);
+
 		return (
 			<div>
 				<h1 className="uk-container">{this.props.event.name}</h1>
@@ -227,6 +283,19 @@ class EventAttendeesPage extends React.Component<IEventAttendeesPage> {
 						onClick={this.addAttendee}
 						onChange={this.attendeeSearch}
 					/>
+				</div>
+				<div className="uk-section uk-section-xsmall uk-container uk-text-right">
+					<div className="uk-flex">
+						<h3>{this.props.attendees.length} Total guests</h3>
+						<h3 className="uk-margin-left">{attendingGuests.length} Responded and attending</h3>
+					</div>
+					<button
+						onClick={() => this.downloadCSV()}
+						className="uk-button uk-button-primary"
+					>
+						Download guest list
+					</button>
+					<a ref={ref => this.download = ref} style={{ display: 'none' }} />
 				</div>
 				<div className="uk-section uk-section-xsmall uk-container">
 					<CheckboxTable
