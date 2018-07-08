@@ -5,19 +5,19 @@ import { getEventAttendees, setEventAttendees, addEventAttendee } from '../api/e
 import withModal from '../components/withModal';
 import { withAdmin } from '../components/adminLayout';
 import cx from 'classnames';
-import Attendee from '../../server/models/attendee';
+import Attendee, { EventWithDetailsJoin } from '../../server/models/attendee';
 import EventModel from '../../server/models/event';
 import CheckboxTable from '../components/CheckboxTable';
 
 interface IEventAttendeesPage {
 	event: EventModel;
-	attendees: Attendee[];
+	attendees: EventWithDetailsJoin[];
 	refreshAttendees: () => Promise<any>;
 }
 
 interface State {
 	guests: EventModel['Guests'];
-	filter: 'confirmed' | 'attending' | 'notAttending' | 'food' | null
+	filter: 'confirmed' | 'attending' | 'notAttending' | 'food' | 'unconfirmed' | null;
 	attendees: Attendee[];
 	selectedAttendees: {
 		[id: string]: Attendee;
@@ -154,15 +154,17 @@ class EventAttendeesPage extends React.Component<IEventAttendeesPage, State> {
 		);
 	}
 
-	setFilterDisplay(filter?: 'confirmed' | 'attending' | 'notAttending' | 'food' | null) {
+	setFilterDisplay(filter?: 'confirmed' | 'attending' | 'notAttending' | 'food' | 'unconfirmed' | null) {
 		this.setState({ filter });
 		this.setState({ guests: this.filterListing(filter) });
 	}
 
-	filterListing(filter?: 'confirmed' | 'attending' | 'notAttending' | 'food') {
+	filterListing(filter?: 'confirmed' | 'attending' | 'notAttending' | 'food' | 'unconfirmed') {
 		switch (filter) {
 			case 'confirmed':
 				return this.props.attendees.filter(attendee => attendee.EventAttendee.confirmed);
+			case 'unconfirmed':
+				return this.props.attendees.filter(attendee => !!attendee.EventAttendee.confirmed);
 			case 'food':
 			case 'attending':
 				return this.props.attendees.filter(attendee => attendee.EventAttendee.confirmed && attendee.EventAttendee.attending);
@@ -193,10 +195,18 @@ class EventAttendeesPage extends React.Component<IEventAttendeesPage, State> {
 				<button
 					onClick={() => this.setFilterDisplay(this.state.filter === 'confirmed' ? null : 'confirmed')}
 					className={cx("uk-margin-small-right uk-button uk-button-small", {
-						'uk-button-secondary': !!this.state.filter,
+						'uk-button-secondary': this.state.filter !== 'unconfirmed',
 					})}
 				>
 					Confirmed
+				</button>
+				<button
+					onClick={() => this.setFilterDisplay(this.state.filter === 'unconfirmed' ? null : 'unconfirmed')}
+					className={cx("uk-margin-small-right uk-button uk-button-small", {
+						'uk-button-secondary': this.state.filter === 'unconfirmed',
+					})}
+				>
+					Not responded
 				</button>
 				<button
 					onClick={() => this.setFilterDisplay(this.state.filter === 'attending' ? null : 'attending')}
@@ -260,6 +270,8 @@ class EventAttendeesPage extends React.Component<IEventAttendeesPage, State> {
 	}
 
 	render() {
+		const attendingGuests = this.props.attendees.filter(({ EventAttendee }) => EventAttendee.attending);
+
 		return (
 			<div>
 				<h1 className="uk-container">{this.props.event.name}</h1>
@@ -273,6 +285,10 @@ class EventAttendeesPage extends React.Component<IEventAttendeesPage, State> {
 					/>
 				</div>
 				<div className="uk-section uk-section-xsmall uk-container uk-text-right">
+					<div className="uk-flex">
+						<h3>{this.props.attendees.length} Total guests</h3>
+						<h3 className="uk-margin-left">{attendingGuests.length} Responded and attending</h3>
+					</div>
 					<button
 						onClick={() => this.downloadCSV()}
 						className="uk-button uk-button-primary"
