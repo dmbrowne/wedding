@@ -304,3 +304,11 @@ export async function updateAttendeeEventAttendance(req, res) {
 			res.send({ success: true });
 		});
 }
+
+export async function updateFoodChoice(req, res) {
+	const { attendeeId } = req.params;
+	const { foodChoice } = req.body;
+	const attendee = await Attendee.findById(attendeeId);
+	await attendee.selectFood(foodChoice);
+	res.send({ success: true });
+}

@@ -3,13 +3,14 @@ import Switch from 'react-toggle-switch';
 import Link from 'next/link';
 import cx from 'classnames';
 import { withAdmin } from '../components/adminLayout';
-import { editAttendee, deleteAttendees, updateEventAttendance } from '../api/attendee';
+import { editAttendee, deleteAttendees, updateEventAttendance, updateFoodChoice } from '../api/attendee';
 import '../styles/admin.scss';
 import Router from 'next/router';
 import withModal, { ChildProps as WithModalProps } from '../components/withModal';
 import Modal from '../components/Modal';
 import Attendee from '../../server/models/attendee';
 import EventModel from '../../server/models/event';
+import FoodChoiceModel from '../../server/models/foodChoice';
 import "react-toggle-switch/dist/css/switch.min.css";
 
 interface State {
@@ -19,6 +20,7 @@ interface State {
 	events: {
 		[eventId: string]: EventModel;
 	};
+	foodChoice: FoodChoiceModel;
 	addEventsModal: boolean;
 }
 
@@ -42,12 +44,13 @@ class AttendeeEdit extends React.Component<Props, State> {
 	constructor(props) {
 		super(props);
 		if (props.attendee) {
-			const { firstName, lastName, email, Events } = props.attendee;
+			const { firstName, lastName, email, Events, FoodChoice } = props.attendee;
 			this.state = {
 				firstName,
 				lastName,
 				email,
 				events: Events.reduce((accum, event) => ({ ...accum, [event.id]: event }), {}),
+				foodChoice: {...FoodChoice},
 				addEventsModal: false,
 			};
 		}
@@ -71,6 +74,7 @@ class AttendeeEdit extends React.Component<Props, State> {
 		delete body.events;
 		editAttendee(this.props.attendee.id, body)
 			.then(() => updateEventAttendance(this.props.attendee.id, attendance))
+			.then(() => updateFoodChoice(this.props.attendee.id, this.state.foodChoice))
 			.then(() => Router.push('/admin/attendees'))
 			.catch(() => {
 				alert('Ooops, something went wrong :( \n Try again later');
@@ -140,6 +144,54 @@ class AttendeeEdit extends React.Component<Props, State> {
 				},
 			},
 		});
+	}
+
+	updateFoodSelection(dishType, value) {
+		this.setState({
+			foodChoice: {
+				...this.state.foodChoice,
+				[dishType]: value,
+			}
+		});
+	}
+
+	updateAll
+
+	foodChoiceCardContent(key) {
+		const { foodChoice } = this.state;
+		switch (key) {
+			case 'starter':
+			case 'main':
+				return (
+					<React.Fragment>
+						{['meat', 'fish'].map(dishType =>
+							<div key={dishType}>
+								<label>
+									<input
+										className="uk-radio"
+										type="radio"
+										value={dishType}
+										checked={foodChoice[key] === dishType}
+										onClick={e => this.updateFoodSelection(key, e.target.value)}
+									/>
+									{' ' + dishType}
+								</label>
+							</div>,
+						)}
+					</React.Fragment>
+				);
+			case 'allergies':
+				return (
+					<textarea
+						style={{ height: 80, resize: 'none', minHeight: 0 }}
+						className="uk-textarea"
+						value={foodChoice.allergies}
+						onChange={e => this.updateFoodSelection('allergies', e.target.value)}
+					/>
+				);
+			default:
+				return null;
+		}
 	}
 
 	render() {
@@ -227,6 +279,27 @@ class AttendeeEdit extends React.Component<Props, State> {
 						</button>
 					</div>
 				</div>
+				<div className="uk-section uk-section-small uk-section-muted uk-section-default">
+					<div className="uk-container">
+						<h2>Food selection</h2>
+						<div className="uk-grid">
+							{Object.keys(this.state.foodChoice)
+								.filter(key => key !== 'attendeeId')
+								.map(key =>
+									<div key={key} className="uk-width-1-3">
+										<div className="uk-card uk-card-small uk-card-default uk-card-body" style={{ height: 160 }}>
+											<div className="uk-card-title" style={{fontSize: '1.1rem'}}>{key}</div>
+											<div className="uk-margin-small">
+												{this.foodChoiceCardContent(key)}
+											</div>
+										</div>
+									</div>,
+								)
+							}
+						</div>
+					</div>
+				</div>
+				<hr/>
 				<div className="uk-section uk-section-small uk-container">
 					<div className="uk-clearfix">
 						<div className="uk-float-right">
