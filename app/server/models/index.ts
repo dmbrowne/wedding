@@ -12,6 +12,7 @@ import BridalParty from './bridalParty';
 import BridalPartyRoles from './bridalPartyRoles';
 import FoodChoice from './foodChoice';
 import Donation from './donation';
+import EmailTemplate from './emailTemplate';
 import sequelizeConnection from './lib/connection';
 
 interface IModels {
@@ -29,6 +30,7 @@ interface IModels {
   BridalPartyRoles: typeof BridalPartyRoles;
   FoodChoice: typeof FoodChoice;
   Donation: typeof Donation;
+  EmailTemplate: typeof EmailTemplate;
 }
 
 const modelz = [
@@ -46,6 +48,7 @@ const modelz = [
   GalleryImage,
   FoodChoice,
   Donation,
+  EmailTemplate,
 ];
 
 const dbModels = modelz.reduce((models, ModelClass) => {
