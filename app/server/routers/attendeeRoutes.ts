@@ -5,6 +5,7 @@ import {
 	createNewAttendees,
 	editAttendee,
 	deleteAttendee,
+	updateAttendeeEventAttendance,
 } from '../controllers/attendeeController';
 import { verifyUser } from '../utils/express';
 import Attendee from '../models/attendee';
@@ -29,6 +30,7 @@ router.get('/nongrouped', getNonGroupedAttendees);
 
 router.get('/new', (req: Request, res) => req.nextAppRenderer.render(req, res, '/attendeeCreate'));
 
+
 router.route('/:attendeeId')
 	.all(async (req: Request, res, next) => {
 		const attendee = await Attendee.getAttendeeWtihInvitedEvents(req.params.attendeeId);
@@ -52,5 +54,7 @@ router.route('/:attendeeId')
 	})
 	.put(editAttendee)
 	.delete(deleteAttendee);
+
+router.put('/:attendeeId/attendance', updateAttendeeEventAttendance);
 
 export default router;

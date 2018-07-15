@@ -293,3 +293,14 @@ export async function groupInvitationRsvpConfirm(req, res) {
 		})
 		.catch(e => { console.log(e); res.status(400).send({ error: e }); });
 }
+
+export async function updateAttendeeEventAttendance(req, res) {
+	const { attendeeId } = req.params;
+	const { eventAttendance } = req.body;
+	const attendee = await Attendee.findById(attendeeId);
+	attendee
+		.updateEventAttendance(models, eventAttendance, false)
+		.then(() => {
+			res.send({ success: true });
+		});
+}

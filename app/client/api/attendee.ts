@@ -57,3 +57,13 @@ export function getNonGroupedAttendees() {
 		route: `admin/attendees/nongrouped`,
 	});
 }
+
+export function updateEventAttendance(attendeeId, input: {[eventId: string]: boolean}) {
+	return restfulRequest({
+		route: `admin/attendees/${attendeeId}/attendance`,
+		method: 'PUT',
+		body: JSON.stringify({
+			eventAttendance: input,
+		}),
+	});
+}
