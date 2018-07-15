@@ -44,13 +44,18 @@ class AttendeeEdit extends React.Component<Props, State> {
 	constructor(props) {
 		super(props);
 		if (props.attendee) {
-			const { firstName, lastName, email, Events, FoodChoice } = props.attendee;
+			const { firstName, lastName, email, Events, FoodChoice, id } = props.attendee;
+			const foodChoice = !!FoodChoice && FoodChoice || {};
 			this.state = {
 				firstName,
 				lastName,
 				email,
 				events: Events.reduce((accum, event) => ({ ...accum, [event.id]: event }), {}),
-				foodChoice: {...FoodChoice},
+				foodChoice: {
+					starter: foodChoice.starter || null,
+					main: foodChoice.main || null,
+					allergies: foodChoice.allergies || '',
+				},
 				addEventsModal: false,
 			};
 		}
@@ -107,7 +112,14 @@ class AttendeeEdit extends React.Component<Props, State> {
 		this.setState({
 			events: {
 				...this.state.events,
-				[eventId]: this.props.allEvents.filter(event => event.id === eventId)[0],
+				[eventId]: {
+					...this.props.allEvents.filter(event => event.id === eventId)[0],
+					EventAttendee: {
+						attendeeId: this.props.attendee.id,
+						confirmed: false,
+						attending: false,
+					},
+				},
 			},
 		});
 	}
@@ -172,7 +184,7 @@ class AttendeeEdit extends React.Component<Props, State> {
 										type="radio"
 										value={dishType}
 										checked={foodChoice[key] === dishType}
-										onClick={e => this.updateFoodSelection(key, e.target.value)}
+										onChange={e => this.updateFoodSelection(key, e.target.value)}
 									/>
 									{' ' + dishType}
 								</label>
@@ -195,6 +207,7 @@ class AttendeeEdit extends React.Component<Props, State> {
 	}
 
 	render() {
+		console.log(this.state)
 		return (
 			<div>
 				<div className="uk-section uk-section-small">
@@ -279,26 +292,28 @@ class AttendeeEdit extends React.Component<Props, State> {
 						</button>
 					</div>
 				</div>
-				<div className="uk-section uk-section-small uk-section-muted uk-section-default">
-					<div className="uk-container">
-						<h2>Food selection</h2>
-						<div className="uk-grid">
-							{Object.keys(this.state.foodChoice)
-								.filter(key => key !== 'attendeeId')
-								.map(key =>
-									<div key={key} className="uk-width-1-3">
-										<div className="uk-card uk-card-small uk-card-default uk-card-body" style={{ height: 160 }}>
-											<div className="uk-card-title" style={{fontSize: '1.1rem'}}>{key}</div>
-											<div className="uk-margin-small">
-												{this.foodChoiceCardContent(key)}
+				{Object.keys(this.state.events).some(eventId => this.state.events[eventId].dietFeedback) &&
+					<div className="uk-section uk-section-small uk-section-muted uk-section-default">
+						<div className="uk-container">
+							<h2>Food selection</h2>
+							<div className="uk-grid">
+								{Object.keys(this.state.foodChoice)
+									.filter(key => key !== 'attendeeId')
+									.map(key =>
+										<div key={key} className="uk-width-1-3">
+											<div className="uk-card uk-card-small uk-card-default uk-card-body" style={{ height: 160 }}>
+												<div className="uk-card-title" style={{fontSize: '1.1rem'}}>{key}</div>
+												<div className="uk-margin-small">
+													{this.foodChoiceCardContent(key)}
+												</div>
 											</div>
-										</div>
-									</div>,
-								)
-							}
+										</div>,
+									)
+								}
+							</div>
 						</div>
 					</div>
-				</div>
+				}
 				<hr/>
 				<div className="uk-section uk-section-small uk-container">
 					<div className="uk-clearfix">
