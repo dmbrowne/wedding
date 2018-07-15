@@ -164,7 +164,7 @@ class EventAttendeesPage extends React.Component<IEventAttendeesPage, State> {
 			case 'confirmed':
 				return this.props.attendees.filter(attendee => attendee.EventAttendee.confirmed);
 			case 'unconfirmed':
-				return this.props.attendees.filter(attendee => !!attendee.EventAttendee.confirmed);
+				return this.props.attendees.filter(attendee => !attendee.EventAttendee.confirmed);
 			case 'food':
 			case 'attending':
 				return this.props.attendees.filter(attendee => attendee.EventAttendee.confirmed && attendee.EventAttendee.attending);
@@ -195,7 +195,7 @@ class EventAttendeesPage extends React.Component<IEventAttendeesPage, State> {
 				<button
 					onClick={() => this.setFilterDisplay(this.state.filter === 'confirmed' ? null : 'confirmed')}
 					className={cx("uk-margin-small-right uk-button uk-button-small", {
-						'uk-button-secondary': this.state.filter !== 'unconfirmed',
+						'uk-button-secondary': !!this.state.filter && this.state.filter !== 'unconfirmed',
 					})}
 				>
 					Confirmed
