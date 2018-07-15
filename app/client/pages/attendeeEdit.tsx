@@ -1,14 +1,17 @@
 import * as React from 'react';
-// import * as UIkit from 'uikit'
+import Switch from 'react-toggle-switch';
 import Link from 'next/link';
+import cx from 'classnames';
 import { withAdmin } from '../components/adminLayout';
-import { editAttendee, deleteAttendees, CreateAttendeeInput } from '../api/attendee';
+import { editAttendee, deleteAttendees, updateEventAttendance, updateFoodChoice } from '../api/attendee';
 import '../styles/admin.scss';
 import Router from 'next/router';
 import withModal, { ChildProps as WithModalProps } from '../components/withModal';
 import Modal from '../components/Modal';
 import Attendee from '../../server/models/attendee';
 import EventModel from '../../server/models/event';
+import FoodChoiceModel from '../../server/models/foodChoice';
+import "react-toggle-switch/dist/css/switch.min.css";
 
 interface State {
 	firstName: string;
@@ -17,6 +20,7 @@ interface State {
 	events: {
 		[eventId: string]: EventModel;
 	};
+	foodChoice: FoodChoiceModel;
 	addEventsModal: boolean;
 }
 
@@ -40,12 +44,18 @@ class AttendeeEdit extends React.Component<Props, State> {
 	constructor(props) {
 		super(props);
 		if (props.attendee) {
-			const { firstName, lastName, email, Events } = props.attendee;
+			const { firstName, lastName, email, Events, FoodChoice, id } = props.attendee;
+			const foodChoice = !!FoodChoice && FoodChoice || {};
 			this.state = {
 				firstName,
 				lastName,
 				email,
 				events: Events.reduce((accum, event) => ({ ...accum, [event.id]: event }), {}),
+				foodChoice: {
+					starter: foodChoice.starter || null,
+					main: foodChoice.main || null,
+					allergies: foodChoice.allergies || '',
+				},
 				addEventsModal: false,
 			};
 		}
@@ -57,9 +67,19 @@ class AttendeeEdit extends React.Component<Props, State> {
 
 	submit = () => {
 		const eventIds = Object.keys(this.state.events);
+		const attendance = Object.keys(this.state.events).reduce((accum, eventId) => {
+			const eventModel = this.state.events[eventId];
+			return {
+				...accum,
+				[eventModel.id]: eventModel.EventAttendee.attending,
+			};
+		}, {});
+
 		const body = {...this.state, eventIds };
 		delete body.events;
 		editAttendee(this.props.attendee.id, body)
+			.then(() => updateEventAttendance(this.props.attendee.id, attendance))
+			.then(() => updateFoodChoice(this.props.attendee.id, this.state.foodChoice))
 			.then(() => Router.push('/admin/attendees'))
 			.catch(() => {
 				alert('Ooops, something went wrong :( \n Try again later');
@@ -92,7 +112,14 @@ class AttendeeEdit extends React.Component<Props, State> {
 		this.setState({
 			events: {
 				...this.state.events,
-				[eventId]: this.props.allEvents.filter(event => event.id === eventId)[0],
+				[eventId]: {
+					...this.props.allEvents.filter(event => event.id === eventId)[0],
+					EventAttendee: {
+						attendeeId: this.props.attendee.id,
+						confirmed: false,
+						attending: false,
+					},
+				},
 			},
 		});
 	}
@@ -116,7 +143,71 @@ class AttendeeEdit extends React.Component<Props, State> {
 		);
 	}
 
+	toggleEventAttendance(eventModel) {
+		this.setState({
+			events: {
+				...this.state.events,
+				[eventModel.id]: {
+					...eventModel,
+					EventAttendee: {
+						...eventModel.EventAttendee,
+						attending: !eventModel.EventAttendee.attending,
+					},
+				},
+			},
+		});
+	}
+
+	updateFoodSelection(dishType, value) {
+		this.setState({
+			foodChoice: {
+				...this.state.foodChoice,
+				[dishType]: value,
+			}
+		});
+	}
+
+	updateAll
+
+	foodChoiceCardContent(key) {
+		const { foodChoice } = this.state;
+		switch (key) {
+			case 'starter':
+			case 'main':
+				return (
+					<React.Fragment>
+						{['meat', 'fish'].map(dishType =>
+							<div key={dishType}>
+								<label>
+									<input
+										className="uk-radio"
+										type="radio"
+										value={dishType}
+										checked={foodChoice[key] === dishType}
+										onChange={e => this.updateFoodSelection(key, e.target.value)}
+									/>
+									{' ' + dishType}
+								</label>
+							</div>,
+						)}
+					</React.Fragment>
+				);
+			case 'allergies':
+				return (
+					<textarea
+						style={{ height: 80, resize: 'none', minHeight: 0 }}
+						className="uk-textarea"
+						value={foodChoice.allergies}
+						onChange={e => this.updateFoodSelection('allergies', e.target.value)}
+					/>
+				);
+			default:
+				return null;
+		}
+	}
+
 	render() {
+		console.log(this.state)
 		return (
 			<div>
 				<div className="uk-section uk-section-small">
@@ -166,6 +257,21 @@ class AttendeeEdit extends React.Component<Props, State> {
 										<div key={event.id} className="uk-width-1-3@s uk-width-1-4@m">
 											<div className="uk-card uk-card-small uk-card-default uk-card-body">
 												<div className="uk-card-title" style={{fontSize: '1.1rem'}}>{event.name}</div>
+												<div className="uk-margin-small">
+													<small
+														style={{ padding: '3px 10px', display: 'inline-block', borderRadius: 15 }}
+														className={cx({
+															'uk-alert-primary': !event.EventAttendee.confirmed,
+															'uk-alert-success': event.EventAttendee.confirmed,
+														})}
+													>
+														{event.EventAttendee.confirmed ? 'Responded' : 'Not responded'}
+													</small>
+												</div>
+												<Switch
+													onClick={() => this.toggleEventAttendance(event)}
+													on={event.EventAttendee.attending}
+												/>
 												<i
 													className="material-icons uk-float-right"
 													onClick={() => this.removeEvent(event.id)}
@@ -186,6 +292,29 @@ class AttendeeEdit extends React.Component<Props, State> {
 						</button>
 					</div>
 				</div>
+				{Object.keys(this.state.events).some(eventId => this.state.events[eventId].dietFeedback) &&
+					<div className="uk-section uk-section-small uk-section-muted uk-section-default">
+						<div className="uk-container">
+							<h2>Food selection</h2>
+							<div className="uk-grid">
+								{Object.keys(this.state.foodChoice)
+									.filter(key => key !== 'attendeeId')
+									.map(key =>
+										<div key={key} className="uk-width-1-3">
+											<div className="uk-card uk-card-small uk-card-default uk-card-body" style={{ height: 160 }}>
+												<div className="uk-card-title" style={{fontSize: '1.1rem'}}>{key}</div>
+												<div className="uk-margin-small">
+													{this.foodChoiceCardContent(key)}
+												</div>
+											</div>
+										</div>,
+									)
+								}
+							</div>
+						</div>
+					</div>
+				}
+				<hr/>
 				<div className="uk-section uk-section-small uk-container">
 					<div className="uk-clearfix">
 						<div className="uk-float-right">
@@ -195,7 +324,7 @@ class AttendeeEdit extends React.Component<Props, State> {
 							<div onClick={this.submit} className="uk-margin-left uk-button uk-button-primary">Save</div>
 						</div>
 					</div>
-					<div className="uk-alert-danger uk-padding-small uk-clearfix uk-margin">
+					<div className="uk-padding-small uk-clearfix uk-margin">
 						<div className="uk-float-right">
 							<div onClick={this.confirmDelete} className="uk-float-right uk-button uk-text-danger uk-button-text">Delete</div>
 						</div>
