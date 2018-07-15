@@ -57,3 +57,27 @@ export function getNonGroupedAttendees() {
 		route: `admin/attendees/nongrouped`,
 	});
 }
+
+export function updateEventAttendance(attendeeId, input: {[eventId: string]: boolean}) {
+	return restfulRequest({
+		route: `admin/attendees/${attendeeId}/attendance`,
+		method: 'PUT',
+		body: JSON.stringify({
+			eventAttendance: input,
+		}),
+	});
+}
+
+export function updateFoodChoice(attendeeId, input: {starter: string; main: string; allergies: string; }) {
+	return restfulRequest({
+		route: `admin/attendees/${attendeeId}/foodchoices`,
+		method: 'PUT',
+		body: JSON.stringify({
+			foodChoice: {
+				starter: input.starter,
+				main: input.main,
+				allergies: input.allergies,
+			},
+		}),
+	});
+}
