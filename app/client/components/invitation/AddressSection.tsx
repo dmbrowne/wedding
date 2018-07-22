@@ -4,11 +4,11 @@ import OrnateDivider from '../icons/OrnateDivider';
 import LinearOrnament from '../icons/LinearOrnament';
 import CornerOrnamantSwirl from '../icons/CornerOrnamentSwirl';
 import FloralSwirl from '../icons/FloralSwirl';
-import moment from 'moment';
+import moment from 'moment-timezone';
 
 const LocationAddress = event => (
 	<address>
-		<p className="date" style={{ margin: '30px 0' }}>{moment(event.startTime).format('Do MMMM YYYY')}</p>
+		<p className="date" style={{ margin: '30px 0' }}>{moment(event.startTime).tz("Europe/London").format('Do MMMM YYYY')}</p>
 		<p><span className="venue-name">{event.venueName}</span></p>
 		<p style={{whiteSpace: 'pre-line'}}>{event.address}</p>
 		{event.mapsLink && <a href={event.mapsLink} target="_blank">
@@ -30,7 +30,7 @@ const CeremonySection = ({weddingBreakfast, ...event}) => (
 			<LinearOrnament colour="#e0b278" />
 		</div>
 		<time>
-			Please arrive by: <span>{moment(event.entryTime).format('h:mm a')}</span>
+			Please arrive by: <span>{moment(event.entryTime).tz("Europe/London").format('h:mm a')}</span>
 		</time>
 		{!!weddingBreakfast && (
 			<p className="transport-info">
@@ -62,14 +62,14 @@ const ReceptionSection = ({weddingBreakfast, ...event}) => {
 				{!!weddingBreakfast ?
 					<React.Fragment>
 						<time>
-							Wedding breakfast starts from: <span>{moment(weddingBreakfast.startTime).format('h:mm a')}</span>
+							Wedding breakfast starts from: <span>{moment(weddingBreakfast.startTime).tz("Europe/London").format('h:mm a')}</span>
 						</time>
 						<time>
-							Reception starts from: <span>{moment(event.startTime).format('h:mm a')}</span>
+							Reception starts from: <span>{moment(event.startTime).tz("Europe/London").format('h:mm a')}</span>
 						</time>
 					</React.Fragment> :
 					<time>
-						Starts from: <span>{moment(event.startTime).format('h:mm a')}</span>
+						Starts from: <span>{moment(event.startTime).tz("Europe/London").format('h:mm a')}</span>
 					</time>
 				}
 			</div>
