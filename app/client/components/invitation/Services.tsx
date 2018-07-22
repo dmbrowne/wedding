@@ -1,5 +1,5 @@
 import './services.scss';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import Event from '../../../server/models/event';
 
 export default function Services(props: { events: Event[] }) {
@@ -20,9 +20,9 @@ export default function Services(props: { events: Event[] }) {
 							<div className="event-box">
 								<h2 className="event-title"><span>{occurence.name}</span></h2>
 								<div className="details">
-									<span className="day">{startDate.format('dddd')}</span>
-									<span className="date">{startDate.format('MMMM D YYYY')}</span>
-									<span className="time">{startDate.format('hh:mm a')}</span>
+									<span className="day">{startDate.tz("Europe/London").format('dddd')}</span>
+									<span className="date">{startDate.tz("Europe/London").format('MMMM D YYYY')}</span>
+									<span className="time">{startDate.tz("Europe/London").format('hh:mm a')}</span>
 								</div>
 								<p>{occurence.description}</p>
 							</div>
