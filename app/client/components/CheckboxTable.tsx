@@ -45,10 +45,11 @@ class DataItemListing extends React.Component<InternalProps, State> {
 		const newSelectedState = (idOverride ?
 			{
 				...this.state.selected,
-				...(isArray(idOverride) ?
-					idOverride.reduce((accum, id) => ({ ...accum, [id]: checked }), {}) :
-					{ [idOverride]: checked }
-				),
+				...(
+					isArray(idOverride) ?
+						idOverride.reduce((accum, id) => ({ ...accum, [id]: checked }), {}) :
+						{ [idOverride]: checked }
+					),
 			} :
 			{
 				...this.state.selected,
