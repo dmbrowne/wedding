@@ -26,32 +26,45 @@ interface State {
 
 class EventAttendeesContainer extends React.Component<{event: EventModel}> {
 	static getInitialProps = async ({ res, query }) => {
-		const event = (!res && query && query.eventId ?
+		const { singles, grouped, event } = (!res && query && query.eventId ?
 			await getEventAttendees(query.eventId) :
-			res.locals.event
+			res.locals
 		);
 
-		return { event };
+		return { singles, grouped, event };
 	}
 
 	state = {
+		event: {},
 		guests: [],
 	};
 
 	componentWillMount() {
-		this.setState({ guests: this.props.event.Guests });
+		this.setState({
+			guests: this.concatGroupsAndSingles(this.props.grouped, this.props.singles),
+			event: this.props.event,
+		});
 	}
 
-	refreshGuestlist = () => {
-		return getEventAttendees(this.props.url.query.eventId).then(event => {
-			this.setState({ guests: event.Guests });
-		});
+	concatGroupsAndSingles(grouped, singles) {
+		return [
+			...Object.keys(singles).map(attendeeId => singles[attendeeId]),
+			...Object.keys(grouped).map(groupId => ({
+				...grouped[groupId],
+				grouped: true,
+			})),
+		];
+	}
+	refreshGuestlist = async () => {
+		const { singles, grouped, event } = await getEventAttendees(this.props.url.query.eventId);
+		const guests = this.concatGroupsAndSingles(grouped, singles);
+		this.setState({ event, guests });
 	}
 
 	render() {
 		return (
 			<EventAttendeesPage
-				event={this.props.event}
+				event={this.state.event}
 				attendees={this.state.guests}
 				refreshAttendees={this.refreshGuestlist}
 			/>
@@ -88,9 +101,9 @@ class EventAttendeesPage extends React.Component<IEventAttendeesPage, State> {
 		await this.props.refreshAttendees();
 	}
 
-	removeAttendees = (attendeeIds: string[]) => {
-		const attendeesStillInvitedToEvent = this.props.attendees.reduce((guests, attendee) => {
-			return attendeeIds.indexOf(attendee.id) >= 0 ? guests : [...guests, attendee.id];
+	removeAttendees = (attendeeIdsToRemove: string[]) => {
+		const attendeesStillInvitedToEvent = this.props.event.Guests.reduce((guestIds, guest) => {
+			return attendeeIdsToRemove.includes(guest.id) ? guestIds : [...guestIds, guest.id];
 		}, [] as string[]);
 
 		setEventAttendees(this.props.event.id, attendeesStillInvitedToEvent)
@@ -122,11 +135,25 @@ class EventAttendeesPage extends React.Component<IEventAttendeesPage, State> {
 		);
 	}
 
-	renderRow = (guest, onCheckboxTick, itemIsChecked) => {
+	renderRow = (guest, ...args) => {
+		if (guest.grouped) {
+			return this.renderGroupedRow(guest, ...args);
+		} else {
+			return this.renderSingleAttendeeRow(guest, ...args);
+		}
+	}
+
+	renderSingleAttendeeRow = (guest, onCheckboxTick, itemIsChecked) => {
 		const food = guest.FoodChoice;
 		return (
-			<tr key={guest.id}>
-				<td>{guest.firstName} {guest.lastName}</td>
+			<tr
+				key={guest.id}
+				style={{
+					fontSize: (!onCheckboxTick ? '0.8em' : '1em'),
+					backgroundColor: (!!itemIsChecked ? 'lightyellow' : 'transparent'),
+				}}
+			>
+				<td style={{ paddingLeft: (!onCheckboxTick ? 15 : 0) }} >{guest.firstName} {guest.lastName}</td>
 				<td>{guest.email}</td>
 				{this.state.filter === 'food' ?
 					(
@@ -142,15 +169,48 @@ class EventAttendeesPage extends React.Component<IEventAttendeesPage, State> {
 						</React.Fragment>
 					)
 				}
-				<td>
-					<input
-						type="checkbox"
-						className="uk-checkbox"
-						checked={itemIsChecked}
-						onChange={(e) => onCheckboxTick(e)}
-					/>
-				</td>
+				{!!onCheckboxTick ? (
+					<td>
+						<input
+							type="checkbox"
+							className="uk-checkbox"
+							checked={itemIsChecked}
+							onChange={(e) => onCheckboxTick(e)}
+						/>
+					</td>
+				) : <td/>}
 			</tr>
+		);
+	}
+
+	renderGroupedRow = (group, onCheckboxTick, _, selectedItems) => {
+		const { attendees: attendeesById } = group;
+		const atLeastOneAttendeeSelected = Object.keys(attendeesById).some(attendeeId => selectedItems.includes(attendeeId));
+		const attendees = Object.keys(attendeesById).map(attendeeId => attendeesById[attendeeId]);
+		return (
+			<React.Fragment key={group.id}>
+				<tr
+					style={{
+						backgroundColor: (!!atLeastOneAttendeeSelected ? 'lightyellow' : 'transparent'),
+					}}
+				>
+					<td>{group.name}</td>
+					<td/>
+					<td/>
+					<td/>
+					<td>
+						<input
+							type="checkbox"
+							className="uk-checkbox"
+							checked={atLeastOneAttendeeSelected}
+							onChange={(e) => onCheckboxTick(e, Object.keys(attendeesById))}
+						/>
+					</td>
+				</tr>
+				{attendees.map(attendee =>
+					this.renderSingleAttendeeRow(attendee, null, selectedItems.includes(attendee.id)),
+				)}
+			</React.Fragment>
 		);
 	}
 
@@ -160,31 +220,40 @@ class EventAttendeesPage extends React.Component<IEventAttendeesPage, State> {
 	}
 
 	filterListing(filter?: 'confirmed' | 'attending' | 'notAttending' | 'food' | 'unconfirmed') {
-		switch (filter) {
-			case 'confirmed':
-				return this.props.attendees.filter(attendee => attendee.EventAttendee.confirmed);
-			case 'unconfirmed':
-				return this.props.attendees.filter(attendee => !attendee.EventAttendee.confirmed);
-			case 'food':
-			case 'attending':
-				return this.props.attendees.filter(attendee => attendee.EventAttendee.confirmed && attendee.EventAttendee.attending);
-			case 'notAttending':
-				return this.props.attendees.filter(attendee => attendee.EventAttendee.confirmed && !attendee.EventAttendee.attending);
-			default:
-				return this.props.attendees;
+		filter = filter === 'food' ? 'attending' : filter;
+		if (!filter) {
+			return this.props.attendees;
 		}
+	
+		return this.props.attendees.filter(attendeeOrGroup => {
+			if (attendeeOrGroup.grouped) {
+				return !attendeeOrGroup.attendees.every(attendee => !attendee.EventAttendee[filter]);
+			} else {
+				return attendeeOrGroup.EventAttendee[filter];
+			}
+		});
 	}
 
 	downloadCurrentListView() {
-		const rows = this.state.guests.map(guest => {
-			const row = [
-				guest.firstName + '' + guest.lastName,
-				guest.EventAttendee.attending,
-				guest.FoodChoice && guest.FoodChoice.starter || '-',
-				guest.FoodChoice && guest.FoodChoice.main || '-',
+		const allGuests = this.state.guests.reduce((accum, {grouped, guest}) => {
+			const group = (grouped ? guest : undefined);
+			return [
+				...accum,
+				...(grouped ? group.attendees : [guest]),
 			];
-			return row.join(',');
-		});
+		}, []);
+		const rows = this.props.event.Guests
+			.filter(guest => guest.EventAttendee.attending)
+			.map(guest => {
+				const row = [
+					guest.firstName + '' + guest.lastName,
+					guest.EventAttendee.attending,
+					guest.FoodChoice && guest.FoodChoice.starter || '-',
+					guest.FoodChoice && guest.FoodChoice.main || '-',
+				];
+				return row.join(',');
+			});
+
 		const csvContent = encodeURI("data:text/csv;charset=utf-8," + rows.map(row => row + "\r\n").join(''));
 		this.setState({ csvContent });
 	}
@@ -270,7 +339,8 @@ class EventAttendeesPage extends React.Component<IEventAttendeesPage, State> {
 	}
 
 	render() {
-		const attendingGuests = this.props.attendees.filter(({ EventAttendee }) => EventAttendee.attending);
+		const { Guests: guests } = this.props.event;
+		const attendingGuests = guests.filter(({ EventAttendee }) => EventAttendee.attending);
 
 		return (
 			<div>
@@ -286,8 +356,8 @@ class EventAttendeesPage extends React.Component<IEventAttendeesPage, State> {
 				</div>
 				<div className="uk-section uk-section-xsmall uk-container uk-text-right">
 					<div className="uk-flex">
-						<h3>{this.props.attendees.length} Total guests</h3>
-						<h3 className="uk-margin-left">{attendingGuests.length} Responded and attending</h3>
+						<h3>{guests.length} Total guests</h3>
+						<h3 className="uk-margin-left">{attendingGuests.length} Attending</h3>
 					</div>
 					<button
 						onClick={() => this.downloadCSV()}
