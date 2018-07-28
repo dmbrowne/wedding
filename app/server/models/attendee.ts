@@ -142,17 +142,17 @@ export default class Attendee extends Model {
 	getCampaigns: BelongsToManyGetAssociationsMixin<Campaign>;
 	setFoodChoice: BelongsToSetAssociationMixin<FoodChoice, FoodChoice['attendeeId']>;
 
-	updateEventAttendance = (models, rsvps: {[eventId: string]: boolean }, confirmed = true) => {
+	updateEventAttendance = (models, rsvps: {[eventId: string]: boolean }, confirmed?) => {
 		return Promise.all(
 			Object.keys(rsvps).map(eventId => {
-				return EventAttendee.update({
-					confirmed,
-					attending: rsvps[eventId],
-				}, {
-					where: {
-						attendeeId: this.id,
-						eventId,
-					},
+				return EventAttendee.findOne({
+					where: { attendeeId: this.id, eventId },
+				})
+				.then(eventAttendee => {
+					return eventAttendee.update({
+						attending: rsvps[eventId],
+						confirmed: typeof confirmed === 'undefined' ? eventAttendee.getDataValue('confirmed') : confirmed,
+					});
 				});
 			}),
 		);
