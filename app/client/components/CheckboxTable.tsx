@@ -1,6 +1,7 @@
 import './checkboxTable.scss';
 import * as React from 'react';
 import withModal, { ChildProps } from './withModal';
+import { isArray } from 'util';
 
 interface RowItem {
 	id: string;
@@ -39,12 +40,21 @@ class DataItemListing extends React.Component<InternalProps, State> {
 		filterSearchTerms: '',
 	};
 
-	onCheckboxClick(itemId: string, e) {
+	onCheckboxClick(itemId: string, e, idOverride) {
 		const { checked } = e.target;
-		const newSelectedState = {
-			...this.state.selected,
-			[itemId]: checked,
-		};
+		const newSelectedState = (idOverride ?
+			{
+				...this.state.selected,
+				...(isArray(idOverride) ?
+					idOverride.reduce((accum, id) => ({ ...accum, [id]: checked }), {}) :
+					{ [idOverride]: checked }
+				),
+			} :
+			{
+				...this.state.selected,
+				[itemId]: checked,
+			}
+		);
 
 		if (this.props.onSelect) {
 			this.props.onSelect(newSelectedState);
@@ -83,7 +93,8 @@ class DataItemListing extends React.Component<InternalProps, State> {
 
 	renderRow = (item, ...args) => {
 		const itemIsChecked = this.state.selected[item.id] || false;
-		return this.props.renderRow(item, this.onCheckboxClick.bind(this, item.id), itemIsChecked, ...args);
+		const selectedItems = Object.keys(this.state.selected).filter(itemId => this.state.selected[itemId]);
+		return this.props.renderRow(item, this.onCheckboxClick.bind(this, item.id), itemIsChecked, selectedItems, ...args);
 	}
 
 	exitBulkMode = () => {
