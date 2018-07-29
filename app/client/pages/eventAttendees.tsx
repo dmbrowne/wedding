@@ -53,7 +53,19 @@ class EventAttendeesContainer extends React.Component<{event: EventModel}> {
 				...grouped[groupId],
 				grouped: true,
 			})),
-		];
+		].sort((a, b) => {
+			const nameA = a.grouped ? a.name : a.firstName; // ignore upper and lowercase
+			const nameB = b.grouped ? b.name : b.firstName; // ignore upper and lowercase
+
+			if (nameA < nameB) {
+				return -1;
+			}
+			if (nameA > nameB) {
+				return 1;
+			}
+			// names must be equal
+			return 0;
+		});
 	}
 	refreshGuestlist = async () => {
 		const { singles, grouped, event } = await getEventAttendees(this.props.url.query.eventId);
@@ -153,8 +165,9 @@ class EventAttendeesPage extends React.Component<IEventAttendeesPage, State> {
 					backgroundColor: (!!itemIsChecked ? 'lightyellow' : 'transparent'),
 				}}
 			>
-				<td style={{ paddingLeft: (!onCheckboxTick ? 15 : 0) }} >{guest.firstName} {guest.lastName}</td>
-				<td>{guest.email}</td>
+				{!!onCheckboxTick && <td>{guest.firstName} {guest.lastName}</td>}
+				<td>{!!onCheckboxTick && guest.email}</td>
+				{!onCheckboxTick && <td style={{ paddingLeft: 15 }} >{guest.firstName} {guest.lastName}</td>}
 				{this.state.filter === 'food' ?
 					(
 						<React.Fragment>
@@ -194,8 +207,11 @@ class EventAttendeesPage extends React.Component<IEventAttendeesPage, State> {
 						backgroundColor: (!!atLeastOneAttendeeSelected ? 'lightyellow' : 'transparent'),
 					}}
 				>
-					<td>{group.name}</td>
-					<td/>
+					<td>
+						<i style={{ verticalAlign: 'middle', fontSize: '0.9em', marginRight: 10 }} className="material-icons">group</i>
+						{group.name}
+					</td>
+					<td>{group.email}</td>
 					<td/>
 					<td/>
 					<td>
