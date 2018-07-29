@@ -122,6 +122,47 @@ export default class Attendee extends Model {
 
 	static invitationUrl = (attendeeId) => invitationUrlPrefix + '/' + attendeeId;
 
+	static separateSingleAndGroupedAttendees(attendees) {
+		const { grouped, singles } = attendees.reduce((accum, attendee) => {
+			const newAttendees = (attendee.sendGroupId ?
+				{[attendee.sendGroupId]: {
+					...accum.grouped[attendee.sendGroupId],
+					[attendee.id]: attendee,
+				}} :
+				{[attendee.id]: attendee}
+			);
+
+			return {
+				grouped: {
+					...accum.grouped,
+					...(attendee.sendGroupId ? newAttendees : {}),
+				},
+				singles: {
+					...accum.singles,
+					...(!attendee.sendGroupId ? newAttendees : {}),
+				},
+			};
+		}, { grouped: {}, singles: {} });
+
+		const updatedGroupIds = Object.keys(grouped).filter(groupId => {
+			const attendeeIds = Object.keys(grouped[groupId]);
+			if (attendeeIds.length === 1) {
+				singles[attendeeIds[0]] = attendeeIds[attendeeIds[0]];
+				return false;
+			}
+			return true;
+		});
+		const updatedGroups = updatedGroupIds.reduce((accum, groupId) => ({
+			...accum,
+			[groupId]: grouped[groupId],
+		}), {});
+
+		return {
+			grouped: updatedGroups,
+			singles,
+		};
+	}
+
 	id: string;
 	email: string;
 	firstName: string;
@@ -142,17 +183,17 @@ export default class Attendee extends Model {
 	getCampaigns: BelongsToManyGetAssociationsMixin<Campaign>;
 	setFoodChoice: BelongsToSetAssociationMixin<FoodChoice, FoodChoice['attendeeId']>;
 
-	updateEventAttendance = (models, rsvps: {[eventId: string]: boolean }, confirmed = true) => {
+	updateEventAttendance = (models, rsvps: {[eventId: string]: boolean }, confirmed?) => {
 		return Promise.all(
 			Object.keys(rsvps).map(eventId => {
-				return EventAttendee.update({
-					confirmed,
-					attending: rsvps[eventId],
-				}, {
-					where: {
-						attendeeId: this.id,
-						eventId,
-					},
+				return EventAttendee.findOne({
+					where: { attendeeId: this.id, eventId },
+				})
+				.then(eventAttendee => {
+					return eventAttendee.update({
+						attending: rsvps[eventId],
+						confirmed: typeof confirmed === 'undefined' ? eventAttendee.getDataValue('confirmed') : confirmed,
+					});
 				});
 			}),
 		);
@@ -193,16 +234,16 @@ export default class Attendee extends Model {
 			from,
 			subject: 'We\'ve recieved your response',
 			html: `
-<img width="150" src="cid:y&d-logo.png" />
-<h1>Thank you for your response</h1>
-<p>Hi ${name}</p>
-<p>${attending ? attendingMsg : unattendingMsg}</p>
-<br/>
-<p>
-Daryl & Yasmin<br/>
-xx
-</p>
-`,
+				<img width="150" src="cid:y&d-logo.png" />
+				<h1>Thank you for your response</h1>
+				<p>Hi ${name}</p>
+				<p>${attending ? attendingMsg : unattendingMsg}</p>
+				<br/>
+				<p>
+				Daryl & Yasmin<br/>
+				xx
+				</p>
+			`,
 		};
 
 		return new Promise((resolve, reject) => {

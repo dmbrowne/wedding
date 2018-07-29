@@ -4,6 +4,7 @@ import { NextAppRequest } from '../types';
 import { getDesiredValuesFromRequestBody } from '../utils';
 import Attendee from '../models/attendee';
 import FoodChoice from '../models/foodChoice';
+import SendGroup from '../models/sendGroup';
 
 export function getAllEvents(req: NextAppRequest, res: Response) {
 	models.Event.findAll({
@@ -129,23 +130,43 @@ export function deleteEvent(req: NextAppRequest, res: Response) {
 export function getEventAttendees(req: NextAppRequest, res: Response, next: NextFunction) {
 	const { eventId } = req.params;
 
-	models.Event.findById(eventId, {
-		order: [
-			[{ model: Attendee, as: 'Guests' }, 'firstName', 'ASC'],
-		],
-		include: [{
-			model: models.Attendee,
-			as: 'Guests',
+	Promise.all([
+		SendGroup.findAll(),
+		models.Event.findById(eventId, {
+			order: [
+				[{ model: Attendee, as: 'Guests' }, 'firstName', 'ASC'],
+			],
 			include: [{
-				model: FoodChoice,
+				model: models.Attendee,
+				as: 'Guests',
+				include: [
+					{ model: FoodChoice },
+					{ model: SendGroup },
+				],
 			}],
-		}],
-	}).then(event => {
+		}),
+	])
+	.then(([sendGroups, event]) => {
+		const sendgroups = sendGroups.reduce((accum, sendgroup) => ({
+			...accum,
+			[sendgroup.getDataValue('id')]: sendgroup.toJSON(),
+		}), {});
+		const { grouped, singles } = Attendee.separateSingleAndGroupedAttendees(event.Guests);
+		const groupsWithSendGroupData = Object.keys(grouped).map(groupId => ({
+				...sendgroups[groupId],
+				attendees: grouped[groupId],
+		}));
 		if (req.xhr) {
-			res.send(event);
+			res.send({
+				event,
+				grouped: groupsWithSendGroupData,
+				singles,
+			});
 			return;
 		}
 		res.locals.event = event;
+		res.locals.grouped = groupsWithSendGroupData;
+		res.locals.singles = singles;
 		req.nextAppRenderer.render(req, res, '/eventAttendees', {
 			eventId,
 		});

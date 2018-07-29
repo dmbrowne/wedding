@@ -259,7 +259,7 @@ export async function singleInvitationRsvpConfirm(req, res) {
 	}
 	await Promise.all([
 		rsvp.foodChoices ? attendee.selectFood(rsvp.foodChoices) : Promise.resolve(),
-		attendee.updateEventAttendance(models, rsvp.events),
+		attendee.updateEventAttendance(models, rsvp.events, true),
 	])
 	.catch(e => res.status(400).send({ error: e }));
 	res.send({ success: 'ok' });
@@ -283,7 +283,7 @@ export async function groupInvitationRsvpConfirm(req, res) {
 		}
 		return Promise.all([
 			(attendeeRsvp.foodChoices ? attendee.selectFood(attendeeRsvp.foodChoices) : Promise.resolve()),
-			attendee.updateEventAttendance(models, attendeeRsvp.events),
+			attendee.updateEventAttendance(models, attendeeRsvp.events, true),
 		]);
 	});
 	Promise.all(foodAndEventUpdates)
@@ -299,7 +299,7 @@ export async function updateAttendeeEventAttendance(req, res) {
 	const { eventAttendance } = req.body;
 	const attendee = await Attendee.findById(attendeeId);
 	attendee
-		.updateEventAttendance(models, eventAttendance, false)
+		.updateEventAttendance(models, eventAttendance)
 		.then(() => {
 			res.send({ success: true });
 		});
