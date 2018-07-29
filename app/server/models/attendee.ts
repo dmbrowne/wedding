@@ -147,7 +147,7 @@ export default class Attendee extends Model {
 		const updatedGroupIds = Object.keys(grouped).filter(groupId => {
 			const attendeeIds = Object.keys(grouped[groupId]);
 			if (attendeeIds.length === 1) {
-				singles[attendeeIds[0]] = attendeeIds[attendeeIds[0]];
+				singles[attendeeIds[0]] = grouped[groupId][attendeeIds[0]];
 				return false;
 			}
 			return true;

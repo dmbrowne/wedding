@@ -129,7 +129,7 @@ export function deleteEvent(req: NextAppRequest, res: Response) {
 
 export function getEventAttendees(req: NextAppRequest, res: Response, next: NextFunction) {
 	const { eventId } = req.params;
-
+	
 	Promise.all([
 		SendGroup.findAll(),
 		models.Event.findById(eventId, {
@@ -152,10 +152,13 @@ export function getEventAttendees(req: NextAppRequest, res: Response, next: Next
 			[sendgroup.getDataValue('id')]: sendgroup.toJSON(),
 		}), {});
 		const { grouped, singles } = Attendee.separateSingleAndGroupedAttendees(event.Guests);
-		const groupsWithSendGroupData = Object.keys(grouped).map(groupId => ({
+		const groupsWithSendGroupData = Object.keys(grouped).reduce((accum, groupId) => ({
+			...accum,
+			[groupId]: {
 				...sendgroups[groupId],
 				attendees: grouped[groupId],
-		}));
+			},
+		}), {});
 		if (req.xhr) {
 			res.send({
 				event,
