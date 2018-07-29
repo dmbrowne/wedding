@@ -220,18 +220,55 @@ class EventAttendeesPage extends React.Component<IEventAttendeesPage, State> {
 	}
 
 	filterListing(filter?: 'confirmed' | 'attending' | 'notAttending' | 'food' | 'unconfirmed') {
-		filter = filter === 'food' ? 'attending' : filter;
-		if (!filter) {
-			return this.props.attendees;
+		switch (filter) {
+			case 'confirmed':
+				return this.props.attendees.filter(attendeeOrGroup => {
+					if (attendeeOrGroup.grouped) {
+						return !Object.keys(attendeeOrGroup.attendees).every(attendeeId => {
+							const attendee = attendeeOrGroup.attendees[attendeeId];
+							return !attendee.EventAttendee.confirmed;
+						});
+					} else {
+						return attendeeOrGroup.EventAttendee.confirmed;
+					}
+				});
+			case 'unconfirmed':
+				return this.props.attendees.filter(attendeeOrGroup => {
+					if (attendeeOrGroup.grouped) {
+						return !Object.keys(attendeeOrGroup.attendees).every(attendeeId => {
+							const attendee = attendeeOrGroup.attendees[attendeeId];
+							return attendee.EventAttendee.confirmed;
+						});
+					} else {
+						return !attendeeOrGroup.EventAttendee.confirmed;
+					}
+				});
+			case 'food':
+			case 'attending':
+				return this.props.attendees.filter(attendeeOrGroup => {
+					if (attendeeOrGroup.grouped) {
+						return Object.keys(attendeeOrGroup.attendees).every(attendeeId => {
+							const attendee = attendeeOrGroup.attendees[attendeeId];
+							return attendee.EventAttendee.attending;
+						});
+					} else {
+						return attendeeOrGroup.EventAttendee.attending;
+					}
+				});
+			case 'notAttending':
+				return this.props.attendees.filter(attendeeOrGroup => {
+					if (attendeeOrGroup.grouped) {
+						return Object.keys(attendeeOrGroup.attendees).every(attendeeId => {
+							const attendee = attendeeOrGroup.attendees[attendeeId];
+							return !attendee.EventAttendee.attending;
+						});
+					} else {
+						return !attendeeOrGroup.EventAttendee.attending;
+					}
+				});
+			default:
+				return this.props.attendees;
 		}
-	
-		return this.props.attendees.filter(attendeeOrGroup => {
-			if (attendeeOrGroup.grouped) {
-				return !attendeeOrGroup.attendees.every(attendee => !attendee.EventAttendee[filter]);
-			} else {
-				return attendeeOrGroup.EventAttendee[filter];
-			}
-		});
 	}
 
 	downloadCurrentListView() {
@@ -264,7 +301,7 @@ class EventAttendeesPage extends React.Component<IEventAttendeesPage, State> {
 				<button
 					onClick={() => this.setFilterDisplay(this.state.filter === 'confirmed' ? null : 'confirmed')}
 					className={cx("uk-margin-small-right uk-button uk-button-small", {
-						'uk-button-secondary': !!this.state.filter && this.state.filter !== 'unconfirmed',
+						'uk-button-secondary': this.state.filter === 'confirmed',
 					})}
 				>
 					Confirmed
