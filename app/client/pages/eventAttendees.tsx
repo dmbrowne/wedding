@@ -295,7 +295,7 @@ class EventAttendeesPage extends React.Component<IEventAttendeesPage, State> {
 				...(grouped ? group.attendees : [guest]),
 			];
 		}, []);
-		const rows = this.props.event.Guests
+		const rows = allGuests
 			.filter(guest => guest.EventAttendee.attending)
 			.map(guest => {
 				const row = [
