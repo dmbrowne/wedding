@@ -185,15 +185,18 @@ export default class Attendee extends Model {
 
 	updateEventAttendance = (models, rsvps: {[eventId: string]: boolean }, confirmed?) => {
 		return Promise.all(
-			Object.keys(rsvps).map(eventId => {
-				return EventAttendee.findOne({
+			Object.keys(rsvps).map(async eventId => {
+				const eventAttendee = await EventAttendee.findOne({
 					where: { attendeeId: this.id, eventId },
-				})
-				.then(eventAttendee => {
-					return eventAttendee.update({
-						attending: rsvps[eventId],
-						confirmed: typeof confirmed === 'undefined' ? eventAttendee.getDataValue('confirmed') : confirmed,
-					});
+				});
+				return EventAttendee.update({
+					confirmed: typeof confirmed === 'undefined' ? eventAttendee.getDataValue('confirmed') : confirmed,
+					attending: rsvps[eventId],
+				}, {
+					where: {
+						attendeeId: this.id,
+						eventId,
+					},
 				});
 			}),
 		);
