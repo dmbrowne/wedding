@@ -1,6 +1,7 @@
 import './rsvp-section.scss';
 import * as React from 'react';
 import cx from 'classnames';
+import moment from 'moment-timezone';
 import Attendee from '../../../server/models/attendee';
 import Cow from '../icons/Cow';
 import Fish from '../icons/Fish';
@@ -154,72 +155,95 @@ export const WeddingBreakfastCardContent = ({ selected, starterSelect, mainSelec
 	);
 };
 
+const RSVP = (props) => (
+	<React.Fragment>
+		<h2 className="section-title"><span>Please reply</span> Répondez s'il vous plaît</h2>
+		<p>Please send your response by<br/><strong>July 31st</strong><br/>Responses after this date has passed will not be counted and your place will not be guaranteed.</p>
+		<div className="row rsvps">
+			{this.props.attendees.map(attendee =>  (
+				<div key={attendee.id} className="rsvp">
+					<header>{attendee.firstName}{!!attendee.lastName && ' ' + attendee.lastName}</header>
+					<div className="content">
+						<ReceptionCardContent
+							attendee={attendee}
+							selectedEvents={this.props.selectedEvents[attendee.id]}
+							selectEvent={this.props.onSelectEvent}
+							displayFoodChoiceNote={!this.props.foodSelections[attendee.id].valid}
+						/>
+					</div>
+				</div>
+				))}
+		</div>
+		<div className="row rsvps dietry-feedback">
+			{this.props.attendees.map(attendee => {
+				const dietFeedbackRequired = this.props.dietryRequiredEvents.some(eventId => {
+					return this.props.selectedEvents[attendee.id][eventId];
+				});
+				const foodSelections = this.props.foodSelections[attendee.id];
+				return (
+					dietFeedbackRequired ?
+						<div key={attendee.id} className={cx('rsvp')}>
+							<header>{attendee.firstName} {attendee.lastName}</header>
+							{(!foodSelections.starter || !foodSelections.main) && (
+								<div className="error-alert">
+									<i className="material-icons">error</i>
+									<span>
+										Choose{' '}
+										{!foodSelections.starter && 'a starter'}
+										{!foodSelections.starter && !foodSelections.main && ' and '}
+										{!foodSelections.main && 'a main'}
+									</span>
+								</div>
+							)}
+							{dietFeedbackRequired &&
+								<WeddingBreakfastCardContent
+									selected={foodSelections}
+									starterSelect={(choice) => this.props.onSelectStarter(attendee.id, choice)}
+									mainSelect={(choice) => this.props.onSelectMains(attendee.id, choice)}
+									onAllergiesChange={(value) => this.props.onAllergiesChange(attendee.id, value)}
+								/>
+							}
+						</div> :
+						null
+				);
+			})}
+		</div>
+		<button className="btn btn-lg" onClick={this.props.onSubmit}>
+			{this.props.isAnUpdate ?  'Update' : 'Send'} your RSVP
+		</button>
+	</React.Fragment>
+);
+
 export default class RsvpSection extends React.Component<Props> {
 	render() {
+		const now = moment().tz("Europe/London");
+		const dueDate = moment('2018-07-31').tz("Europe/London");
+		const entriesClosed = now.isAfter(dueDate);
 		return (
 			<div className="section section-rsvp">
-				{this.props.disabled ?
+				{entriesClosed ?
 					<div className="yd-container">
-						<p>Your reply has been received.</p>
-						<p>However, should anything change, you can edit your response by clicking the edit response button below. Your Response cannot be changed after the 30th June</p>
-						<button className="uk-button" onClick={this.props.onEnable}>Edit response</button>
+						<h2>Responses are now closed</h2>
+						<p>You will receive an email closer to the date with more info</p>
+						<p>Thank you x</p>
 					</div> :
-					<React.Fragment>
-						<h2 className="section-title"><span>Please reply</span> Répondez s'il vous plaît</h2>
-						<p>Please send your response by<br/><strong>July 31st</strong><br/>Responses after this date has passed will not be counted and your place will not be guaranteed.</p>
-						<div className="row rsvps">
-							{this.props.attendees.map(attendee =>  (
-								<div key={attendee.id} className="rsvp">
-									<header>{attendee.firstName}{!!attendee.lastName && ' ' + attendee.lastName}</header>
-									<div className="content">
-										<ReceptionCardContent
-											attendee={attendee}
-											selectedEvents={this.props.selectedEvents[attendee.id]}
-											selectEvent={this.props.onSelectEvent}
-											displayFoodChoiceNote={!this.props.foodSelections[attendee.id].valid}
-										/>
-									</div>
-								</div>
-								))}
-						</div>
-						<div className="row rsvps dietry-feedback">
-							{this.props.attendees.map(attendee => {
-								const dietFeedbackRequired = this.props.dietryRequiredEvents.some(eventId => {
-									return this.props.selectedEvents[attendee.id][eventId];
-								});
-								const foodSelections = this.props.foodSelections[attendee.id];
-								return (
-									dietFeedbackRequired ?
-										<div key={attendee.id} className={cx('rsvp')}>
-											<header>{attendee.firstName} {attendee.lastName}</header>
-											{(!foodSelections.starter || !foodSelections.main) && (
-												<div className="error-alert">
-													<i className="material-icons">error</i>
-													<span>
-														Choose{' '}
-														{!foodSelections.starter && 'a starter'}
-														{!foodSelections.starter && !foodSelections.main && ' and '}
-														{!foodSelections.main && 'a main'}
-													</span>
-												</div>
-											)}
-											{dietFeedbackRequired &&
-												<WeddingBreakfastCardContent
-													selected={foodSelections}
-													starterSelect={(choice) => this.props.onSelectStarter(attendee.id, choice)}
-													mainSelect={(choice) => this.props.onSelectMains(attendee.id, choice)}
-													onAllergiesChange={(value) => this.props.onAllergiesChange(attendee.id, value)}
-												/>
-											}
-										</div> :
-										null
-								);
-							})}
-						</div>
-						<button className="btn btn-lg" onClick={this.props.onSubmit}>
-							{this.props.isAnUpdate ?  'Update' : 'Send'} your RSVP
-						</button>
-					</React.Fragment>
+					(this.props.disabled ?
+						<div className="yd-container">
+							<p>Your reply has been received.</p>
+							<p>However, should anything change, you can edit your response by clicking the edit response button below. Your Response cannot be changed after the 30th June</p>
+							<button className="uk-button" onClick={this.props.onEnable}>Edit response</button>
+						</div> :
+						<RSVP
+							attendees={this.props.attendees}
+							selectedEvents={this.props.selectedEvents}
+							onSelectEvent={this.props.onSelectEvent}
+							foodSelections={this.props.foodSelections}
+							dietryRequiredEvents={this.props.dietryRequiredEvents}
+							onSelectStarter={this.props.onSelectStarter}
+							onSelectMains={this.props.onSelectMains}
+							onAllergiesChange={this.props.onAllergiesChange}
+						/>
+					)
 				}
 			</div>
 		);
