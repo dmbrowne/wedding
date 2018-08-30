@@ -288,27 +288,35 @@ class EventAttendeesPage extends React.Component<IEventAttendeesPage, State> {
 	}
 
 	downloadCurrentListView() {
-		const allGuests = this.state.guests.reduce((accum, {grouped, guest}) => {
+		const allGuests = this.state.guests.reduce((accum, {grouped, ...guest}) => {
 			const group = (grouped ? guest : undefined);
 			return [
 				...accum,
-				...(grouped ? group.attendees : [guest]),
+				...(grouped ?
+					Object.entries(group.attendees).map(([_, attendee]) => attendee) :
+					[guest]
+				),
 			];
 		}, []);
+
+
 		const rows = allGuests
-			.filter(guest => guest.EventAttendee.attending)
 			.map(guest => {
 				const row = [
-					guest.firstName + '' + guest.lastName,
+					guest.firstName + (guest.lastName ? ` ${guest.lastName}` : ''),
 					guest.EventAttendee.attending,
-					guest.FoodChoice && guest.FoodChoice.starter || '-',
-					guest.FoodChoice && guest.FoodChoice.main || '-',
+					...this.props.event.dietFeedback ? [
+						guest.FoodChoice && guest.FoodChoice.starter || '',
+						guest.FoodChoice && guest.FoodChoice.main || '',
+						guest.FoodChoice &&
+						guest.FoodChoice.allergies &&
+						guest.FoodChoice.allergies.split(',').join('-') || '',
+					] :
+					[guest.email]
 				];
 				return row.join(',');
 			});
-
-		const csvContent = encodeURI("data:text/csv;charset=utf-8," + rows.map(row => row + "\r\n").join(''));
-		this.setState({ csvContent });
+		this.downloadCSV(rows);
 	}
 
 	filterButtons() {
@@ -360,12 +368,13 @@ class EventAttendeesPage extends React.Component<IEventAttendeesPage, State> {
 		);
 	}
 
-	downloadCSV() {
-		let csvHeader = 'name,email,attending';
-		csvHeader = csvHeader + (this.props.event.dietFeedback ? ',starter,main,allergies' : '');
+	downloadCSV(rows) {
+		let csvHeader = 'Name,Attending';
+		csvHeader = csvHeader + (this.props.event.dietFeedback ? ',Starter,Main,Allergies' : 'Email');
 		csvHeader = csvHeader + '\r\n';
 
-		const rows = this.state.guests.map(guest => {
+		rows = rows || this.state.guests.map(guest => {
+			console.log(guest);
 			const foodChoice = this.props.event.dietFeedback ?
 				(!!guest.FoodChoice ?
 					`${guest.FoodChoice.starter},${guest.FoodChoice.main},${guest.FoodChoice.allergies},` :
@@ -386,7 +395,7 @@ class EventAttendeesPage extends React.Component<IEventAttendeesPage, State> {
 		this.download.setAttribute('href', csvContent);
 		this.download.setAttribute(
 			'download',
-			this.props.event.name.toLowerCase().split(' ').join('_') + '_guests.csv',
+			this.props.event.name.toLowerCase().split(' ').join('_') + '_' + this.state.filter + '_guests.csv',
 		);
 		this.download.click();
 	}
@@ -413,7 +422,7 @@ class EventAttendeesPage extends React.Component<IEventAttendeesPage, State> {
 						<h3 className="uk-margin-left">{attendingGuests.length} Attending</h3>
 					</div>
 					<button
-						onClick={() => this.downloadCSV()}
+						onClick={() => this.downloadCurrentListView()}
 						className="uk-button uk-button-primary"
 					>
 						Download guest list
