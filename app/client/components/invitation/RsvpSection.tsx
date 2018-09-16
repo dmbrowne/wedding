@@ -218,7 +218,8 @@ export default class RsvpSection extends React.Component<Props> {
 	render() {
 		const now = moment().tz("Europe/London");
 		const dueDate = moment('2018-07-31').tz("Europe/London");
-		const entriesClosed = now.isAfter(dueDate);
+		// const entriesClosed = now.isAfter(dueDate);
+		const entriesClosed = false;
 		return (
 			<div className="section section-rsvp">
 				{entriesClosed ?
