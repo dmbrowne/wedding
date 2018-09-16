@@ -127,12 +127,16 @@ textarea {
 .bridal-party-member {
 	margin: 15px; 
 	padding: 20px; 
-	justify-content: flex-end;
+	justify-content: flex-start;
 	display: flex;
 	flex-direction: column;
 	flex-direction: column;
-	width: 250px;
+	width: 270px;
 	align-items: center;
+	@media (min-width: 1400px) {
+		margin: 30px; 
+		padding: 30px 0;
+	}
 
 	.badge {
 		font-size: 0.8rem;
@@ -155,10 +159,9 @@ textarea {
 	&.primary {
 		background: url('/assets/noisy_net.png');
 		color: #bebebe;
-		
 		@media (min-width: 1400px) {
-			margin: 30px; 
-			padding: 30px; 
+			margin: 30px;
+			padding: 30px;
 		}
 	}
 }

@@ -260,7 +260,12 @@ export default class Invitation extends React.Component<Props, State> {
 									{this.props.bridalParty.bridesmaids.BridalParties.map(bridesmaid => {
 										return (
 											<div key={bridesmaid.id} className={cx('bridal-party-member', {primary: bridesmaid.vip})}>
-												{bridesmaid.subRole && <div className="badge">{bridesmaid.subRole}</div>}
+												<div
+													className="badge"
+													style={{ opacity: !!bridesmaid.subRole ? 1 : 0}}
+												>
+													{bridesmaid.subRole}
+												</div>
 												<figure className="selfie">
 													<img src={bridesmaid.Image.squareHiRes} />
 												</figure>
@@ -283,7 +288,7 @@ export default class Invitation extends React.Component<Props, State> {
 													className="badge"
 													style={{ opacity: !!groomsmen.subRole ? 1 : 0}}
 												>
-													{groomsmen.subRole}
+													{groomsmen.subRole || ''}
 												</div>
 												<figure className="selfie">
 													<img src={groomsmen.Image.squareHiRes} />
