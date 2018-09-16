@@ -160,26 +160,26 @@ const RSVP = (props) => (
 		<h2 className="section-title"><span>Please reply</span> Répondez s'il vous plaît</h2>
 		<p>Please send your response by<br/><strong>July 31st</strong><br/>Responses after this date has passed will not be counted and your place will not be guaranteed.</p>
 		<div className="row rsvps">
-			{this.props.attendees.map(attendee =>  (
+			{props.attendees.map(attendee =>  (
 				<div key={attendee.id} className="rsvp">
 					<header>{attendee.firstName}{!!attendee.lastName && ' ' + attendee.lastName}</header>
 					<div className="content">
 						<ReceptionCardContent
 							attendee={attendee}
-							selectedEvents={this.props.selectedEvents[attendee.id]}
-							selectEvent={this.props.onSelectEvent}
-							displayFoodChoiceNote={!this.props.foodSelections[attendee.id].valid}
+							selectedEvents={props.selectedEvents[attendee.id]}
+							selectEvent={props.onSelectEvent}
+							displayFoodChoiceNote={!props.foodSelections[attendee.id].valid}
 						/>
 					</div>
 				</div>
 				))}
 		</div>
 		<div className="row rsvps dietry-feedback">
-			{this.props.attendees.map(attendee => {
-				const dietFeedbackRequired = this.props.dietryRequiredEvents.some(eventId => {
-					return this.props.selectedEvents[attendee.id][eventId];
+			{props.attendees.map(attendee => {
+				const dietFeedbackRequired = props.dietryRequiredEvents.some(eventId => {
+					return props.selectedEvents[attendee.id][eventId];
 				});
-				const foodSelections = this.props.foodSelections[attendee.id];
+				const foodSelections = props.foodSelections[attendee.id];
 				return (
 					dietFeedbackRequired ?
 						<div key={attendee.id} className={cx('rsvp')}>
@@ -198,9 +198,9 @@ const RSVP = (props) => (
 							{dietFeedbackRequired &&
 								<WeddingBreakfastCardContent
 									selected={foodSelections}
-									starterSelect={(choice) => this.props.onSelectStarter(attendee.id, choice)}
-									mainSelect={(choice) => this.props.onSelectMains(attendee.id, choice)}
-									onAllergiesChange={(value) => this.props.onAllergiesChange(attendee.id, value)}
+									starterSelect={(choice) => props.onSelectStarter(attendee.id, choice)}
+									mainSelect={(choice) => props.onSelectMains(attendee.id, choice)}
+									onAllergiesChange={(value) => props.onAllergiesChange(attendee.id, value)}
 								/>
 							}
 						</div> :
@@ -208,8 +208,8 @@ const RSVP = (props) => (
 				);
 			})}
 		</div>
-		<button className="btn btn-lg" onClick={this.props.onSubmit}>
-			{this.props.isAnUpdate ?  'Update' : 'Send'} your RSVP
+		<button className="btn btn-lg" onClick={props.onSubmit}>
+			{props.isAnUpdate ?  'Update' : 'Send'} your RSVP
 		</button>
 	</React.Fragment>
 );
