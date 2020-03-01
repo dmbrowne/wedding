@@ -1,163 +1,215 @@
 @import "../../styles/yd-variables.scss";
 
 .section-where {
-	position: relative;
-	color: #000;
+  position: relative;
+  color: #000;
 
-	> * { position: relative; z-index: 2; }
+  > * {
+    position: relative;
+    z-index: 2;
+  }
 
-	&:before, &:after {
-		content: '';
+  &:before,
+  &:after {
+    content: "";
     position: absolute;
     width: 100%;
     height: 100%;
     top: 0;
-		left: 0;
-	}
-	&:before {
-		background: center center / cover no-repeat url('/assets/town-hall-staircase.jpg');
-		filter: grayscale(100%) blur(4px);
-		z-index: 0;
-	}
-	&:after {
+    left: 0;
+  }
+  &:before {
+    background: center center / cover no-repeat
+      url("https://res.cloudinary.com/liquidation/image/upload/c_scale,q_auto:eco,w_800/v1583032542/wedding/town-hall-staircase.jpg");
+    filter: grayscale(100%) blur(4px);
+    z-index: 0;
+  }
+  &:after {
     background-color: rgba(0, 0, 0, 0.1);
     z-index: 1;
-	}
+  }
 
-	.ornate-divider {
-		width: 70vw;
-		margin: 0 auto 30px;
-		@media screen and (min-width: 480px) { width: 70%; }
-		@media screen and (min-width: 600px) { width: 60%; }
-		@media screen and (min-width: 768px) { width: 50%; }
-		@media screen and (min-width: 1024px) { width: 40%; }
-		svg g {
-			fill: #fff;
-		}
-	}
+  .ornate-divider {
+    width: 70vw;
+    margin: 0 auto 30px;
+    @media screen and (min-width: 480px) {
+      width: 70%;
+    }
+    @media screen and (min-width: 600px) {
+      width: 60%;
+    }
+    @media screen and (min-width: 768px) {
+      width: 50%;
+    }
+    @media screen and (min-width: 1024px) {
+      width: 40%;
+    }
+    svg g {
+      fill: #fff;
+    }
+  }
 
-	.caligraphy-divider {
-		@extend .ornate-divider;
-		width: 25vw;
-		margin: 1rem auto;
-		@media screen and (min-width: 480px) { width: 50%; }
-		@media screen and (min-width: 600px) { width: 38%; margin: 2rem auto; }
-		@media screen and (min-width: 768px) { width: 22%; }
-		@media screen and (min-width: 1024px) { width: 16%; margin: 2.5rem auto; }
-		@media screen and (min-width: 1200px) { width: 12%; }
-	}
+  .caligraphy-divider {
+    @extend .ornate-divider;
+    width: 25vw;
+    margin: 1rem auto;
+    @media screen and (min-width: 480px) {
+      width: 50%;
+    }
+    @media screen and (min-width: 600px) {
+      width: 38%;
+      margin: 2rem auto;
+    }
+    @media screen and (min-width: 768px) {
+      width: 22%;
+    }
+    @media screen and (min-width: 1024px) {
+      width: 16%;
+      margin: 2.5rem auto;
+    }
+    @media screen and (min-width: 1200px) {
+      width: 12%;
+    }
+  }
 
-	address, time {
-		display: block;
-		text-align: center;
-		font-size: 1.5rem;
-		span {
-			font-family: 'Great Vibes';
-			font-size: 2rem;
-			@media screen and (min-width: 480px) { font-size: 3rem; }
-		}
-		p { margin: 5px }
-		a {
-			color: $secondary;
-			font-weight: 400;
-			text-decoration: none;
-			display: inline-flex;
-			align-items: center;
-			justify-content: center;
-		}
-	}
+  address,
+  time {
+    display: block;
+    text-align: center;
+    font-size: 1.5rem;
+    span {
+      font-family: "Great Vibes";
+      font-size: 2rem;
+      @media screen and (min-width: 480px) {
+        font-size: 3rem;
+      }
+    }
+    p {
+      margin: 5px;
+    }
+    a {
+      color: $secondary;
+      font-weight: 400;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
 
-	.venue-name {
-		background: rgba(255,255,255,0.3);
-		box-shadow: 0 0 80px 10px rgba(255, 255, 255, 0.5);
+  .venue-name {
+    background: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 80px 10px rgba(255, 255, 255, 0.5);
     padding: 5px 20px;
     border-radius: 40px;
-	}
+  }
 
-	.transport-info {
-		// font-size: 19;
-		max-width: 600px;
-		margin: 25px auto 15px;
-		border-radius: 20px;
-		background: rgba(255,255,255,0.35);
-		box-shadow: 0 0 80px 10px rgba(255, 255, 255, 0.555);
-	}
+  .transport-info {
+    // font-size: 19;
+    max-width: 600px;
+    margin: 25px auto 15px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.35);
+    box-shadow: 0 0 80px 10px rgba(255, 255, 255, 0.555);
+  }
 
-	time span {
-		padding-left: 10px;
-		// color: darken(#d8ab73, 10%);
-		color: #fff;
-	}
+  time span {
+    padding-left: 10px;
+    // color: darken(#d8ab73, 10%);
+    color: #fff;
+  }
 }
 
 .section-reception {
-	@extend .section-where;
-	background: none;
-	padding-top: 15vh;
-	padding-bottom: 15vh;
-	overflow: hidden;
-	color: #e3e3e3;
-	&:after { content: none; }
+  @extend .section-where;
+  background: none;
+  padding-top: 15vh;
+  padding-bottom: 15vh;
+  overflow: hidden;
+  color: #e3e3e3;
+  &:after {
+    content: none;
+  }
 
-	.venue-name {
-		background: none; padding: 0;
-		box-shadow: none;
-	}
-	.bg {
-		position: absolute;
-		top: -5%;
+  .venue-name {
+    background: none;
+    padding: 0;
+    box-shadow: none;
+  }
+  .bg {
+    position: absolute;
+    top: -5%;
     left: -5%;
     width: 110%;
     height: 110%;
-		background: center center / cover no-repeat url('/assets/vanilla.jpg');
-		// background: center center / cover no-repeat url('/assets/33516114_s.jpg');
-		// filter: blur(3px);
-		z-index: 0;
-		&:before {
-			content: '';
-			background-color: rgba(7, 70, 153, 0.7);
-			// background-color: rgba(27, 103, 202, 0.7);
-			display: block;
-			height: 100%;
-		}
-	}
-	
-	> * { position: relative; z-index: 1; }
+    background: center center / cover no-repeat url("/assets/vanilla.jpg");
+    // background: center center / cover no-repeat url('/assets/33516114_s.jpg');
+    // filter: blur(3px);
+    z-index: 0;
+    &:before {
+      content: "";
+      background-color: rgba(7, 70, 153, 0.7);
+      // background-color: rgba(27, 103, 202, 0.7);
+      display: block;
+      height: 100%;
+    }
+  }
 
-	.corner-ornament, .floral-ornament {
-		max-width: 250px;
-		position: absolute;
-		width: 25vw;
-		svg path, svg g {
-			fill: rgba($secondary-hover, 0.8);
-		}
-	}
+  > * {
+    position: relative;
+    z-index: 1;
+  }
 
-	.corner-ornament {
-		top: 0;
-		right: 0;
-	}
+  .corner-ornament,
+  .floral-ornament {
+    max-width: 250px;
+    position: absolute;
+    width: 25vw;
+    svg path,
+    svg g {
+      fill: rgba($secondary-hover, 0.8);
+    }
+  }
 
-	.floral-ornament {
-		bottom: 10px;
+  .corner-ornament {
+    top: 0;
+    right: 0;
+  }
+
+  .floral-ornament {
+    bottom: 10px;
     left: 5px;
-	}
+  }
 
-	.section-title { color: $secondary-hover; }
+  .section-title {
+    color: $secondary-hover;
+  }
 
-	.caligraphy-divider {
-		svg g { fill: #fff; }
-		@media screen and (min-width: 480px) { width: 50%; }
-		@media screen and (min-width: 600px) { width: 38%; margin: 2rem auto; }
-		@media screen and (min-width: 768px) { width: 22%; }
-	}
+  .caligraphy-divider {
+    svg g {
+      fill: #fff;
+    }
+    @media screen and (min-width: 480px) {
+      width: 50%;
+    }
+    @media screen and (min-width: 600px) {
+      width: 38%;
+      margin: 2rem auto;
+    }
+    @media screen and (min-width: 768px) {
+      width: 22%;
+    }
+  }
 
-	address, time {
-		color: #fff;
-		a { color: darken($secondary-hover, 10%); }
-	}
+  address,
+  time {
+    color: #fff;
+    a {
+      color: darken($secondary-hover, 10%);
+    }
+  }
 
-	time span {
-		color: darken($secondary-hover, 10%);
-	}
+  time span {
+    color: darken($secondary-hover, 10%);
+  }
 }
